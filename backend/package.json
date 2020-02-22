@@ -1,0 +1,12 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "big-integer": "^1.6.48",
+    "biginteger": "^1.0.3",
+    "express": "^4.17.1",
+    "js-sha3": "^0.8.0"
+  }
+}

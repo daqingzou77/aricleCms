@@ -1,0 +1,201 @@
+@import '~antd/lib/style/themes/default.less';
+@import 'common/less/basic.less';
+
+html,
+body,
+#root {
+  min-width: 900px;
+  height: 100%;
+  overflow: auto;
+}
+
+.colorWeak {
+  filter: invert(80%);
+}
+
+.ant-layout {
+  min-height: 100vh;
+}
+
+.ant-layout-content {
+  flex: auto;
+  /* height: 100%; */
+  position: absolute;
+  top: 35px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+canvas {
+  display: block;
+}
+
+body {
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-family: Arial, 'Microsoft YaHei';
+}
+
+.globalSpin {
+  width: 100%;
+  margin: 40px 0 !important;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+p {
+  margin-bottom: 0 !important;
+}
+
+.react-contextmenu {
+  background-color: #fff;
+  border: 1px solid #d9d9d9;
+  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.2);
+  .react-contextmenu-item {
+    line-height: 32px;
+    cursor: pointer;
+    font-size: 12px;
+    color: #666;
+    padding: 0 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 160px;
+    &:hover {
+      background-color: #e6edf5;
+    }
+  }
+}
+
+.ant-radio-inner {
+  background-color: #fff !important;
+}
+.ant-radio-disabled .ant-radio-inner {
+  background-color: #f5f5f5 !important;
+}
+.ant-table-tbody > tr:nth-child(even) {
+  background-color: #f9fafc !important;
+}
+.ant-table-thead > tr > th {
+  background-color: #edf2f8 !important;
+}
+.ant-table-thead > tr > th,
+.ant-table-tbody > tr > td {
+  padding: 4px !important;
+  text-align: center !important;
+}
+@media (max-width: @screen-xs) {
+  .ant-table {
+    width: 100%;
+    overflow-x: auto;
+    &-thead > tr,
+    &-tbody > tr {
+      > th,
+      > td {
+        white-space: pre;
+        > span {
+          display: block;
+        }
+      }
+    }
+  }
+}
+
+.ant-table .table-time-column {
+  //text-overflow: clip;
+  //white-space: pre;
+  //overflow-wrap: unset;
+}
+
+.ant-checkbox-wrapper {
+  color: @general-default-content-text-color !important;
+}
+
+// 按钮规范
+
+.gd-btn-icon-padding {
+  padding: 0 15px 0 12px;
+}
+
+.ant-btn-primary:hover {
+  color: #fff;
+  background-color: #3d90db;
+  border-color: #3d90db;
+}
+.ant-btn-primary:focus {
+  background-color: #2376c1;
+  border-color: #2376c1;
+}
+.ant-btn-primary:active {
+  background-color: #2376c1;
+  border-color: #2376c1;
+}
+
+.ant-btn-dashed {
+  background-color: #d0dae5;
+  border-color: #d0dae5;
+  color: #666666;
+  border-style: solid;
+}
+
+.ant-btn-dashed:hover {
+  border: 1px solid #2d81ce;
+  color: #2d81ce;
+}
+
+.ant-btn-dashed:focus {
+  border: 1px solid #2d81ce;
+  color: #2d81ce;
+}
+
+.ant-btn-dashed:active {
+  border: 1px solid #2d81ce;
+  color: #2d81ce;
+}
+
+.ant-form-item-label > label::after {
+  margin: 0 10px 0 2px !important;
+}
+
+.ant-table-title {
+  background-color: #e3eaf4;
+  color: #666;
+  font-size: 14px;
+  height: 30px;
+  padding: 0 9px !important;
+  display: flex;
+  align-items: center;
+}
+.ant-table-header-column {
+  color: #666;
+}
+
+.ant-form-item {
+  margin-bottom: 26px !important;
+}
+
+.ant-form-item-with-help {
+  margin-bottom: 10px !important;
+}
+
+//滚动条整体样式
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+  background: #edf2f8;
+}
+::-webkit-scrollbar-thumb {
+  border-radius: 0;
+  -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+  background: #d0dae5;
+}
+::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+  border-radius: 0;
+  background: #fff;
+}

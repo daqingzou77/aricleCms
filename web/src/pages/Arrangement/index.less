@@ -1,0 +1,67 @@
+.form {
+  border: 1px solid #e8e8e8;
+  margin: 8px 12px !important;
+  padding: 15px;
+}
+
+.search {
+  display: inline-block;
+  float: right;
+  margin-top: 10px;
+}
+
+.content_division_vertical {
+  //position: relative;
+  top: 2px;
+  //display: inline-block;
+  //clear: both;
+  width: 1px;
+  height: 60px;
+  margin: 0 2px 0 2px;
+  background-color: #333333;
+  opacity: 0.25;
+}
+
+.calendar {
+  :global {
+    .ant-radio-group-default {
+      display: none;
+    }
+  }
+}
+
+.yes {
+  height: 74px;
+  background-color: rgba(153, 255, 204, 1);
+}
+.selectedDate {
+  border: 2px solid rgb(95, 189, 252);
+}
+.no {
+  height: 74px;
+  background-color: rgba(255, 153, 153, 1);
+}
+
+.yes:hover,
+.no:hover {
+  cursor: pointer;
+}
+
+.calendar_content .day {
+  float: right;
+  margin-right: 10px;
+  margin-top: 10px;
+}
+
+.calendar_content {
+  margin: 0;
+  padding: 0;
+}
+
+.content {
+  position: relative;
+  top: -20px;
+  clear: both;
+  margin: 0 15px;
+  overflow: hidden;
+}

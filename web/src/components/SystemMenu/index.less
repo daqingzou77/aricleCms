@@ -1,0 +1,115 @@
+.toolbar {
+  background-color: rgba(24, 36, 69, 1);
+  height: fit-content;
+
+  .toolbarTitle {
+    height: 30px;
+    background: inherit;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .toolbarTool {
+    display: flex;
+    height: 109px;
+    padding-left: 5px;
+    .toolContainer {
+      display: flex;
+      flex-direction: column;
+      padding: 10px 0 0 5px;
+      .toolList {
+        display: flex;
+        height: 70px;
+        background: inherit;
+        background-color: rgba(37, 52, 93, 1);
+        // padding: 0px 7.5px;
+        .searchInput {
+          display: flex;
+          border-width: 0;
+          height: 60px;
+          background: inherit;
+          margin: 2.5px;
+          background-color: rgba(255, 255, 255, 0);
+          align-items: center;
+          .serachTitle {
+            font-size: 12px;
+            color: #bbc4da;
+            align-self: center;
+          }
+          .input {
+            width: 144px;
+            height: 20px;
+            background-color: transparent;
+            font-weight: 400;
+            font-style: normal;
+            font-size: 13px;
+            text-decoration: none;
+            text-align: left;
+            border: 1px solid rgb(153, 153, 153);
+            border-radius: 1px;
+            outline-style: none;
+            padding: 0 5px;
+          }
+        }
+        .toolItem {
+          display: flex;
+          flex-direction: column;
+          border-width: 0;
+          //width: 58px;        todo 暂时去掉，法文截图要用
+          height: 60px;
+          background: inherit;
+          margin: auto 5px;
+          padding: 10px 5px;
+          background-color: #25345d;
+          justify-content: center;
+          align-items: center;
+          color: #bbc4da;
+          font-size: 12px;
+          .toolIcon {
+            font-size: 28px;
+            align-self: center;
+          }
+          .toolItemTitle {
+            text-align: center;
+            font-size: 12px;
+            align-self: center;
+            height: 12px;
+          }
+          &:nth-child(even) {
+            margin-left: 0px;
+          }
+        }
+
+        .toolItem:hover {
+          cursor: pointer;
+          background: inherit;
+          background-color: #141f3e;
+          color: #56afff;
+        }
+        .toolItemActive {
+          background-color: #141f3e;
+          color: #56afff;
+        }
+      }
+      .toolTitle {
+        text-align: center;
+        font-size: 12px;
+        color: #bbc4da;
+        margin-top: 5px;
+      }
+    }
+  }
+  .icon {
+    float: right;
+    color: white;
+    width: 12px;
+    height: 12px;
+    margin-top: 7px;
+    margin-right: 10px;
+  }
+  .icon:hover {
+    cursor: pointer;
+    color: #56afff;
+  }
+}

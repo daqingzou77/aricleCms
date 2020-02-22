@@ -1,0 +1,69 @@
+@font-face {
+  font-family: 'icomoon';
+  src: url('/LK-0200024/icons/fonts/icomoon.eot?vmcozg');
+  src: url('/LK-0200024/icons/fonts/icomoon.eot?vmcozg#iefix') format('embedded-opentype'),
+    url('/LK-0200024/icons/fonts/icomoon.ttf?vmcozg') format('truetype'),
+    url('/LK-0200024/icons/fonts/icomoon.woff?vmcozg') format('woff'),
+    url('/LK-0200024/icons/fonts/icomoon.svg?vmcozg#icomoon') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+[class^='icon-'],
+[class*=' icon-'] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'icomoon' !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-ic_arrangement:before {
+  content: '\e900';
+}
+.icon-ic_changeshift:before {
+  content: '\e901';
+}
+.icon-ic_dutyevent:before {
+  content: '\e902';
+}
+.icon-ic_help:before {
+  content: '\e903';
+}
+.icon-ic_historical_log:before {
+  content: '\e904';
+}
+.icon-ic_mail_checkin:before {
+  content: '\e905';
+}
+.icon-ic_map:before {
+  content: '\e906';
+}
+.icon-ic_matter:before {
+  content: '\e907';
+}
+.icon-ic_new_daily_record:before {
+  content: '\e908';
+}
+.icon-ic_phone_checkin:before {
+  content: '\e909';
+}
+.icon-ic_punch_card:before {
+  content: '\e90a';
+}
+.icon-ic_scheduling:before {
+  content: '\e90b';
+}
+.icon-ic_situation:before {
+  content: '\e90c';
+}
+.icon-ic_todolist:before {
+  content: '\e90d';
+}

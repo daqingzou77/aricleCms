@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html class="no-js css-menubar" lang="zh-cn">
+ <head>
+  <title>属性子窗口</title>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,minimal-ui" />
+  <meta name="author" content="" />
+  <meta name="renderer" content="webkit" />
+
+  <script src="/plot/lib/include-lib2.js?time=20180905" libpath="/plot/lib/" include="jquery,jquery.minicolors,font-awesome,bootstrap,bootstrap-checkbox,admui-frame,haoutil"></script>
+  <link href="/plot/css/widget-win.css" rel="stylesheet" />
+  <link href="/plot/css/plot2.css?time=20180905" rel="stylesheet" />
+ </head>
+ <body>
+  <div class="mp_box">
+   <div class="mp_head">
+    <ul>
+     <li id="btn_plot_openfile"><i class="fa fa-folder-open-o" title="打开文件"></i></li>
+     <!-- <li id="btn_plot_openfile2"><i class="fa fa-folder-open" title="叠加文件"></i></li>   -->
+     <li id="btn_plot_savefile"><i class="fa fa-save" title="保存文件"></i></li>
+     <li class="ml10">|</li>
+     <li id="btn_plot_delall"><i class="fa fa-trash" title="清空标绘"></i></li>
+     <li id="btn_plot_isedit"><i class="fa fa-unlock" title="是否可编辑"></i></li>
+     <li class="ml10">|</li>
+
+    </ul>
+    <input id="input_plot_file" type="file" accept=".json" style="display:none" />
+   </div>
+   <div class="clear"></div>
+   <div class="mp_tab_card">
+    <ul class="mp_tab_con">
+     <li class="cur">
+      <select id="sel_plot_list" class="mp_select m10" data-value="1"></select>
+      <div class="mp_mark">
+       <ul id="plotlist" style="background: white;"></ul>
+      </div>
+     </li>
+     <li>
+      <div class="mp_tree">
+       <div id="view_updateheight">
+        <div class="open">
+         <i class="tree_icon">-</i>批量修改高程（辅助功能）
+        </div>
+        <div class="mp_attr" style="margin-top:10px">
+         <table>
+          <tbody>
+           <tr>
+            <td class="nametd">在原值上增加</td>
+            <td><input id="plot_latlngs_addheight" type="number" class="mp_input" /></td>
+           </tr>
+           <tr>
+            <td class="nametd">全部修改为</td>
+            <td><input id="plot_latlngs_allheight" type="number" class="mp_input" /></td>
+           </tr>
+          </tbody>
+         </table>
+        </div>
+       </div>
+       <div>
+        <div class="open">
+         <i class="tree_icon">-</i>坐标列表
+        </div>
+        <div id="view_latlngs" class="local"></div>
+        <div style="margin-top:10px;text-align:center">
+         <button id="btnCenter" type="button" class="btn btn-primary">定位</button>
+        </div>
+       </div>
+      </div></li>
+     <li>
+      <div style="margin-top:10px;text-align:center">
+       <button id="btnGlyphPre" type="button" class="btn btn-danger">修改</button>
+      <canvas id="g_id" width="150" height="150" id="pre_glyph" style="border:1px solid #ff0000"></canvas>
+      </div>
+      <div class="mp_tree">
+       <div id="attr_style_view">
+
+        <div class="open">
+         <i class="tree_icon">-</i>样式信息
+        </div>
+        <div class="mp_attr">
+         <table id="talbe_style"></table>
+        </div>
+       </div>
+       <div class="bdt">
+        <div class="open">
+         <i class="tree_icon">-</i>属性信息
+        </div>
+        <div class="mp_attr">
+         <table id="talbe_attr"></table>
+        </div>
+       </div>
+       <div style="margin-top:10px;text-align:center">
+        <button id="btnDelete" type="button" class="btn btn-danger">确定ff</button>
+       </div>
+      </div></li>
+    </ul>
+    <ul class="mp_tab_tit">
+     <li id="tab_plot" class="cur">标号</li>
+     <li id="tab_latlng" class="disabled">坐标</li>
+     <li id="tab_attr" class="disabled">属性</li>
+    </ul>
+   </div>
+  </div>
+  <script src="/plot/H5DrawSymbol.min.js"></script>  
+
+
+ </body>
+</html>
