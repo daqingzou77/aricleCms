@@ -167,6 +167,7 @@ class ScheduleLayout extends React.Component {
         <div style={{ top: isOpenToolbar ? 109 + 45 : 30 + 45 }} className={styles.content}>
           {children}
         </div>
+        
         <SystemFooter />
       </>
     );
