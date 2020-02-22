@@ -1,80 +1,102 @@
+
+
+
 export default [
   // app
   {
     path: '/',
     component: '../layouts/ScheduleLayout',
     routes: [
-      // dashboard
-      // dashboard
-      { path: '/', redirect: '/scheduling' },
+      { path: '/', redirect: '/home' },
       {
-        path: '/scheduling',
+        path: '/home',
         name: 'scheduling',
-        component: './Scheduling',
+        component: './Home',
       },
+      /** 文章分类 */
       {
-        path: '/situation',
-        name: 'situation',
-        component: './Situation',
-      },
-      {
-        path: '/mainevent',
-        name: 'mainevent',
-        component: './Mainevent',
-      },
-      /* 作战值班路由 */
-      {
-        path: '/schedule',
-        name: 'schedule',
-        icon: 'layout',
+        path: '/classify',
+        name: 'classify',
         routes: [
           {
-            path: '/schedule/todolist',
-            name: 'todolist',
-            component: './Mainevent/Todolist',
+            path: '/classify/science',
+            name: 'science',
+            component: './Classify/Science'
           },
           {
-            path: '/schedule/matter',
-            name: 'matter',
-            component: './Mainevent/Matter',
+            path: '/classify/history',
+            name: 'history',
+            component: './Classify/History'
           },
           {
-            path: '/schedule/phoneCheckin',
-            name: 'phone',
-            component: './Mainevent/Phone',
+            path: '/classify/Litterateur',
+            name: 'litterateur',
+            component: './Classify/Litterateur'
           },
           {
-            path: '/schedule/mailCheckin',
-            name: 'mail',
-            component: './Mainevent/Mail',
+            path: '/classify/health',
+            name: 'health',
+            component: './Classify/Health'
           },
           {
-            path: '/schedule/historicallog',
-            name: 'historicallog',
-            component: './Historicallog',
+            path: '/classify/physical',
+            name: 'physical',
+            component: './Classify/Physical'
           },
           {
-            path: '/schedule/newlog',
-            name: 'newlog',
-            component: './Newlog',
+            path: '/classify/celebrity',
+            name: 'celebrity',
+            component: './Classify/Celebrity'
           },
-          {
-            path: '/schedule/arrangement',
-            name: 'arrangement',
-            component: './Arrangement',
-          },
-          {
-            path: '/schedule/help',
-            name: 'help',
-            component: './Help',
-          },
-        ],
+        ]
       },
-      {
-        path: '/map',
-        name: 'map',
-        component: './Result/Success',
-      },
+     {
+       path: '/publish',
+       name: 'publish',
+       routes: [
+        {
+          path: '/publish/publishOnline',
+          name: 'publishOnline',
+          component: './Publish/OnlinePublish'
+        },
+        {
+          path: '/publish/AnnexUpload',
+          name: 'annexUpload',
+          component: './Publish/AnnexUpload'
+        },
+        {
+          path: '/publish/Audit',
+          name: 'audit',
+          component: './Publish/Audit'
+        }
+       ] 
+     },
+     {
+       path: '/manage',
+       name: 'manage',
+       component: './Manage'
+     },
+     {
+      path: '/userCenter',
+      name: 'userCenter',
+      routes: [
+        {
+          path: '/userCenter/personCenter',
+          name: 'usrCenter',
+          component: './UserCenter/PersonCenter',
+        },
+        {
+          path: '/userCenter/messageCenter',
+          name: 'messageCenter',
+          component: './UserCenter/messageCenter',
+        }
+      ]
+    },
+    {
+      path: '/help',
+      name: 'help',
+      component: './Help'
+    },
       {
         component: '404',
       },

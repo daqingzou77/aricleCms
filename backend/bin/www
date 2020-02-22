@@ -1,0 +1,10 @@
+#!/usr/bin/env node
+import app from '../app';
+
+app.set('port', process.env.port || 9999);
+
+const port = app.get('port');
+
+const server = app.listen(port, ()=>{
+  console.log('-----server listening on port' + ' '+server.address().port + '-----');
+})

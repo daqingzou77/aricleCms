@@ -26,7 +26,8 @@ class ScheduleLayout extends React.Component {
   }
 
   componentDidMount() {
-    document.title = formatMessage({ id: 'guet.schedule.combat_duty_software' });
+    // document.title = formatMessage({ id: 'guet.schedule.combat_duty_software' });
+    document.title = '文章管理系统'
     this.getUopUser();
     this.getBacklogRemind();
   }

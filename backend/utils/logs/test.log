@@ -1,0 +1,7 @@
+[2019-11-04T22:37:58.422] [INFO] normal - POST /api/user/toLogin 200
+[2019-11-04T22:40:41.616] [WARN] normal - GET /api/user/logOut 304
+[2019-11-04T22:40:47.364] [INFO] normal - GET /api/user/logOut 200
+[2019-11-04T22:40:58.424] [INFO] normal - GET /api/user/getCaptch 200
+[2019-11-04T22:41:01.796] [INFO] normal - OPTIONS /api/user/toLogin 204
+[2019-11-04T22:41:02.240] [INFO] normal - POST /api/user/toLogin 200
+[2019-11-04T22:44:12.671] [INFO] normal - GET /api/user/logOut 200

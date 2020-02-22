@@ -5,6 +5,7 @@ import { Icon, Modal, message } from 'antd';
 import { Link, withRouter } from 'react-router-dom';
 // import Modal from '@/common/components/dialog/Modal';
 
+import icArrangment from '@/assets/menuIcon/ic_arrangement.svg';
 import icChangeShift from '@/assets/menuIcon/ic_changeshift.svg';
 import icDutyevent from '@/assets/menuIcon/ic_dutyevent.svg';
 import icHelp from '@/assets/menuIcon/ic_help.svg';
@@ -38,119 +39,125 @@ const formatMessage = id => {
 const menuList = [
   {
     key: 1,
-    title: 'schedule.management',
+    title: '首页',
     child: [
       {
         key: 101,
-        title: 'schedule.arrangement',
-        icon: icScheduling,
-        path: '/scheduling',
-      },
-      {
-        key: 103,
-        title: 'schedule.situation',
-        icon: icSituation,
-        path: '/situation',
+        title: '首页',
+        icon: icMap,
+        path: '/home',
       },
     ],
-  },
+  }, 
   {
     key: 2,
-    title: 'schedule.mainevent',
+    title: '文章分类',
     child: [
       {
         key: 201,
-        title: 'schedule.dutyevent',
-        icon: icDutyevent,
-        path: '/mainevent',
+        title: '科学',
+        icon: icChangeShift,
+        path: '/classify/science',
       },
       {
         key: 202,
-        title: 'schedule.todolist',
-        icon: icTodolist,
-        path: '/schedule/todolist',
-      },
+        title: '历史',
+        icon: icDutyevent,
+        path: '/classify/history',
+      }, 
       {
         key: 203,
-        title: 'schedule.matter',
-        icon: icMatter,
-        path: '/schedule/matter',
+        title: '文学',
+        icon: icHistoricalLog,
+        path: '/classify/Litterateur',
       },
       {
         key: 204,
-        title: 'schedule.phoneCheckin',
-        icon: icPhoneCheckin,
-        path: '/schedule/phoneCheckin',
+        title: '健康',
+        icon: icNewLog,
+        path: '/classify/health',
       },
       {
         key: 205,
-        title: 'schedule.mailCheckin',
-        icon: icMailCheckin,
-        path: '/schedule/mailCheckin',
+        title: '体育',
+        icon: icMatter,
+        path: '/classify/physical',
       },
+      {
+        key: 206,
+        title: '明星',
+        icon: icTodolist,
+        path: '/classify/celebrity',
+      }
     ],
   },
   {
     key: 3,
-    title: 'schedule.logmanage',
+    title: '文章发布',
     child: [
       {
         key: 301,
-        title: 'schedule.newlog',
-        icon: icNewLog,
-        path: '/schedule/newlog',
+        title: '在线发布',
+        icon: icPunchCard,
+        path: '/publish/publishOnline',
       },
       {
         key: 302,
-        title: 'schedule.historicallog',
-        icon: icHistoricalLog,
-        path: '/schedule/historicallog',
+        title: '附件上传',
+        icon: icSituation,
+        path: '/publish/AnnexUpload',
+      },
+      {
+        key: 303,
+        title: '文件审核',
+        icon: icScheduling,
+        path: '/publish/Audit',
       },
     ],
   },
   {
     key: 4,
-    title: 'schedule.change',
+    title: '文章管理',
     child: [
       {
         key: 401,
-        title: 'schedule.punchcard',
-        icon: icPunchCard,
-        path: '/schedule/punchCard',
-      },
-      {
-        key: 402,
-        title: 'schedule.punching_out_of_work',
-        icon: icChangeShift,
-        path: '/schedule/changeShift',
+        title: '文章管理',
+        icon: icMailCheckin,
+        path: '/manage',
       },
     ],
   },
   {
     key: 5,
-    title: 'schedule.map',
+    title: '用户中心',
     child: [
       {
         key: 501,
-        title: 'schedule.map',
-        icon: icMap,
-        path: '/map',
+        title: '个人中心',
+        icon: icArrangment,
+        path: '/userCenter/personCenter',
       },
+      {
+        key: 502,
+        title: '消息中心',
+        icon: icPhoneCheckin,
+        path: '/userCenter/messageCenter',
+      }
     ],
   },
   {
     key: 6,
-    title: 'schedule.help',
+    title: '帮助',
     child: [
       {
         key: 601,
-        title: 'schedule.help',
+        title: '系统帮助',
         icon: icHelp,
-        path: '/schedule/help',
+        path: '/help',
       },
     ],
   },
-];
+]
 
 class SystemMenu extends React.Component {
   constructor(props) {
@@ -329,6 +336,7 @@ class SystemMenu extends React.Component {
                 >
                   <img src={children.icon} className={styles.toolIcon} alt={children.title} />
                   {formatMessage(children.title)}
+                  {/* {children.title} */}
                 </div>
               ) : (
                   <Link
