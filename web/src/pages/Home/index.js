@@ -9,13 +9,19 @@ import pingfandeshijie from '@/assets/books/pingfanshijie.jpg';
 import weicheng from '@/assets/books/weicheng.jpg';
 import honggaoliang from '@/assets/books/honggaoliang.jpg';
 
-
+const { Paragraph, Text } = Typography;
 
 class Home extends React.Component {
 
   render() {
-   
+
     // 公共组件
+
+    const Atext = ({ href, onClickEvent, text }) => (
+      // eslint-disable-next-line react/jsx-no-target-blank
+      <a href={href}  target="_blank">{text}</a>
+    );
+
     const IconText = ({ type, text }) => (
       <span>
         <Icon type={type} style={{ marginRight: 8 }} />
@@ -90,7 +96,7 @@ class Home extends React.Component {
       dislikes: '561',
       messages: '12k'
     }, {
-      articlename: '骆驼祥子',
+      articlename: '《骆驼祥子》-老舍',
       description: '今天买上了新车，就算是生日吧，人的也是车的，好记，而且车既是自己的心血，简直没什么不可以把人与车算在一块的地方。',
       articleImgSrc: 'http://img5.imgtn.bdimg.com/it/u=2279722130,3687285283&fm=26&gp=0.jpg',
       href: 'https://www.ppzuowen.com/book/luotuoxiangzi/',
@@ -99,7 +105,7 @@ class Home extends React.Component {
       dislikes: '420',
       messages: '6.3K'
     }, {
-      articlename: '荷塘月色',
+      articlename: '《荷塘月色》-朱自清',
       description: '层层的叶子中间，零星地点缀着些白花，有袅娜地开着的，有羞涩地打着朵儿的；正如一粒粒的明珠，又如碧天里的星星，又如刚出浴的美人。',
       articleImgSrc: 'https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=3956095388,4232370697&fm=26&gp=0.jpg',
       href: 'http://www.ccview.net/htm/xiandai/zzq/zzqsw002.htm',
@@ -147,9 +153,49 @@ class Home extends React.Component {
       updateTime: new Date(),
     }];
 
-    // 每日热评
+    // 每日金句
     const dailyComments = [{
-
+      commenter: '走打球大气',
+      commentObject: '婷婷酱',
+      commentContent: '我多想再爱你一次，我的太阳~',
+      commentStars: '22K',
+      commentsDislike: '1.2K'
+    }, {
+      commenter: '林刚',
+      commentObject: '哪来的小妹',
+      commentContent: '哪来的？？？',
+      commentStars: '17.2K',
+      commentsDislike: '3K'
+    }, {
+      commenter: '寸寸237',
+      commentObject: '相个大恒库',
+      commentContent: '快要开工啦，别睡觉哈~',
+      commentStars: '12.9K',
+      commentsDislike: '2.6K'
+    }, {
+      commenter: '是解释不结实',
+      commentObject: '洗发水👉02',
+      commentContent: '借点用用',
+      commentStars: '12.3K',
+      commentsDislike: '4K'
+    }, {
+      commenter: '这个有点男',
+      commentObject: '太难了，兄弟',
+      commentContent: 'bro，肿么了？',
+      commentStars: '11.5',
+      commentsDislike: '3.3K'
+    }, {
+      commenter: '唐曾是你',
+      commentObject: '老唐是我',
+      commentContent: '知道了，臭弟弟~',
+      commentStars: '9.2K',
+      commentsDislike: '3.6K'
+    }, {
+      commenter: '问要个问药',
+      commentObject: '无情的老虎钳',
+      commentContent: '说着的有点疼！！',
+      commentStars: '8.2K',
+      commentsDislike: '4K'
     }];
 
     const cardList = (
@@ -175,7 +221,7 @@ class Home extends React.Component {
       />
     )
     return (
-      <div>
+      <div className={style.home}>
         {/* 统计模块 */}
         <div className={style.statistics}>
           <DataBlock
@@ -242,7 +288,7 @@ class Home extends React.Component {
               title={<span style={{ fontWeight: 'bold' }}>每日推送</span>}
               bordered
               bodyStyle={{ height: 476 }}
-              extra={<div><Icon type='reload' style={{ color: '#2884D8' }} />&nbsp;<a>换一换</a></div>}
+              extra={<div style={{ color: '#2884D8', cursor: 'pointer' }}><Icon type='reload' />&nbsp;换一换</div>}
             >
               {cardList}
             </Card>
@@ -254,7 +300,7 @@ class Home extends React.Component {
               title={<span style={{ fontWeight: 'bold' }}>热门作者</span>}
               bordered
               bodyStyle={{ height: 476 }}
-              extra={<div><Icon type='reload' style={{ color: '#2884D8' }} />&nbsp;<a>换一换</a></div>}
+              extra={<div style={{ color: '#2884D8', cursor: 'pointer' }}><Icon type='reload' />&nbsp;换一换</div>}
             >
               <List
                 itemLayout="vertical"
@@ -271,7 +317,7 @@ class Home extends React.Component {
                   >
                     <List.Item.Meta
                       avatar={<Avatar src={item.avatar} />}
-                      title={<a href={item.href}>{item.name}</a>}
+                      title={<Text strong><Atext text={item.name} href={item.href} /></Text>}
                       description={item.description}
                     />
                   </List.Item>
@@ -286,7 +332,7 @@ class Home extends React.Component {
             <Card
               title={<span style={{ fontWeight: 'bold' }}>热门文章</span>}
               bodyStyle={{ height: 608 }}
-              extra={<div><Icon type='reload' style={{ color: '#2884D8' }} />&nbsp;<a>换一换</a></div>}
+              extra={<div style={{ color: '#2884D8', cursor: 'pointer' }}><Icon type='reload' />&nbsp;换一换</div>}
             >
               <List
                 itemLayout="vertical"
@@ -303,7 +349,7 @@ class Home extends React.Component {
                   >
                     <List.Item.Meta
                       avatar={<img src={item.articleImgSrc} alt="文章图片" width={120} height={120} />}
-                      title={<a href={item.href}>{item.articlename}</a>}
+                      title={<Text strong><a href={item.href}>{item.articlename}</a></Text>}
                       description={item.description}
                     />
                   </List.Item>
@@ -316,7 +362,7 @@ class Home extends React.Component {
             <Card
               title={<span style={{ fontWeight: 'bold' }}>作者更新</span>}
               bodyStyle={{ height: 608 }}
-              extra={<div><Icon type='reload' style={{ color: '#2884D8' }} />&nbsp;<a>刷新</a></div>}
+              extra={<div style={{ color: '#2884D8', cursor: 'pointer' }}><Icon type='reload' />&nbsp;刷新</div>}
             >
               <InfiniteScroll className={style.infiniteScroll}>
                 <List
@@ -326,10 +372,10 @@ class Home extends React.Component {
                     <List.Item key={item.author}>
                       <List.Item.Meta
                         avatar={<Avatar style={{ backgroundColor: avatarColor[index] }} icon="user" />}
-                        title={<span>作者-{item.author}</span>}
+                        title={<Text strong>作者-{item.author}</Text>}
                         description={item.updateContent}
                       />
-                      <div style={{ float: 'right', marginTop: -8 }}>发布时间：{moment(item.updateTime).format('YYYY-MM-DD hh:mm:ss')}</div>
+                      <div style={{ float: 'right', marginTop: '-3%' }}>发布时间：{moment(item.updateTime).format('YYYY-MM-DD hh:mm:ss')}</div>
                     </List.Item>
                   )}
                 />
@@ -341,26 +387,21 @@ class Home extends React.Component {
             <Card
               title={<span style={{ fontWeight: 'bold' }}>每日热评</span>}
               bodyStyle={{ height: 608 }}
-              extra={<div><Icon type='reload' style={{ color: '#2884D8' }} />&nbsp;<a>换一换</a></div>}
+              extra={<div style={{ color: '#2884D8', cursor: 'pointer' }}><Icon type='reload' />&nbsp;换一换</div>}
             >
               <List
-                itemLayout="vertical"
-                dataSource={listData}
+                dataSource={dailyComments}
                 renderItem={item => (
-                  <List.Item
-                    key={item.name}
-                    actions={[
-                      <IconText type="favorite-o" text={item.favorites} key="list-vertical-favorite-o" />,
-                      <IconText type="like-o" text={item.likes} key="list-vertical-like-o" />,
-                      <IconText type="dislike" text={item.dislikes} key="list-vertical-dislike" />,
-                      <IconText type="message" text={item.messages} key="list-vertical-message" />,
-                    ]}
-                  >
-                    <List.Item.Meta
-                      avatar={<Avatar src={item.avatar} />}
-                      title={<a href={item.href}>{item.name}</a>}
-                      description={item.description}
-                    />
+                  <List.Item>
+                    <div style={{ width: '100%' }}>
+                      <Text strong>{item.commenter} <a>评论</a> {item.commentObject}</Text>
+                      <Text className={style.actions}>
+                        <Icon type="like" />{item.commentStars} &nbsp;<Icon type="dislike" />{item.commentsDislike}
+                      </Text>
+                      <Paragraph>
+                        {item.commentContent}
+                      </Paragraph>
+                    </div>
                   </List.Item>
                 )}
               />
