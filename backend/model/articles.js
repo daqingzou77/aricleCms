@@ -18,7 +18,7 @@ import mongoose from 'mongoose';
       审核时间 auditTime
       通过时间 passTime
       点赞数 likes   
-      拉黑数 belittles
+      拉黑数 dislikes
       评论数 comments
       收藏数 favorites
       评论 commentList：[{ username, commentContent, commentTime }]

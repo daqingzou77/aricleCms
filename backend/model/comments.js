@@ -5,7 +5,8 @@ import mongoose from 'mongoose';
  * 文章名 articlename
  * 章节名 section
  * 评论时间 commentsTime
- * 评论人 commentsReader
+ * 评论者 observer
+ * 评论赞数: commentStars
  * 评论内容  commentsList：[{
       回复人 replyer 
       回复内容  replyContent
@@ -17,7 +18,8 @@ const comment = mongoose.Schema({
     articlename: String,
     section: String,
     commentsTime: Date,
-    commentsReader: String,
+    observer: String,
+    commentStars: Number,
     commentsList: Array
 });
 export default mongoose.model('comment', comment);
