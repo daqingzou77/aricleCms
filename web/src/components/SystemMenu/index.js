@@ -48,7 +48,7 @@ const menuList = [
         path: '/home',
       },
     ],
-  }, 
+  },
   {
     key: 2,
     title: '文章分类',
@@ -64,7 +64,7 @@ const menuList = [
         title: '历史',
         icon: icDutyevent,
         path: '/classify/history',
-      }, 
+      },
       {
         key: 203,
         title: '文学',
@@ -336,20 +336,19 @@ class SystemMenu extends React.Component {
                 >
                   <img src={children.icon} className={styles.toolIcon} alt={children.title} />
                   {formatMessage(children.title)}
-                  {/* {children.title} */}
                 </div>
               ) : (
-                  <Link
-                    key={children.key}
-                    to={children.path}
-                    className={[
-                      styles.toolItem,
+                <Link
+                  key={children.key}
+                  to={children.path}
+                  className={[
+                  styles.toolItem,
                       props.history.location.pathname === children.path ? styles.toolItemActive : '',
                     ].join(' ')}
-                  >
-                    <img src={children.icon} className={styles.toolIcon} alt={children.title} />
-                    {formatMessage(children.title)}
-                  </Link>
+                >
+                  <img src={children.icon} className={styles.toolIcon} alt={children.title} />
+                  {formatMessage(children.title)}
+                </Link>
                 )
             )}
           </div>
