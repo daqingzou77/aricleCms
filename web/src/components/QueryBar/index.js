@@ -1,8 +1,10 @@
+/* eslint-disable react/destructuring-assignment */
+/* eslint-disable react/jsx-indent */
+/* eslint-disable react/require-default-props */
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Icon} from 'antd';
-import classNames from 'classnames';
-import './index.less';
+import { Icon } from 'antd';
+import styles from'./style.less';
 
 export default class QueryBar extends React.Component {
     static propTypes = {
@@ -21,12 +23,12 @@ export default class QueryBar extends React.Component {
     static getDerivedStateFromProps(nextProps) {
         const showCollapsed = 'collapsed' in nextProps;
 
-        return {showCollapsed};
+        return { showCollapsed };
     }
 
     handleCollapsedChange = (e) => {
         e.preventDefault();
-        const {onCollapsedChange, collapsed} = this.props;
+        const { onCollapsedChange, collapsed } = this.props;
 
         if (onCollapsedChange) {
             onCollapsedChange(!collapsed);
@@ -45,26 +47,31 @@ export default class QueryBar extends React.Component {
     render() {
         const {
             collapsed,
+
             className,
             onCollapsedChange,
             ...others
         } = this.props;
-        const {showCollapsed} = this.state;
+        const { showCollapsed } = this.state;
 
         return (
-            <div
-                className={classNames(className, 'sx-query-bar', {'with-collapse': showCollapsed})}
-                {...others}
-            >
-                {
-                    showCollapsed ? (
-                        <a className="sx-query-bar-collapsed" onClick={this.handleCollapsedChange}>
-                            <Icon type={collapsed ? 'down' : 'up'}/>
-                        </a>
-                    ) : null
-                }
-                {this.props.children}
-            </div>
+          <div
+            className={[
+              styles.queryBar,
+              showCollapsed ? styles.withCollapse : '',
+            ].join(' ')}
+            // className={classNames(className, 'sx-query-bar', { 'with-collapse': showCollapsed })}
+            {...others}
+          >
+            {
+              showCollapsed ? (
+              <a className={styles.queryBarCollapsed} onClick={this.handleCollapsedChange}>
+              <Icon type={collapsed ? 'down' : 'up'} />
+              </a>
+              ) : null
+            }
+            {this.props.children}
+          </div>
         );
     }
 }

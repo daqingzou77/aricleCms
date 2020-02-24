@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {Row, Col, Form} from 'antd';
 import {QueryBar, FormElement} from '../../../index';
 
+
 @Form.create()
 export default class Base extends Component {
     state = {

@@ -1,5 +1,5 @@
 /* 查询条件 */
-.sx-query-bar {
+.queryBar {
     position: relative;
     margin-bottom: 8px;
     margin-left: -8px;
@@ -8,11 +8,11 @@
     background: #fff;
     border-bottom: 8px solid #f0f2f5;
 
-    &.with-collapse {
+    &.withCollapse {
         padding-right: 55px;
     }
 
-    .sx-query-bar-collapsed {
+    .queryBarCollapsed {
         position: absolute;
         right: 0;
         top: 0;
@@ -23,8 +23,9 @@
             margin-left: 3px;
         }
     }
-
-    .ant-form-item {
-        margin-bottom: 0;
-    }
+   :global {
+       .ant-form-item {
+          margin-bottom: 0;
+        }
+   }
 }
