@@ -42,19 +42,7 @@ class Science extends React.Component {
     });
   };
 
-  handleOnCollapseChange = collapsed => {
-    const { form } = this.props;
-    this.id = 0;
-    this.setState({
-      collapsed
-    });
-    form.setFieldsValue({
-      keys: [],
-    });
-  }
-
   render() {
-    const { collapsed } = this.state;
     const { form } = this.props;
     const { getFieldDecorator, getFieldValue } = form;
     getFieldDecorator('keys', { initialValue: [] });
@@ -70,7 +58,6 @@ class Science extends React.Component {
         <Icon type={type} />{text}
       </span>
     );
-
     const formItems = keys.map((value, index) => (
       <div>
         <FormElement

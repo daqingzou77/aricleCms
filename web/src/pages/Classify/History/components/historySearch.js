@@ -1,79 +1,57 @@
 import React from 'react';
-import { Form } from 'antd';
+import { Form, Button } from 'antd';
 import TagSelect from './TagSelect';
 import StandardFormRow from '@/components/StandardFormRow'
+import FormElement from '@/components/FormElement';
+import FormRow from '@/components/FormRow';
+import fakeTagList from './mock';
 
-const FormItem = Form.Item;
+class HistorySearch extends React.Component {
 
-export default class HistorySearch extends React.Component {
-  
+  state = {
+    selectOptions: fakeTagList
+  };
+
+  saveSelect = (selectArrays) => {
+    this.setState({
+      selectOptions: selectArrays
+    })
+  };
+
   render() {
-    const { getFieldDecorator } = this.props;
-    const owners = [
-      {
-        id: 'wzj',
-        name: '我自己',
-      },
-      {
-        id: 'wjh',
-        name: '吴家豪',
-      },
-      {
-        id: 'zxx',
-        name: '周星星',
-      },
-      {
-        id: 'zly',
-        name: '赵丽颖',
-      },
-      {
-        id: 'ym',
-        name: '姚明',
-      },
-    ];
+    const { form } = this.props;
+    const { selectOptions } = this.state;
+    const formElementProps = {
+      form,
+      width: 300,
+    };
+    const options = [];
+    selectOptions.map(opt => {
+      options.push({ label: opt, value: opt })
+    })
     return (
-      <div>
-        <StandardFormRow title="所属类目" block style={{ paddingBottom: 11 }}>
-          <FormItem>
-            {getFieldDecorator('category')(
-              <TagSelect expandable>
-                <TagSelect.Option value="cat1">类目一</TagSelect.Option>
-                <TagSelect.Option value="cat2">类目二</TagSelect.Option>
-                <TagSelect.Option value="cat3">类目三</TagSelect.Option>
-                <TagSelect.Option value="cat4">类目四</TagSelect.Option>
-                <TagSelect.Option value="cat5">类目五</TagSelect.Option>
-                <TagSelect.Option value="cat6">类目六</TagSelect.Option>
-                <TagSelect.Option value="cat7">类目七</TagSelect.Option>
-                <TagSelect.Option value="cat8">类目八</TagSelect.Option>
-                <TagSelect.Option value="cat9">类目九</TagSelect.Option>
-                <TagSelect.Option value="cat10">类目十</TagSelect.Option>
-                <TagSelect.Option value="cat11">类目十一</TagSelect.Option>
-                <TagSelect.Option value="cat12">类目十二</TagSelect.Option>
-              </TagSelect>,
-            )}
-          </FormItem>
-        </StandardFormRow>
-        {/* <StandardFormRow title="owner" grid>
-          {getFieldDecorator('owner', {
-            initialValue: ['wjh', 'zxx'],
-          })(
-            <Select
-              mode="multiple"
-              style={{ maxWidth: 286, width: '100%' }}
-              placeholder="选择 owner"
-            >
-              {owners.map(owner => (
-                <Option key={owner.id} value={owner.id}>
-                  {owner.name}
-                </Option>
-              ))}
-            </Select>,
-          )}
-          <a className={styles.selfTrigger} onClick={this.setOwner}>
-            只看自己的
-              </a>
-        </StandardFormRow> */}
-      </div>
+      <>
+        <Form layout="inline">
+          <StandardFormRow title={<span style={{ fontWeight: 'bold' }}>关键词列表</span>} block style={{ paddingBottom: 11 }}>
+            <TagSelect saveSelect={this.saveSelect} />
+          </StandardFormRow>
+          <FormRow>
+            <FormElement
+              {...formElementProps}
+              mode="tags"
+              type="select"
+              field="keyword4"
+              placeholder="请选择查询关键词"
+              options={options}
+            />
+            <FormElement>
+              <Button type="primary">查找</Button>
+            </FormElement>
+          </FormRow>
+        </Form>
+      </>
     )
   }
 }
+
+export default Form.create({ name: 'historySearch' })(HistorySearch);
