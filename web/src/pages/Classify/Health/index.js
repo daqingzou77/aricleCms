@@ -1,87 +1,87 @@
-import React, { Fragment } from 'react';
-import { Button, Form, Card, Row, Col, Icon, List, Typography, Empty, Avatar } from 'antd';
+import React from 'react';
+import { Button, Form, Card, Row, Col, Icon, List, Typography, Empty, Avatar, Input } from 'antd';
 import InfiniteScroll from 'react-infinite-scroller';
 import moment from 'moment';
-import QueryBar from '@/components/QueryBar';
+import styles from './style.less';
 import FormElement from '@/components/FormElement';
 import FormRow from '@/components/FormRow';
-import styles from './style.less';
 import {
   hotArticles,
   dailyUpdate,
   avatarColor,
-  scienceTips
+  scienceTips,
 } from './mock';
 
 const { Text } = Typography;
 
 
-class Science extends React.Component {
-  id = 0;
+class Health extends React.Component {
+
+  defaultArray = [1];
 
   state = {
-    collapsed: false,
   }
 
-  handleOnRemove = () => {
-    const { form } = this.props;
-    const keys = form.getFieldValue('keys');
-    if (keys.length === 0) {
-      return;
-    };
-    form.setFieldsValue({
-      keys: keys.slice(1),
-    });
+  handleAdd = () => {
+    this.defaultArray.push(1);
+    this.reflesh();
   };
 
-  handleOnAdd = () => {
-    const { form } = this.props;
-    const keys = form.getFieldValue('keys');
-    const nextKeys = keys.concat(this.id++);
-    form.setFieldsValue({
-      keys: nextKeys,
-    });
+  deleteLast = () => {
+    this.defaultArray.pop();
+    this.reflesh();
   };
 
-  handleOnCollapseChange = collapsed => {
-    const { form } = this.props;
-    this.id = 0;
-    this.setState({
-      collapsed
-    });
-    form.setFieldsValue({
-      keys: [],
-    });
-  }
+  reflesh = () => {
+    const {
+      form: { setFieldsValue },
+    } = this.props;
+    setFieldsValue();
+  };
 
   render() {
-    const { collapsed } = this.state;
     const { form } = this.props;
-    const { getFieldDecorator, getFieldValue } = form;
-    getFieldDecorator('keys', { initialValue: [] });
-    const keys = getFieldValue('keys');
-    console.log('keys', keys);
+    const { positionDynamicListState } = this.state;
     const formElementProps = {
       form,
       width: 300,
       style: { paddingLeft: 16 },
     };
+    const dataLayout = this.defaultArray.map((item, index) => {
+      return (
+        <div key={index} className={styles.border}>
+          <div className={styles.title}>{`关键词组${index + 1}`}</div>
+          <FormRow>
+            <FormElement
+              label="keyword1"
+              {...formElementProps}
+              field="keyword1"
+            />
+            <FormElement
+              label="keyword2"
+              {...formElementProps}
+              field="keyword2"
+            />
+            <FormElement
+              label="keyword3"
+              {...formElementProps}
+              field="keyword3"
+            />
+            <FormElement
+              label="keyword4"
+              {...formElementProps}
+              field="keyword4"
+            />
+          </FormRow>
+        </div>
+      );
+    });
     const IconText = ({ type, text }) => (
       <span>
         <Icon type={type} />{text}
       </span>
     );
 
-    const formItems = keys.map((value, index) => (
-      <div>
-        <FormElement
-          key={`keywords${7 + index}`}
-          {...formElementProps}
-          label={`关键词${7 + index}`}
-          field={`keyword${7 + index}`}
-        />
-      </div>
-    ))
     return (
       <div>
         <Row gutter={24}>
@@ -90,75 +90,31 @@ class Science extends React.Component {
               title={<span style={{ fontWeight: 'bold' }}>多关键词检索</span>}
               extra={<span style={{ fontWeight: 'bold', cursor: 'pointer' }}><Icon type="delete" /> 重置</span>}
             >
-              <QueryBar
-                collapsed={collapsed}
-                onCollapsedChange={collapsed => this.handleOnCollapseChange(collapsed)}
-              >
-                <Form onSubmit={this.handleSearch} autoComplete="off">
-                  <FormRow>
-                    <FormElement
-                      {...formElementProps}
-                      label="关键词1"
-                      field="keyword1"
-                      ref={node => this.nameDom = node}
-                    />
-                    <FormElement
-                      {...formElementProps}
-                      label="关键词2"
-                      field="keyword2"
-                    />
-                    <FormElement
-                      {...formElementProps}
-                      label="关键词3"
-                      field="keyword3"
-                    />
-                    {collapsed ? null : (
-                      <Fragment>
-                        <FormElement
-                          {...formElementProps}
-                          label="关键词4"
-                          field="keyword4"
-                        />
-                        <FormElement
-                          {...formElementProps}
-                          label="关键词5"
-                          field="keyword5"
-                        />
-                        <FormElement
-                          {...formElementProps}
-                          label="关键词6"
-                          field="keyword6"
-                        />
-                      </Fragment>
-                    )}
-                    {formItems}
-                    {collapsed ? null : (
-                      <div>
-                        <FormElement>
-                          <Button
-                            type="dashed"
-                            icon="plus-circle"
-                            style={{ marginLeft: 15 }}
-                            onClick={this.handleOnAdd}
-                          >
-                            添加
-                          </Button>
-                          <Button
-                            type="danger"
-                            icon="minus-circle"
-                            style={{ marginLeft: 20, display: keys.length > 0 ? 'inline' : 'none' }}
-                            onClick={() => this.handleOnRemove()}
-                          >
-                            删除
-                          </Button>
-                        </FormElement>
-                      </div>)}
-                    <FormElement>
-                      <Button type="primary" icon="search" htmlType="submit" style={{ marginLeft: 20 }}>查询</Button>
-                    </FormElement>
-                  </FormRow>
-                </Form>
-              </QueryBar>
+              {dataLayout}
+              <div style={{ textAlign: 'center' }}>
+                <Button 
+                  type='primary'
+                  style={{ marginRight: 10 }}
+                >
+                  查询
+                </Button>
+                <Button
+                  disabled={this.defaultArray.length >= 16}
+                  onClick={this.handleAdd}
+                  style={{ marginRight: 10 }}
+                  type="ghost"
+                >
+                  添加
+                </Button>
+                <Button
+                  disabled={this.defaultArray.length <= 1}
+                  onClick={this.deleteLast}
+                  type="danger"
+                >
+                  删除最后一项
+                </Button>
+              </div>
+
             </Card>
           </Col>
         </Row>
@@ -230,13 +186,13 @@ class Science extends React.Component {
               title={<span style={{ fontWeight: 'bold' }}>科学小知识</span>}
               extra={<div style={{ color: '#2884D8', cursor: 'pointer' }}><Icon type='reload' />&nbsp;换一换</div>}
             >
-              <List 
+              <List
                 dataSource={scienceTips}
                 renderItem={item => (
                   <List.Item>
                     <Typography.Text mark>[ITEM]</Typography.Text> {item}
                   </List.Item>
-                )}            
+                )}
               />
             </Card>
           </Col>
@@ -246,4 +202,4 @@ class Science extends React.Component {
   }
 }
 
-export default Form.create({ name: 'science' })(Science);
+export default Form.create({ name: 'Health' })(Health);
