@@ -1,15 +1,24 @@
 import React, { Fragment } from 'react';
-import { Button, Form, Card, Row, Col, Icon, List, Typography } from 'antd';
+import { Button, Form, Card, Row, Col, Icon, List, Typography, Empty, Avatar } from 'antd';
+import InfiniteScroll from 'react-infinite-scroller';
+import moment from 'moment';
 import QueryBar from '@/components/QueryBar';
 import FormElement from '@/components/FormElement';
 import FormRow from '@/components/FormRow';
+import styles from './style.less';
+import {
+  hotArticles,
+  dailyUpdate,
+  avatarColor,
+  scienceTips
+} from './mock';
 
 const { Text } = Typography;
 
 
 class Science extends React.Component {
   id = 0;
-  
+
   state = {
     collapsed: false,
   }
@@ -38,7 +47,7 @@ class Science extends React.Component {
     const { form } = this.props;
     this.id = 0;
     this.setState({
-      collapsed 
+      collapsed
     });
     form.setFieldsValue({
       keys: [],
@@ -51,6 +60,7 @@ class Science extends React.Component {
     const { getFieldDecorator, getFieldValue } = form;
     getFieldDecorator('keys', { initialValue: [] });
     const keys = getFieldValue('keys');
+    console.log('keys', keys);
     const formElementProps = {
       form,
       width: 300,
@@ -62,47 +72,16 @@ class Science extends React.Component {
       </span>
     );
 
-    // 热门文章
-    const hotArticles = [{
-      articlename: '《匆匆》-朱自清',
-      description: '燕子去了，有再来的时候；杨柳枯了，有再青的时候；桃花谢了，有再开的时候。但是，聪明的，你告诉我，我们的日子为什么一去不复返呢？',
-      articleImgSrc: 'https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=3956095388,4232370697&fm=26&gp=0.jpg',
-      href: 'https://zhidao.baidu.com/question/21816886.html?qbl=relate_question_0&word=%B4%D2%B4%D2',
-      favorites: '2K',
-      likes: '134K',
-      dislikes: '561',
-      messages: '12k'
-    }, {
-      articlename: '《骆驼祥子》-老舍',
-      description: '今天买上了新车，就算是生日吧，人的也是车的，好记，而且车既是自己的心血，简直没什么不可以把人与车算在一块的地方。',
-      articleImgSrc: 'https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=3956095388,4232370697&fm=26&gp=0.jpg',
-      href: 'https://www.ppzuowen.com/book/luotuoxiangzi/',
-      favorites: '1.5K',
-      likes: '83K',
-      dislikes: '420',
-      messages: '6.3K'
-    }, {
-      articlename: '《荷塘月色》-朱自清',
-      description: '层层的叶子中间，零星地点缀着些白花，有袅娜地开着的，有羞涩地打着朵儿的；正如一粒粒的明珠，又如碧天里的星星，又如刚出浴的美人。',
-      articleImgSrc: 'https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=3956095388,4232370697&fm=26&gp=0.jpg',
-      href: 'http://www.ccview.net/htm/xiandai/zzq/zzqsw002.htm',
-      favorites: '923',
-      likes: '53K',
-      dislikes: '634',
-      messages: '6.4K'
-    }];
-
-    console.log('keys', keys);
     const formItems = keys.map((value, index) => (
       <div>
         <FormElement
+          key={`keywords${7 + index}`}
           {...formElementProps}
           label={`关键词${7 + index}`}
           field={`keyword${7 + index}`}
         />
       </div>
     ))
-
     return (
       <div>
         <Row gutter={24}>
@@ -155,7 +134,7 @@ class Science extends React.Component {
                     {formItems}
                     {collapsed ? null : (
                       <div>
-                        <FormElement layout>
+                        <FormElement>
                           <Button
                             type="dashed"
                             icon="plus-circle"
@@ -167,15 +146,15 @@ class Science extends React.Component {
                           <Button
                             type="danger"
                             icon="minus-circle"
-                            style={{ marginLeft: 5, display: keys.length > 0 ? 'inline' : 'none' }}
+                            style={{ marginLeft: 20, display: keys.length > 0 ? 'inline' : 'none' }}
                             onClick={() => this.handleOnRemove()}
                           >
                             删除
                           </Button>
                         </FormElement>
                       </div>)}
-                    <FormElement layout>
-                      <Button type="primary" icon="search" htmlType="submit" style={{ marginLeft: 10 }}>查询</Button>
+                    <FormElement>
+                      <Button type="primary" icon="search" htmlType="submit" style={{ marginLeft: 20 }}>查询</Button>
                     </FormElement>
                   </FormRow>
                 </Form>
@@ -184,9 +163,18 @@ class Science extends React.Component {
           </Col>
         </Row>
         <Row gutter={24} style={{ marginTop: 10 }}>
+          <Col>
+            <Card
+              title={<span style={{ fontWeight: 'bold' }}>搜索结果</span>}
+            >
+              <Empty />
+            </Card>
+          </Col>
+        </Row>
+        <Row gutter={24} style={{ marginTop: 10 }}>
           <Col span={8} style={{ paddingRight: 0 }}>
             <Card
-              title={<span style={{ fontWeight: 'bold' }}>热门文章</span>}
+              title={<span style={{ fontWeight: 'bold' }}>热门推荐</span>}
               bodyStyle={{ height: 608 }}
               extra={<div style={{ color: '#2884D8', cursor: 'pointer' }}><Icon type='reload' />&nbsp;换一换</div>}
             >
@@ -214,17 +202,46 @@ class Science extends React.Component {
             </Card>
           </Col>
           <Col span={8} style={{ paddingRight: 0 }}>
-            <Card>
-
+            <Card
+              title={<span style={{ fontWeight: 'bold' }}>实时更新</span>}
+              extra={<div style={{ color: '#2884D8', cursor: 'pointer' }}><Icon type='reload' />&nbsp;刷新</div>}
+            >
+              <InfiniteScroll className={styles.infiniteScroll}>
+                <List
+                  itemLayout="vertical"
+                  dataSource={dailyUpdate}
+                  renderItem={(item, index) => (
+                    <List.Item key={item.author}>
+                      <List.Item.Meta
+                        avatar={<Avatar style={{ backgroundColor: avatarColor[index] }} icon="user" />}
+                        title={<Text strong>作者-{item.author}</Text>}
+                        description={item.updateContent}
+                      />
+                      <div style={{ float: 'right', marginTop: '-3%' }}>发布时间：{moment(item.updateTime).format('YYYY-MM-DD hh:mm:ss')}</div>
+                    </List.Item>
+                  )}
+                />
+              </InfiniteScroll>
             </Card>
           </Col>
-          <Col span={8} style={{ paddingRight: 0 }}>
-            <Card>
-
+          <Col span={8}>
+            <Card
+              bodyStyle={{ height: 608 }}
+              title={<span style={{ fontWeight: 'bold' }}>科学小知识</span>}
+              extra={<div style={{ color: '#2884D8', cursor: 'pointer' }}><Icon type='reload' />&nbsp;换一换</div>}
+            >
+              <List 
+                dataSource={scienceTips}
+                renderItem={item => (
+                  <List.Item>
+                    <Typography.Text mark>[ITEM]</Typography.Text> {item}
+                  </List.Item>
+                )}            
+              />
             </Card>
           </Col>
         </Row>
-      </div >
+      </div>
     )
   }
 }
