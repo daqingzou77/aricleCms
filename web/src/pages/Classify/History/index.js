@@ -2,9 +2,8 @@ import React, { Fragment } from 'react';
 import { Button, Form, Card, Row, Col, Icon, List, Typography, Empty, Avatar } from 'antd';
 import InfiniteScroll from 'react-infinite-scroller';
 import moment from 'moment';
-import QueryBar from '@/components/QueryBar';
 import FormElement from '@/components/FormElement';
-import FormRow from '@/components/FormRow';
+import HistorySearch from './components/historySearch';
 import styles from './style.less';
 import {
   hotArticles,
@@ -90,75 +89,7 @@ class Science extends React.Component {
               title={<span style={{ fontWeight: 'bold' }}>多关键词检索</span>}
               extra={<span style={{ fontWeight: 'bold', cursor: 'pointer' }}><Icon type="delete" /> 重置</span>}
             >
-              <QueryBar
-                collapsed={collapsed}
-                onCollapsedChange={collapsed => this.handleOnCollapseChange(collapsed)}
-              >
-                <Form onSubmit={this.handleSearch} autoComplete="off">
-                  <FormRow>
-                    <FormElement
-                      {...formElementProps}
-                      label="关键词1"
-                      field="keyword1"
-                      ref={node => this.nameDom = node}
-                    />
-                    <FormElement
-                      {...formElementProps}
-                      label="关键词2"
-                      field="keyword2"
-                    />
-                    <FormElement
-                      {...formElementProps}
-                      label="关键词3"
-                      field="keyword3"
-                    />
-                    {collapsed ? null : (
-                      <Fragment>
-                        <FormElement
-                          {...formElementProps}
-                          label="关键词4"
-                          field="keyword4"
-                        />
-                        <FormElement
-                          {...formElementProps}
-                          label="关键词5"
-                          field="keyword5"
-                        />
-                        <FormElement
-                          {...formElementProps}
-                          label="关键词6"
-                          field="keyword6"
-                        />
-                      </Fragment>
-                    )}
-                    {formItems}
-                    {collapsed ? null : (
-                      <div>
-                        <FormElement>
-                          <Button
-                            type="dashed"
-                            icon="plus-circle"
-                            style={{ marginLeft: 15 }}
-                            onClick={this.handleOnAdd}
-                          >
-                            添加
-                          </Button>
-                          <Button
-                            type="danger"
-                            icon="minus-circle"
-                            style={{ marginLeft: 20, display: keys.length > 0 ? 'inline' : 'none' }}
-                            onClick={() => this.handleOnRemove()}
-                          >
-                            删除
-                          </Button>
-                        </FormElement>
-                      </div>)}
-                    <FormElement>
-                      <Button type="primary" icon="search" htmlType="submit" style={{ marginLeft: 20 }}>查询</Button>
-                    </FormElement>
-                  </FormRow>
-                </Form>
-              </QueryBar>
+              <HistorySearch />
             </Card>
           </Col>
         </Row>
