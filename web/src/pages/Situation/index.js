@@ -366,6 +366,7 @@ class Situation extends React.PureComponent {
           </Select>
         </Row>
         <Table
+        
           style={{ marginTop: '15px' }}
           columns={columns}
           rowKey="userId"
