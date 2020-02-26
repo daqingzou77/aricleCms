@@ -1,5 +1,5 @@
 import React from 'react';
-import { Upload, Form, Card, Row, Col, Icon, message, Table, Badge } from 'antd';
+import { Upload, Form, Card, Row, Col, Icon, message, Table, Badge, Button } from 'antd';
 import moment from 'moment';
 import FormELement from '@/components/FormElement';
 
@@ -24,7 +24,7 @@ class AnnexUpload extends React.Component {
     render: () => (
       <span>
         <Badge status="success" />
-        Finished
+        已发布
       </span>
     ),
   }, {
@@ -108,6 +108,10 @@ class AnnexUpload extends React.Component {
                     </p>
                   </Dragger>
                 </FormELement>
+                <FormELement style={{ textAlign: 'center' }}>
+                  <Button type="primary" icon="upload" style={{ width: "40%", marginRight: 10 }}>确认发布</Button>
+                  <Button type="danger" icon="delete" style={{ width: '40%'}}>内容重置</Button>
+                </FormELement>
               </Form>
             </Col>
           </Row>
@@ -129,7 +133,7 @@ class AnnexUpload extends React.Component {
                   </span>
                   &nbsp; &nbsp;
                   <span>
-                    状态：  <Badge status="success" /> Finished
+                    状态：  <Badge status="success" /> 已发布
                   </span>
                   &nbsp; &nbsp;
                   <span>

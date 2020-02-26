@@ -91,13 +91,13 @@ const menuList = [
       },
       {
         key: 302,
-        title: '附件上传',
+        title: '文件上传',
         icon: icSituation,
         path: '/publish/AnnexUpload',
       },
       {
         key: 303,
-        title: '文件审核',
+        title: '发布审核',
         icon: icScheduling,
         path: '/publish/Audit',
       },
@@ -301,7 +301,6 @@ class SystemMenu extends React.Component {
   };
 
   handleShiftCancel = e => {
-    console.log(e);
     this.setState({
       visibleShift: false,
     });
@@ -313,31 +312,17 @@ class SystemMenu extends React.Component {
         <div key={item.key} className={styles.toolContainer}>
           <div className={styles.toolList}>
             {item.child.map(children =>
-              children.key === 401 || children.key === 402 ? (
-                <div
-                  onClick={() => this.onShowChange(children.key)}
-                  key={children.key}
-                  className={[
-                    styles.toolItem,
-                    props.history.location.pathname === children.path ? styles.toolItemActive : '',
-                  ].join(' ')}
-                >
-                  <img src={children.icon} className={styles.toolIcon} alt={children.title} />
-                  {formatMessage(children.title)}
-                </div>
-              ) : (
-                <Link
-                  key={children.key}
-                  to={children.path}
-                  className={[
+              <Link
+                key={children.key}
+                to={children.path}
+                className={[
                   styles.toolItem,
-                      props.history.location.pathname === children.path ? styles.toolItemActive : '',
-                    ].join(' ')}
-                >
-                  <img src={children.icon} className={styles.toolIcon} alt={children.title} />
-                  {formatMessage(children.title)}
-                </Link>
-                )
+                  props.history.location.pathname === children.path ? styles.toolItemActive : '',
+                ].join(' ')}
+              >
+                <img src={children.icon} className={styles.toolIcon} alt={children.title} />
+                {formatMessage(children.title)}
+              </Link>
             )}
           </div>
           <div className={styles.toolTitle}>

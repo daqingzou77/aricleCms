@@ -27,7 +27,7 @@ class PublishOnline extends React.Component {
     render: () => (
       <span>
         <Badge status="success" />
-        Finished
+        已发布
       </span>
     ),
   }, {
@@ -130,7 +130,7 @@ class PublishOnline extends React.Component {
                   </span>
                   &nbsp; &nbsp;
                   <span>
-                    状态：  <Badge status="success" /> Finished
+                    状态：  <Badge status="success" /> 已发布
                   </span>
                   &nbsp; &nbsp;
                   <span>
