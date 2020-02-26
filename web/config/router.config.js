@@ -34,19 +34,9 @@ export default [
             component: './Classify/Litterateur'
           },
           {
-            path: '/classify/health',
-            name: 'health',
-            component: './Classify/Health'
-          },
-          {
             path: '/classify/physical',
             name: 'physical',
             component: './Classify/Physical'
-          },
-          {
-            path: '/classify/celebrity',
-            name: 'celebrity',
-            component: './Classify/Celebrity'
           },
         ]
       },

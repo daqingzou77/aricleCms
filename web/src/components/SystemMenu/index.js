@@ -73,22 +73,10 @@ const menuList = [
       },
       {
         key: 204,
-        title: '健康',
-        icon: icNewLog,
-        path: '/classify/health',
-      },
-      {
-        key: 205,
         title: '体育',
         icon: icMatter,
         path: '/classify/physical',
       },
-      {
-        key: 206,
-        title: '明星',
-        icon: icTodolist,
-        path: '/classify/celebrity',
-      }
     ],
   },
   {
