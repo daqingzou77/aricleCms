@@ -75,37 +75,6 @@ class PublishOnline extends React.Component {
     })
   }
 
-  // 扩展表格
-  expandedRowRender = () => {
-    const columns = [{
-      title: '章节',
-      dataIndex: 'section',
-    }, {
-      title: '章节内容',
-      dataIndex: 'content',
-    }, {
-      title: '状态',
-      dataIndex: 'status',
-      render: () => (
-        <span>
-          <Badge status="success" />
-          Finished
-        </span>
-      )
-    }, {
-      title: '章节时间',
-      dataIndex: 'sectionTime',
-    }];
-    const data = []
-    data.push({
-      section: `章节${1}`,
-      content: `章节内容${1}`,
-      sectionTime: moment(new Date).format('YYYY-MM-DD hh:mm:ss')
-    })
-    return <Table dataSource={data} columns={columns} pagination={false} />
-  }
-
-
   render() {
     const { editorState, editorContent, showRichText } = this.state;
     const dataSource = [];
@@ -118,6 +87,7 @@ class PublishOnline extends React.Component {
         createTime: moment(new Date).format('YYYY-MM-DD hh:mm:ss')
       })
     }
+
     return (
       <div className={styles.publishOnLine}>
         <Card>
@@ -143,14 +113,36 @@ class PublishOnline extends React.Component {
           />
         </Card>
         <Card
+          title={<span style={{ fontWeight: 'bold' }}>发布内容</span>}
           style={{ marginTop: 10 }}
+          extra={<div style={{ color: '#2884D8', cursor: 'pointer' }}><Icon type='reload' />&nbsp;刷新</div>}
         >
           <Table
             className="components-table-demo-nested"
             columns={this.columns}
             dataSource={dataSource}
             rowKey="id"
-            expandedRowRender={this.expandedRowRender}
+            expandedRowRender={record => (
+              <div style={{ margin: 0, textAlign: 'left' }}>
+                <p>
+                  <span>
+                    章节： section1
+                  </span>
+                  &nbsp; &nbsp;
+                  <span>
+                    状态：  <Badge status="success" /> Finished
+                  </span>
+                  &nbsp; &nbsp;
+                  <span>
+                    章节时间： {moment(new Date()).format('YYYY/MM/DD hh:mm:ss')}
+                  </span>
+                  &nbsp; &nbsp;
+                  <span>
+                    章节内容： daqing
+                  </span>
+                </p>
+              </div>
+            )}
           />
         </Card>
         <Modal

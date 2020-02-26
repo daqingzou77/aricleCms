@@ -1,5 +1,6 @@
 import React from 'react';
-import { Upload, Form, Card, Row, Col, Icon, message } from 'antd';
+import { Upload, Form, Card, Row, Col, Icon, message, Table, Badge } from 'antd';
+import moment from 'moment';
 import FormELement from '@/components/FormElement';
 
 const { Dragger } = Upload;
@@ -7,10 +8,28 @@ class AnnexUpload extends React.Component {
 
   columns = [{
     title: '文章名',
-    dataIndex: 'articlename'
+    dataIndex: 'articlename',
   }, {
-    title: '标题内容',
-    dataIndex: 'articleContents'
+    title: '作者',
+    dataIndex: 'author',
+  }, {
+    title: '文章类型',
+    dataIndex: 'articleType',
+  }, {
+    title: '文章描述',
+    dataIndex: 'ariticleDescription',
+  }, {
+    title: '文章状态',
+    dataIndex: 'status',
+    render: () => (
+      <span>
+        <Badge status="success" />
+        Finished
+      </span>
+    ),
+  }, {
+    title: '创建时间',
+    dataIndex: 'createTime',
   }]
 
   render() {
@@ -26,6 +45,17 @@ class AnnexUpload extends React.Component {
     const formElementProps = {
       form,
       width: 620,
+    }
+
+    const dataSource = [];
+    for (let i = 0; i < 23; i++) {
+      dataSource.push({
+        articlename: `水浒绪论${i + 1}`,
+        author: '施耐庵',
+        articleType: '小说',
+        ariticleDescription: '本章节..',
+        createTime: moment(new Date).format('YYYY-MM-DD hh:mm:ss')
+      })
     }
 
     const props = {
@@ -81,6 +111,38 @@ class AnnexUpload extends React.Component {
               </Form>
             </Col>
           </Row>
+        </Card>
+        <Card
+          title={<span style={{ fontWeight: 'bold'}}>上传列表</span>}
+          style={{ marginTop: 10 }}
+          extra={<div style={{ color: '#2884D8', cursor: 'pointer' }}><Icon type='reload' />&nbsp;刷新</div>}
+        >
+          <Table
+            columns={this.columns}
+            dataSource={dataSource}
+            rowKey="id"
+            expandedRowRender={record => (
+              <div style={{ margin: 0, textAlign: 'left' }}>
+                <p>
+                  <span>
+                    章节： section1
+                  </span>
+                  &nbsp; &nbsp;
+                  <span>
+                    状态：  <Badge status="success" /> Finished
+                  </span>
+                  &nbsp; &nbsp;
+                  <span>
+                    章节时间： {moment(new Date()).format('YYYY/MM/DD hh:mm:ss')}
+                  </span>
+                  &nbsp; &nbsp;
+                  <span>
+                    章节内容： daqing
+                  </span>
+                </p>
+              </div>
+            )}
+          />
         </Card>
       </>
     )
