@@ -1,24 +1,22 @@
 import React, { Fragment } from 'react';
-import { Upload, Button, Input } from 'antd';
+import { Upload, Button, Form  } from 'antd';
+import FormElement from '@/components/FormElement';
 import styles from './style.less';
+import { currentUser } from '../mock';
 
 // 头像组件 方便以后独立，增加裁剪之类的功能
-const AvatarView = ({ avatar }: { avatar: string }) => (
+const AvatarView = ({ avatar }) => (
   <Fragment>
     <div className={styles.avatar_title}>
-      {/* <FormattedMessage id="accountandsettings.basic.avatar" defaultMessage="Avatar" /> */}
+      头像
     </div>
     <div className={styles.avatar}>
       <img src={avatar} alt="avatar" />
     </div>
-    <Upload showUploadList={false}>
+    <Upload>
       <div className={styles.button_view}>
-        <Button>
-          {/* <UploadOutlined />
-          <FormattedMessage
-            id="accountandsettings.basic.change-avatar"
-            defaultMessage="Change avatar"
-          /> */}
+        <Button icon="upload" type="ghost">
+          更换头像
         </Button>
       </div>
     </Upload>
@@ -26,82 +24,96 @@ const AvatarView = ({ avatar }: { avatar: string }) => (
 );
 
 class BaseView extends React.Component {
+  
+  // getAvatarURL() {
+  //   const { currentUser } = this.props;
+  //   if (currentUser) {
+  //     if (currentUser.avatar) {
+  //       return currentUser.avatar;
+  //     }
+  //     const url = 'https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png';
+  //     return url;
+  //   }
+  //   return '';
+  // }
+
   render() {
+    const { form } = this.props;
+    const formElementProps = {
+      form,
+      width: 400
+    };
     return (
       <div className={styles.baseView} ref={this.getViewDom}>
         <div className={styles.left}>
-          <Form layout='vertical' hideRequiredMark autoComplete="off">
-            <FormItem label={formatMessage({ id: 'accountandsettings.basic.nickname' })}>
-              {getFieldDecorator('name', {
-                rules: [
-                  {
-                    required: true,
-                    message: formatMessage({ id: 'accountandsettings.basic.nickname-message' }, {}),
-                  },
-                ],
-              })(<Input />)}
-            </FormItem>
-            <FormItem label={formatMessage({ id: 'accountandsettings.basic.email' })}>
-              {getFieldDecorator('email', {
-                rules: [
-                  {
-                    required: true,
-                    message: formatMessage({ id: 'accountandsettings.basic.email-message' }, {}),
-                  },
-                ],
-              })(<Input />)}
-            </FormItem>
-
-            <FormItem label="已上传农事记录数据条数">
-              {getFieldDecorator('uploadedItems', {
-                rules: [
-                  {
-                    required: true,
-                    message: '',
-                  },
-                ],
-              })(
-                <Input disabled />,
-              )}
-            </FormItem>
-            <FormItem label={formatMessage({ id: 'accountandsettings.basic.phone' })}>
-              {getFieldDecorator('phone', {
-                rules: [
-                  {
-                    required: true,
-                    message: formatMessage({ id: 'accountandsettings.basic.phone-message' }, {}),
-                  },
-                  // { validator: validatorPhone },
-                ],
-              })(<Input />)}
-            </FormItem>
-            <FormItem label="地址">
-              {getFieldDecorator('address', {
-                rules: [
-                  {
-                    required: true,
-                    message: formatMessage({ id: 'accountandsettings.basic.profile-message' }, {}),
-                  },
-                ],
-              })(
-                <Input.TextArea
-                  placeholder="请输入住址"
-                  rows={4}
-                />,
-              )}
-            </FormItem>
-            <Button type="primary" onClick={this.handlerSubmit} style={{ marginRight: 20, width: 100 }}>
-              更新信息
-            </Button>
-            <Button type="danger" style={{ width: 100 }}>
-              重置信息
-            </Button>
+          <Form autoComplete="off">
+            <FormElement 
+              {...formElementProps}
+              label="用户名称"
+              field="username"
+              initialValue={currentUser.username}
+            />
+            <FormElement 
+              {...formElementProps}
+              label="用户昵称"
+              field="nickname"
+              initialValue={currentUser.ninckname}
+            />
+            <FormElement 
+              {...formElementProps}
+              label="用户类型"
+              disabled
+              field="name"
+              initialValue={currentUser.userType === 0 ? '管理员' : '用户'}
+            />
+            <FormElement 
+              {...formElementProps}
+              label="用户密码"
+              field="password"
+              initialValue={currentUser.password}
+            />
+            <FormElement 
+              {...formElementProps}
+              label="电话号码"
+              field="telphoneNumber"
+              initialValue={currentUser.telphoneNumber}
+            />
+            <FormElement 
+              {...formElementProps}
+              label="个人邮箱"
+              field="email"
+              initialValue={currentUser.email}
+            />
+            <FormElement 
+              {...formElementProps}
+              label="个人地址"
+              field="address"
+              initialValue={currentUser.address}
+            />
+            <FormElement 
+              {...formElementProps}
+              label="信息描述"
+              rows={4}
+              type="textarea"
+              field="decription"
+              initialValue={currentUser.decription}
+            />
+            <FormElement>
+              <Button type="primary" onClick={this.handlerSubmit} style={{ marginRight: 20, width: 100 }}>
+                更新信息
+              </Button>
+              <Button type="danger" style={{ width: 100 }}>
+                重置信息
+              </Button>
+            </FormElement>
           </Form>
         </div>
         <div className={styles.right}>
-          <AvatarView avatar={this.getAvatarURL()} />
+          <AvatarView avatar='https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png' />
         </div>
       </div>
     )
   }
 }
+
+export default Form.create({ name: 'BaseView'})(BaseView); 

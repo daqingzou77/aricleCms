@@ -14,25 +14,21 @@ class Home extends React.Component{
               <div>
                 <div className={styles.avatarHolder}>
                   <img alt="" src={currentUser.avatar} />
-                  <div className={styles.name}>{currentUser.name}</div>
-                  <div>{currentUser.signature}</div>
+                  <div className={styles.name}>{currentUser.username}</div>
+                  <div>{currentUser.decription}</div>
                 </div>
                 <div className={styles.detail}>
-                  <p>
+                  {/* <p>
                     <Icon type="cloud-upload"  />
                     <div>已上传<span style={{ fontWeight: 'bold', fontSize: 14 }}>{currentUser.uploadedItems}</span>条农事记录</div>
+                  </p> */}
+                  <p>
+                    <Icon type="phone" style={{ position: 'absolute', right: '20%' }} /> <span>wqewqe42321321</span>
+                    <Icon type="mail" style={{ position: 'absolute', left: '48%' }} /><span style={{position:'absolute', left: '55%'}}> {currentUser.email}</span>
                   </p>
                   <p>
-                    <Icon type="phone" />
-                    {currentUser.phone}
-                  </p>
-                  <p>
-                    <Icon type="mail" />
-                    {currentUser.email}
-                  </p>
-                  <p>
-                    <Icon type="bank" />
-                    {currentUser.address}
+                    <Icon type="bank" style={{ position: 'absolute', right: '20%' }} />  <span>32321323fdfd</span>
+                    <Icon type="mail" style={{ position: 'absolute', left: '48%' }} /><span style={{ position: 'absolute', left: '55%' }}>123213213223</span>
                   </p>
                 </div>
               </div>
@@ -49,8 +45,7 @@ class Home extends React.Component{
             >
               <div className={styles.right}>
                 <div className={styles.title}>个人信息详情</div>
-                  <BaseView />
-                {this.renderChildren()}
+                <BaseView />
               </div>
             </div>
           </Col>
