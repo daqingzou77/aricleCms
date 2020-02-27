@@ -1,6 +1,6 @@
 import { formatMessage as _formatMessage } from 'umi/locale';
 import React from 'react';
-import { Icon, message } from 'antd';
+import { Icon, message, Col, Row, Button, Tag, Badge } from 'antd';
 import { Link, withRouter } from 'react-router-dom';
 // import Modal from '@/common/components/dialog/Modal';
 
@@ -164,7 +164,7 @@ class SystemMenu extends React.Component {
   };
 
   handleChange = (key) => {
-    if(key === 502) {
+    if (key === 502) {
       this.setState({
         messageVisible: true
       })
@@ -218,18 +218,18 @@ class SystemMenu extends React.Component {
                   {formatMessage(children.title)}
                 </div>
               ) : (
-                <Link
-                  key={children.key}
-                  to={children.path}
-                  className={[
-                  styles.toolItem,
-                  props.history.location.pathname === children.path ? styles.toolItemActive : '',
-                ].join(' ')}
-                >
-                  <img src={children.icon} className={styles.toolIcon} alt={children.title} />
-                  {formatMessage(children.title)}
-                </Link>
-              )
+                  <Link
+                    key={children.key}
+                    to={children.path}
+                    className={[
+                      styles.toolItem,
+                      props.history.location.pathname === children.path ? styles.toolItemActive : '',
+                    ].join(' ')}
+                  >
+                    <img src={children.icon} className={styles.toolIcon} alt={children.title} />
+                    {formatMessage(children.title)}
+                  </Link>
+                )
             )}
           </div>
           <div className={styles.toolTitle}>
@@ -247,6 +247,19 @@ class SystemMenu extends React.Component {
     const MMenuCom = withRouter(({ history }) => {
       return <MenuCom history={history} />;
     });
+    const footer = (
+      <Row style={{ marginBottom: 10 }} type="flex" justify="space-around" >
+        <Col>
+          <Tag color="#2db7f5" style={{ color: 'black'}}><Badge dot style={{ marginLeft: 20 }}>通知</Badge></Tag>
+        </Col>
+        <Col>
+          <Tag color="#87d068">消息</Tag>
+        </Col>
+        <Col>
+          <Tag color="red">清空</Tag>
+        </Col>
+      </Row>
+    );
     const layout = (
       <div className={styles.toolbar}>
         <Icon
@@ -276,12 +289,12 @@ class SystemMenu extends React.Component {
           <p style={{ fontWeight: 'bold', marginTop: 20 }}>是否确认退出本系统？</p>
         </Modal>
         <Modal
+          width={400}
           title="消息中心"
           visible={messageVisible}
           onOk={this.handleMessageVisible}
           onCancel={this.handleMessageCancel}
-          // padding="10px 30px"
-          width="fit-content"
+          footer={footer}
         >
           <MessageCenter />
         </Modal>

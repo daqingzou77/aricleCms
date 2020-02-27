@@ -36,7 +36,7 @@ class MessageCenter extends React.Component {
                 dataSource={dataSource}
                 renderItem={item => (
                   <List.Item>
-                    <Avatar shape="circle" icon="like" style={{ background: 'green', marginRight: 5 }} size="small" />
+                    <Avatar shape="circle" icon="user" style={{ background: 'green', marginRight: 5 }} size="small" />
                     <span>{item}</span>
                   </List.Item>
                 )}
@@ -115,7 +115,7 @@ class MessageCenter extends React.Component {
                 dataSource={dataSource}
                 renderItem={item => (
                   <List.Item>
-                    <Avatar shape="user" icon="like" style={{ background: 'green', marginRight: 5 }} size="small" />
+                    <Avatar shape="circle" icon="user" style={{ background: '#f56a00', marginRight: 5 }} size="small" />
                     <span>{item}</span>
                   </List.Item>
                 )}
@@ -139,7 +139,7 @@ class MessageCenter extends React.Component {
                 dataSource={dataSource}
                 renderItem={item => (
                   <List.Item>
-                    <Avatar shape="circle" icon="stop" style={{ background: 'green', marginRight: 5 }} size="small" />
+                    <Avatar shape="circle" icon="stop" style={{ background: 'black', marginRight: 5 }} size="small" />
                     <span>{item}</span>
                   </List.Item>
                 )}
