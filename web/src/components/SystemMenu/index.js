@@ -1,7 +1,6 @@
 import { formatMessage as _formatMessage } from 'umi/locale';
 import React from 'react';
-import { Icon, Modal, message } from 'antd';
-
+import { Icon, message } from 'antd';
 import { Link, withRouter } from 'react-router-dom';
 // import Modal from '@/common/components/dialog/Modal';
 
@@ -20,15 +19,11 @@ import icScheduling from '@/assets/menuIcon/ic_scheduling.svg';
 import icSituation from '@/assets/menuIcon/ic_situation.svg';
 import icTodolist from '@/assets/menuIcon/ic_todolist.svg';
 
+import Modal from '@/common/components/Modal';
 import styles from './index.less';
 import Card from '../../pages/Change/Card';
-import ChangeShift from '../../pages/Change/ChangeShift';
+import MessageCenter from '@/components/MessageCenter';
 import {
-  clockIn,
-  clockOut,
-  clockCheck,
-  clockOutCheck,
-  getUserDutyToday,
   handoverPrompts,
 } from '../../services/scheduleService';
 
@@ -135,11 +130,11 @@ const menuList = [
   },
   {
     key: 6,
-    title: '帮助',
+    title: '退出',
     child: [
       {
         key: 601,
-        title: '系统帮助',
+        title: '退出系统',
         icon: icHelp,
         path: '/help',
       },
@@ -153,16 +148,7 @@ class SystemMenu extends React.Component {
     this.state = {
       isOpenToolbar: true,
       visibleCard: false,
-      visibleShift: false,
-      handoverEvent: {},
-      dutyTodayList: [],
-      dutyInfo: {
-        classNumber: 0,
-        dutyEndTime: new Date(),
-        dutyId: 0,
-        dutyStartTime: new Date(),
-        id: 0,
-      },
+      messageVisible: false,
     };
   }
 
@@ -177,134 +163,41 @@ class SystemMenu extends React.Component {
     }
   };
 
-  onShowChange = key => {
-    if (key === 401) {
-      // 上班打卡检查
-      this.clockCheck();
-    } else if (key === 402) {
-      // 下班打卡检查
-      this.setShiftCheck();
+  handleChange = (key) => {
+    if(key === 502) {
+      this.setState({
+        messageVisible: true
+      })
+    } else {
+      this.setState({
+        visibleCard: true
+      })
     }
-  };
-
-  queryDutyUser = () => {
-    getUserDutyToday(
-      {},
-      ({ data }) => {
-        console.log('getUserDutyToday--data：', data);
-        if (data) {
-          this.setState({
-            dutyTodayList: data,
-          })
-        }
-        this.setState({
-          visibleCard: true
-        })
-      },
-      e => {
-        console.log('getUserDutyToday--error：', e.toString());
-      }
-    )
-  };
-
-  /**
-   * 下班打卡检查(1:还有其他班次没有值班不能下班打卡2:值班未结束不能下班打卡,3：有连班请确认下一班值班人员已到，
-   * 4：上班未打卡不能下班打卡 5:下班已打卡无需重复打卡 0：可以下班打卡)
-   */
-  setShiftCheck = () => {
-    clockOutCheck(
-      {},
-      ({ data }) => {
-        console.log('setShiftCheck-data', data);
-        if (data === 1) {
-          Modal.error({
-            title: formatMessage('guet.schedule.tips_punching_out_of_work'),
-            content: formatMessage('guet.schedule.not_get_off_duty_without_duty'),
-            okText: formatMessage('guet.schedule.confirm'),
-          });
-        } else if (data === 2) {
-          Modal.error({
-            title: formatMessage('guet.schedule.tips_punching_out_of_work'),
-            content: formatMessage('guet.schedule.not_get_off_when_duty_is_not_over'),
-            okText: formatMessage('guet.schedule.confirm'),
-          });
-        } else if (data === 3) {
-          Modal.error({
-            title: formatMessage('guet.schedule.tips_punching_out_of_work'),
-            content: formatMessage('guet.schedule.please_confirm_next_shift_person_has_arrived'),
-            okText: formatMessage('guet.schedule.confirm'),
-          });
-        } else if (data === 4) {
-          Modal.error({
-            title: formatMessage('guet.schedule.tips_punching_out_of_work'),
-            content: formatMessage('guet.schedule.unchecked_atwork_cannot_check_in_at_work'),
-            okText: formatMessage('guet.schedule.confirm'),
-          });
-        } else if (data === 5) {
-          Modal.error({
-            title: formatMessage('guet.schedule.tips_punching_out_of_work'),
-            content: formatMessage('guet.schedule.checkin_afterwork_no_need_to_checkin_repeatedly'),
-            okText: formatMessage('guet.schedule.confirm'),
-          });
-        } else if (data === 0) {
-          this.handoverEvent();  // 获取下班打卡打卡提示
-        }
-      },
-      e => console.log('setShiftCheck-error', e.toString()),
-    )
-  };
-
-  // 交班提交 （-3：已经打卡 -2：今天没有值班 -1:没有登录 1:打卡成功 0：打卡失败）
-  submitDutyCondition = () => {
-    clockOut(
-      {},
-      ({ data }) => {
-        console.log('clockOut-data', data);
-        if (data === -3) {
-          message.error(formatMessage('guet.schedule.has_handed_can_not_repeat_again'));
-        } else if (data === -2) {
-          message.error(formatMessage('guet.schedule.current_user_not_arrangement'));
-        } else if (data === -1) {
-          message.error(formatMessage('guet.schedule.no_login'));
-        } else if (data === 1) {
-          message.success(formatMessage('guet.schedule.successful_punch_in_from_work'));
-          if (window.location.pathname === '/situation') {
-            window.location.reload()
-          };
-        } else if (data === 0) {
-          message.error(formatMessage('guet.schedule.punching_failed'));
-        }
-      },
-      e => console.log('clockOut-error', e.toString()),
-    )
-  };
+  }
 
   handleCardOk = () => {
-    // 上班打卡
-    this.setClockIn();
     this.setState({
-      visibleCard: false,
-    });
-  };
+      visibleCard: false
+    })
+  }
 
-  handleCardCancel = e => {
+  handleCardCancel = () => {
     this.setState({
-      visibleCard: false,
-    });
-  };
+      visibleCard: false
+    })
+  }
 
-  handleShiftOk = () => {
-    this.submitDutyCondition();
+  handleMessageVisible = () => {
     this.setState({
-      visibleShift: false,
-    });
-  };
+      messageVisible: false
+    })
+  }
 
-  handleShiftCancel = e => {
+  handleMessageCancel = () => {
     this.setState({
-      visibleShift: false,
-    });
-  };
+      messageVisible: false
+    })
+  }
 
   MenuCom = props => {
     return menuList.map(item => {
@@ -312,17 +205,31 @@ class SystemMenu extends React.Component {
         <div key={item.key} className={styles.toolContainer}>
           <div className={styles.toolList}>
             {item.child.map(children =>
-              <Link
-                key={children.key}
-                to={children.path}
-                className={[
+              children.key === 502 || children.key === 601 ? (
+                <div
+                  onClick={() => this.handleChange(children.key)}
+                  key={children.key}
+                  className={[
+                    styles.toolItem,
+                    props.history.location.pathname === children.path ? styles.toolItemActive : '',
+                  ].join(' ')}
+                >
+                  <img src={children.icon} className={styles.toolIcon} alt={children.title} />
+                  {formatMessage(children.title)}
+                </div>
+              ) : (
+                <Link
+                  key={children.key}
+                  to={children.path}
+                  className={[
                   styles.toolItem,
                   props.history.location.pathname === children.path ? styles.toolItemActive : '',
                 ].join(' ')}
-              >
-                <img src={children.icon} className={styles.toolIcon} alt={children.title} />
-                {formatMessage(children.title)}
-              </Link>
+                >
+                  <img src={children.icon} className={styles.toolIcon} alt={children.title} />
+                  {formatMessage(children.title)}
+                </Link>
+              )
             )}
           </div>
           <div className={styles.toolTitle}>
@@ -333,102 +240,9 @@ class SystemMenu extends React.Component {
     });
   };
 
-  handoverEvent = () => {
-    handoverPrompts(
-      {},
-      ({ data }) => {
-        console.log('getHandoverEvent-data：', data);
-        this.setState({
-          handoverEvent: data,
-          visibleShift: true,
-        });
-      },
-      e => {
-        console.log('getHandoverEvent--error：', e.toString());
-      }
-    );
-  };
-
-  // 上班打卡检查 （-3已经打卡 -2：今天没有值班 -1:没有登录 1:可以打卡）
-  clockCheck = () => {
-    clockCheck({},
-      ({ data }) => {
-        console.log('clockCheck-data', data);
-        if (data === -3) {
-          Modal.error({
-            title: formatMessage('guet.schedule.punch_reminder'),
-            content: formatMessage('guet.schedule.already_punched_no_need_repeat_punch'),
-            okText: formatMessage('guet.schedule.confirm'),
-          })
-        } else if (data === -2) {
-          Modal.error({
-            title: formatMessage('guet.schedule.punch_reminder'),
-            content: formatMessage('guet.schedule.current_user_not_arrangement'),
-            okText: formatMessage('guet.schedule.confirm'),
-          });
-        } else if (data === -1) {
-          Modal.error({
-            title: formatMessage('guet.schedule.punch_reminder'),
-            content: formatMessage('guet.schedule.no_login'),
-            okText: formatMessage('guet.schedule.confirm'),
-          })
-        } else if (data === 1) {
-          this.queryDutyUser();
-        }
-      },
-      e => console.log('clockCheck-error', e.toString()),
-    )
-  }
-
-  // 上班打卡（-3已经打卡 -2：今天没有值班 -1:没有登录 1:打卡成功 0：打卡失败）
-  setClockIn = () => {
-    clockIn(
-      {},
-      ({ data }) => {
-        console.log('clockIn-data', data);
-        if (data === -3) {
-          Modal.error({
-            title: formatMessage('guet.schedule.punch_reminder'),
-            content: formatMessage('guet.schedule.already_punched_no_need_repeat_punch'),
-            okText: formatMessage('guet.schedule.confirm'),
-          })
-        } else if (data === -2) {
-          Modal.error({
-            title: formatMessage('guet.schedule.punch_reminder'),
-            content: formatMessage('guet.schedule.current_user_not_arrangement'),
-            okText: formatMessage('guet.schedule.confirm'),
-          });
-        } else if (data === -1) {
-          Modal.error({
-            title: formatMessage('guet.schedule.punch_reminder'),
-            content: formatMessage('guet.schedule.no_login'),
-            okText: formatMessage('guet.schedule.confirm'),
-          })
-        } else if (data === 0) {
-          Modal.error({
-            title: formatMessage('guet.schedule.punch_reminder'),
-            content: formatMessage('guet.schedule.punching_failed'),
-            okText: formatMessage('guet.schedule.confirm'),
-          })
-        } else if (data === 1) {
-          Modal.success({
-            title: formatMessage('guet.schedule.punch_reminder'),
-            content: formatMessage('guet.schedule.punch_card_success'),
-            okText: formatMessage('guet.schedule.confirm'),
-          })
-        }
-      },
-      e => console.log('clockIn-error', e.toString())
-    )
-    this.setState({
-      visibleCard: false,
-    });
-  };
-
-
 
   render() {
-    const { isOpenToolbar, visibleCard, visibleShift, handoverEvent, dutyTodayList } = this.state;
+    const { isOpenToolbar, visibleCard, messageVisible } = this.state;
     const { MenuCom } = this;
     const MMenuCom = withRouter(({ history }) => {
       return <MenuCom history={history} />;
@@ -448,29 +262,28 @@ class SystemMenu extends React.Component {
           <MMenuCom />
         </div>
         <Modal
-          title={formatMessage('guet.schedule.punch_card')}
+          title="操作提示"
           visible={visibleCard}
           onOk={this.handleCardOk}
           onCancel={this.handleCardCancel}
-          padding="10px 30px"
+          // padding="10px 30px"
           width="fit-content"
-          cancelText={formatMessage('guet.schedule.cancel')}
-          okText={formatMessage('guet.schedule.punch')}
+          showCancel={true}
+          showOk={true}
+          cancelText="取消"
+          okText="确认"
         >
-          <Card dutyTodayList={dutyTodayList} />
+          <p style={{ fontWeight: 'bold', marginTop: 20 }}>是否确认退出本系统？</p>
         </Modal>
         <Modal
-          title={formatMessage('schedule.punching_out_of_work')}
-          visible={visibleShift}
-          onOk={this.handleShiftOk}
-          onCancel={this.handleShiftCancel}
-          cancelText={formatMessage('guet.schedule.cancel')}
-          okText={formatMessage('guet.schedule.confirm')}
-          width="500px"
+          title="消息中心"
+          visible={messageVisible}
+          onOk={this.handleMessageVisible}
+          onCancel={this.handleMessageCancel}
+          // padding="10px 30px"
+          width="fit-content"
         >
-          <ChangeShift
-            handoverEvent={handoverEvent}
-          />
+          <MessageCenter />
         </Modal>
       </div>
     );

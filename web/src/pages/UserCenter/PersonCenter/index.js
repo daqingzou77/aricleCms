@@ -9,8 +9,8 @@ class Home extends React.Component{
     return(
       <>
         <Row gutter={24}>
-          <Col lg={7} md={24}>
-            <Card bordered={false} style={{ marginBottom: 24 }}>
+          <Col lg={7} md={24} style={{ paddingRight: -12 }}>
+            <Card bordered={false} style={{ marginBottom: 24, marginRight: 0 }}>
               <div>
                 <div className={styles.avatarHolder}>
                   <img alt="" src={currentUser.avatar} />
@@ -18,10 +18,6 @@ class Home extends React.Component{
                   <div>{currentUser.decription}</div>
                 </div>
                 <div className={styles.detail}>
-                  {/* <p>
-                    <Icon type="cloud-upload"  />
-                    <div>已上传<span style={{ fontWeight: 'bold', fontSize: 14 }}>{currentUser.uploadedItems}</span>条农事记录</div>
-                  </p> */}
                   <p>
                     <Icon type="phone" style={{ position: 'absolute', right: '20%' }} /> <span>wqewqe42321321</span>
                     <Icon type="mail" style={{ position: 'absolute', left: '48%' }} /><span style={{position:'absolute', left: '55%'}}> {currentUser.email}</span>

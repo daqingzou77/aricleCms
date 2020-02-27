@@ -75,11 +75,6 @@ export default [
           name: 'usrCenter',
           component: './UserCenter/PersonCenter',
         },
-        {
-          path: '/userCenter/messageCenter',
-          name: 'messageCenter',
-          component: './UserCenter/messageCenter',
-        }
       ]
     },
     {
