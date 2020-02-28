@@ -58,6 +58,7 @@
     "rc-animate": "^2.6.0",
     "react": "^16.7.0",
     "react-container-query": "^0.11.0",
+    "react-contenteditable": "^3.3.3",
     "react-contextmenu": "^2.10.0",
     "react-copy-to-clipboard": "^5.0.1",
     "react-countup": "^4.3.3",

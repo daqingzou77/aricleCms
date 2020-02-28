@@ -1,16 +1,36 @@
 import React from 'react';
-import InfiniteSrcoll from 'react-infinite-scroller';
-import { Button, Avatar } from 'antd';
-import moment from 'moment';
+import ContentEditable from 'react-contenteditable';
 import styles from './style.less';
 
 class Send extends React.Component {
 
+  constructor() {
+    super()
+    this.contentEditable = React.createRef();
+    this.state = {
+      html: ""
+    };
+  };
+
+  handleChange = evt => {
+    this.setState({
+      html: evt.target.value
+    });
+  };
+
   render() {
-    
+    const { html } = this.state;
     return (
-      <div style={{  height: 100, background: '#fff'}}>
-			</div>
+      <div className={styles.send}>
+        <ContentEditable
+          className={styles.edit}
+          innerRef={this.contentEditable}
+          html={html}
+          disabled={false}
+          onChange={this.handleChange}
+          tagName='article'
+        />
+      </div>
     )
   }
 }

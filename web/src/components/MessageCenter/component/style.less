@@ -1,3 +1,4 @@
+// messageCenter
 .scroll {
     border: 1px solid #e8e8e8;
     border-radius: 4px;
@@ -14,8 +15,7 @@ span {
     padding: 10px 30px;
 }
 
-// 聊天样式
-
+// Chat
 .chatmain {
     position: relative;
     overflow: hidden;
@@ -23,70 +23,50 @@ span {
     height:100%;
 }
 
-.message {
-   height: 200px;
-   width: 200px; 
-   background: #666666;
+
+// message
+.main {
+    background: #eff3f6;
+    height: 300px; 
+    width: 280px;
+    .scrolls {
+        height: 300px;
+        overflow: auto;
+    }
+    .mainDiv {
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    .content1Div {
+        width: 50%; 
+        height: 100%; 
+        word-wrap: break-word;
+        overflow: hidden;
+        background: #fff;
+        padding: 5px;
+        margin-left: 5px; 
+        margin-bottom: 5px;
+    }
+    .content2Div {
+        width: 50%; 
+        height: 100%; 
+        word-wrap: break-word;
+        overflow: hidden;
+        background: #fff; 
+        padding: 5px;
+        margin-right: 5px; 
+        margin-bottom: 5px; 
+    }
+    }
 }
 
-// 发送框
+
+// send
 .send {
-    height: 160px;
-    border-top: solid 1px #ddd;
-    background:#fff;
-    textarea {
-        padding: 10px;
-        height: 73%;
-        width: 100%;
-        border: none;
-        outline: none;
-        font-family: "Micrsofot Yahei";
-        resize: none;
-    }
-    .hadler{
-        padding:5px 15px;
-        position:relative;
-        .tips{
-            &.show{
-                display:block;
-            }
-            display:none;
-            position:absolute;
-            right:8px;
-            bottom:50px;
-            border-radius:5px;
-            border:1px solid #ddd;
-            background:#fff;
-            font-size:13px;
-            padding:5px 10px;
-            box-shadow:1px 1px 3px #d8d8d8;
-            &::after,&:before{
-                content:"";
-                z-index:1;
-                position:absolute;
-                right:20px;
-                bottom:-20px;
-                border-color: #ddd transparent transparent;
-                border-style:solid;
-                border-width:10px;
-            }
-            &:before{
-                z-index:2;
-                bottom:-19px;
-                border-color: #fff transparent transparent;
-
-            }
-        }
-        button{
-            border: solid 1px #ddd;
-            padding:6px 10px;
-            background:#303942;
-            border-radius:3px;
-            color:#fff;
-            &:active{
-                background:#656567;
-            }
-
-        }
+    height: 100px;
+    width: 280px;
+    background: #fff;
+    .edit {
+       height: 100px;
     }
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Col, Badge, Avatar, List, Collapse, message } from 'antd';
+import { Row, Col, Badge, Avatar, List, Collapse,Button } from 'antd';
 import InfiniteScroll from 'react-infinite-scroller';
 import moment from 'moment';
 import Modal from '@/common/components/Modal';
@@ -54,6 +54,9 @@ class MessageCenter extends React.Component {
 
   render() {
     const { commentVisible, messageVisible } = this.state;
+    const footer = (
+      <Button type="primary" size="small" style={{ float: "right", margin: 5}}>发送</Button>
+    );
     const dataSource = [
       'user1',
       'user2',
@@ -61,7 +64,7 @@ class MessageCenter extends React.Component {
       'user1',
       'user2',
       'user3',
-    ]
+    ];
     return (
       <div className={styles.message}>
         {/* 评论 赞我 私信 */}
@@ -251,9 +254,11 @@ class MessageCenter extends React.Component {
           visible={messageVisible}
           onOk={this.handlePrivateOk}
           onCancel={this.handlePrivateCancel}
+          footer={footer}
         >
           <Chat />
         </Modal>
+
       </div>
     )
   }
