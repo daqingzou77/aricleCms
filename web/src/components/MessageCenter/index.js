@@ -1,13 +1,59 @@
 import React from 'react';
-import { Row, Col, Badge, Avatar, List, Collapse } from 'antd';
+import { Row, Col, Badge, Avatar, List, Collapse, message } from 'antd';
 import InfiniteScroll from 'react-infinite-scroller';
+import moment from 'moment';
+import Modal from '@/common/components/Modal';
+import Chat from './component/Chat';
 import styles from './style.less';
 
 const { Panel } = Collapse;
 class MessageCenter extends React.Component {
 
-  render() {
+  state = {
+    commentVisible: false,
+    messageVisible: false
+  }
 
+  // 评论
+  handleCommentClick = () => {
+    this.setState({
+      commentVisible: true
+    })
+  }
+
+  handleCommentOk = () => {
+    this.setState({
+      commentVisible: false
+    })
+  }
+
+  handleCommentCancel = () => {
+    this.setState({
+      commentVisible: false
+    })
+  }
+
+  // 私信、好友
+  handlePrivaceClick = () => {
+    this.setState({
+      messageVisible: true
+    })
+  }
+
+  handlePrivateOk = () => {
+    this.setState({
+      messageVisible: false
+    })
+  }
+
+  handlePrivateCancel = () => {
+    this.setState({
+      messageVisible: false
+    })
+  }
+
+  render() {
+    const { commentVisible, messageVisible } = this.state;
     const dataSource = [
       'user1',
       'user2',
@@ -17,12 +63,14 @@ class MessageCenter extends React.Component {
       'user3',
     ]
     return (
-      <>
+      <div className={styles.message}>
+        {/* 评论 赞我 私信 */}
         <Collapse onChange={() => { }} expandIconPosition="right">
           <Panel
             header={
               <Row type="flex" justify="space-between">
-                <Col><Avatar shape="circle" icon="message" style={{ background: 'green', marginRight: 5 }} size="small" /> 评论
+                <Col>
+                  <Avatar shape="circle" icon="message" style={{ background: 'green', marginRight: 5 }} size="small" /> 评论
                 </Col>
                 <Col>
                   <Badge count={5} />
@@ -36,8 +84,12 @@ class MessageCenter extends React.Component {
                 dataSource={dataSource}
                 renderItem={item => (
                   <List.Item>
-                    <Avatar shape="circle" icon="user" style={{ background: 'green', marginRight: 5 }} size="small" />
-                    <span>{item}</span>
+                    <List.Item.Meta
+                      onClick={this.handleCommentClick}
+                      avatar={<Avatar shape="circle" icon="message" style={{ background: 'green', marginRight: 5 }} size="small" />}
+                      title={<span>{item}评论了我</span>}
+                    />
+                    <span>{moment(new Date).format('YYYY-MM-DD')}</span>
                   </List.Item>
                 )}
               />
@@ -58,12 +110,14 @@ class MessageCenter extends React.Component {
           >
             <InfiniteScroll className={styles.scroll}>
               <List
-                bordered
                 dataSource={dataSource}
                 renderItem={item => (
                   <List.Item>
-                    <Avatar shape="circle" icon="user" style={{ background: '#ffbf00', marginRight: 5 }} size="small" />
-                    <span>{item}</span>
+                    <List.Item.Meta
+                      avatar={<Avatar shape="circle" icon="like" style={{ background: '#7265e6', marginRight: 5 }} size="small" />}
+                      title={<span>{item}</span>}
+                    />
+                    <span>{moment(new Date()).format('YYYY-MM-DD hh:mm:ss')}</span>
                   </List.Item>
                 )}
               />
@@ -84,19 +138,22 @@ class MessageCenter extends React.Component {
           >
             <InfiniteScroll className={styles.scroll}>
               <List
-                bordered
                 dataSource={dataSource}
                 renderItem={item => (
                   <List.Item>
-                    <Avatar shape="circle" icon="user" style={{ background: 'green', marginRight: 5 }} size="small" />
-                    <span>{item}</span>
+                    <List.Item.Meta
+                      avatar={<Avatar shape="circle" icon="solution" style={{ background: '#ffbf00', marginRight: 5 }} size="small" />}
+                      title={item}
+                      onClick={this.handlePrivaceClick}
+                    />
+                    <Badge count={2} />
                   </List.Item>
                 )}
               />
             </InfiniteScroll>
           </Panel>
         </Collapse>
-        {/* 好友列表 拉黑名单 */}
+        {/* 好友 关注 拉黑 */}
         <Collapse style={{ marginTop: 10 }} onChange={() => { }} expandIconPosition="right">
           <Panel
             header={
@@ -115,8 +172,39 @@ class MessageCenter extends React.Component {
                 dataSource={dataSource}
                 renderItem={item => (
                   <List.Item>
-                    <Avatar shape="circle" icon="user" style={{ background: '#f56a00', marginRight: 5 }} size="small" />
-                    <span>{item}</span>
+                    <List.Item.Meta
+                      avatar={<Avatar shape="circle" icon="user" style={{ background: '#f56a00', marginRight: 5 }} size="small" />}
+                      title={item}
+                      onClick={this.handlePrivaceClick}
+                    />
+                    <Badge count={2} />
+                  </List.Item>
+                )}
+              />
+            </InfiniteScroll>
+          </Panel>
+          <Panel
+            header={
+              <Row type="flex" justify="space-between">
+                <Col><Avatar shape="circle" icon="heart" style={{ background: 'red', marginRight: 5 }} size="small" /> 关注
+                </Col>
+                <Col>
+                  <Badge count={5} />
+                </Col>
+              </Row>
+            }
+            key="2"
+          >
+            <InfiniteScroll className={styles.scroll}>
+              <List
+                dataSource={dataSource}
+                renderItem={item => (
+                  <List.Item>
+                    <List.Item.Meta
+                      avatar={<Avatar shape="circle" icon="heart" style={{ background: 'red', marginRight: 5 }} size="small" />}
+                      title={item}
+                    />
+                    <Badge count={2} />
                   </List.Item>
                 )}
               />
@@ -132,22 +220,41 @@ class MessageCenter extends React.Component {
                 </Col>
               </Row>
             }
-            key="2"
+            key="3"
           >
             <InfiniteScroll className={styles.scroll}>
               <List
                 dataSource={dataSource}
                 renderItem={item => (
                   <List.Item>
-                    <Avatar shape="circle" icon="stop" style={{ background: 'black', marginRight: 5 }} size="small" />
-                    <span>{item}</span>
+                    <List.Item.Meta
+                      avatar={<Avatar shape="circle" icon="stop" style={{ background: 'black', marginRight: 5 }} size="small" />}
+                      title={item}
+                    />
+                    <span>{moment(new Date()).format('YYYY-MM-DD hh:mm:ss')}</span>
                   </List.Item>
                 )}
               />
             </InfiniteScroll>
           </Panel>
         </Collapse>
-      </>
+        <Modal
+          title="评论详情"
+          visible={commentVisible}
+          onOk={this.handleCommentOk}
+          onCancel={this.handleCommentCancel}
+        >
+          评论详情
+        </Modal>
+        <Modal
+          title={`用户${1}`}
+          visible={messageVisible}
+          onOk={this.handlePrivateOk}
+          onCancel={this.handlePrivateCancel}
+        >
+          <Chat />
+        </Modal>
+      </div>
     )
   }
 }

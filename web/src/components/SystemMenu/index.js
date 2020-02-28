@@ -23,6 +23,7 @@ import Modal from '@/common/components/Modal';
 import styles from './index.less';
 import Card from '../../pages/Change/Card';
 import MessageCenter from '@/components/MessageCenter';
+import Notice from '../MessageCenter/component/Notice';
 import {
   handoverPrompts,
 } from '../../services/scheduleService';
@@ -149,6 +150,7 @@ class SystemMenu extends React.Component {
       isOpenToolbar: true,
       visibleCard: false,
       messageVisible: false,
+      messageKey: 1,
     };
   }
 
@@ -199,6 +201,18 @@ class SystemMenu extends React.Component {
     })
   }
 
+  handleGetMessage = () => {
+    this.setState({
+      messageKey: 1
+    })
+  }
+
+  handleGetNotice = () => {
+    this.setState({
+      messageKey: 2
+    })
+  }
+
   MenuCom = props => {
     return menuList.map(item => {
       return (
@@ -218,17 +232,17 @@ class SystemMenu extends React.Component {
                   {formatMessage(children.title)}
                 </div>
               ) : (
-                  <Link
-                    key={children.key}
-                    to={children.path}
-                    className={[
-                      styles.toolItem,
+                <Link
+                  key={children.key}
+                  to={children.path}
+                  className={[
+                  styles.toolItem,
                       props.history.location.pathname === children.path ? styles.toolItemActive : '',
                     ].join(' ')}
-                  >
-                    <img src={children.icon} className={styles.toolIcon} alt={children.title} />
-                    {formatMessage(children.title)}
-                  </Link>
+                >
+                  <img src={children.icon} className={styles.toolIcon} alt={children.title} />
+                  {formatMessage(children.title)}
+                </Link>
                 )
             )}
           </div>
@@ -242,7 +256,7 @@ class SystemMenu extends React.Component {
 
 
   render() {
-    const { isOpenToolbar, visibleCard, messageVisible } = this.state;
+    const { isOpenToolbar, visibleCard, messageVisible, messageKey } = this.state;
     const { MenuCom } = this;
     const MMenuCom = withRouter(({ history }) => {
       return <MenuCom history={history} />;
@@ -250,13 +264,13 @@ class SystemMenu extends React.Component {
     const footer = (
       <Row style={{ marginBottom: 10 }} type="flex" justify="space-around" >
         <Col>
-          <Tag color="#2db7f5" style={{ color: 'black'}}><Badge dot style={{ marginLeft: 20 }}>通知</Badge></Tag>
+          <Tag color="#2db7f5" onClick={this.handleGetMessage}><Badge dot>消息</Badge></Tag>
         </Col>
         <Col>
-          <Tag color="#87d068">消息</Tag>
+          <Tag color="#87d068" style={{ color: '#2884d8', fontSize: 14 }} onClick={this.handleGetNotice}><Badge dot>通知</Badge></Tag>
         </Col>
         <Col>
-          <Tag color="red">清空</Tag>
+          <Tag color="red" style={{ fontSize: 14 }}>清空</Tag>
         </Col>
       </Row>
     );
@@ -279,7 +293,6 @@ class SystemMenu extends React.Component {
           visible={visibleCard}
           onOk={this.handleCardOk}
           onCancel={this.handleCardCancel}
-          // padding="10px 30px"
           width="fit-content"
           showCancel={true}
           showOk={true}
@@ -290,13 +303,19 @@ class SystemMenu extends React.Component {
         </Modal>
         <Modal
           width={400}
-          title="消息中心"
+          title={`消息中心-${messageKey === 1 ? '消息': '通知'}`}
           visible={messageVisible}
           onOk={this.handleMessageVisible}
           onCancel={this.handleMessageCancel}
           footer={footer}
         >
-          <MessageCenter />
+          {
+            messageKey === 1 ?  (
+              <MessageCenter />
+           ) : (
+             <Notice />
+             )
+         } 
         </Modal>
       </div>
     );
