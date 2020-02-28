@@ -27,6 +27,7 @@ import Notice from '../MessageCenter/component/Notice';
 import {
   handoverPrompts,
 } from '../../services/scheduleService';
+import Chat from '../MessageCenter/component/Chat';
 
 const formatMessage = id => {
   return _formatMessage({ id });
@@ -288,7 +289,7 @@ class SystemMenu extends React.Component {
         <div style={{ display: isOpenToolbar ? '' : 'none' }} className={styles.toolbarTool}>
           <MMenuCom />
         </div>
-        <Modal
+        {/* <Modal
           title="操作提示"
           visible={visibleCard}
           onOk={this.handleCardOk}
@@ -300,6 +301,15 @@ class SystemMenu extends React.Component {
           okText="确认"
         >
           <p className={styles.logPstyle}>是否确认退出本系统？</p>
+        </Modal> */}
+        <Modal
+          title={`User${1}`}
+          visible={visibleCard}
+          onOk={this.handleCardOk}
+          onCancel={this.handleCardCancel}
+          footer={<Button type="primary" size="small" style={{ float: "right", margin: 5}}>发送</Button>}
+        >
+          <Chat />
         </Modal>
         <Modal
           width={400}
