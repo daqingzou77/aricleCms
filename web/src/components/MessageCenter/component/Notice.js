@@ -22,7 +22,7 @@ class Notice extends React.Component {
         },
       ];
     return (
-      <>
+      <div className={styles.notice}>
         <InfiniteScroller className={styles.scroll}>
           <List
             dataSource={dataSource}
@@ -37,7 +37,7 @@ class Notice extends React.Component {
             )}
           />
         </InfiniteScroller>
-      </>
+      </div>
     )
   }
 }

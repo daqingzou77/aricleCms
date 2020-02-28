@@ -262,7 +262,7 @@ class SystemMenu extends React.Component {
       return <MenuCom history={history} />;
     });
     const footer = (
-      <Row style={{ marginBottom: 10 }} type="flex" justify="space-around" >
+      <Row style={{ marginBottom: 10 }} type="flex" justify="space-around">
         <Col>
           <Tag color="#2db7f5" onClick={this.handleGetMessage}><Badge dot>消息</Badge></Tag>
         </Col>
@@ -299,7 +299,7 @@ class SystemMenu extends React.Component {
           cancelText="取消"
           okText="确认"
         >
-          <p style={{ fontWeight: 'bold', marginTop: 20 }}>是否确认退出本系统？</p>
+          <p className={styles.logPstyle}>是否确认退出本系统？</p>
         </Modal>
         <Modal
           width={400}

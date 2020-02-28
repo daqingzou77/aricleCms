@@ -247,7 +247,7 @@ class MessageCenter extends React.Component {
           评论详情
         </Modal>
         <Modal
-          title={`用户${1}`}
+          title={`User${1}`}
           visible={messageVisible}
           onOk={this.handlePrivateOk}
           onCancel={this.handlePrivateCancel}
