@@ -61,6 +61,13 @@ class BaseView extends React.Component {
             />
             <FormElement 
               {...formElementProps}
+              label="用户账号"
+              field="account"
+              disabled
+              initialValue={currentUser.account}
+            />
+            <FormElement 
+              {...formElementProps}
               label="用户类型"
               disabled
               field="name"

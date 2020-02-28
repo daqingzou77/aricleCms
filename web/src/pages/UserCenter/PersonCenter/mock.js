@@ -4,6 +4,7 @@ const currentUser = {
     avatar: 'https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png',
     userid: '00000001',
     email: 'antdesign@alipay.com',
+    account: '2295957879',
     userType: 0,
     password: '1207',
     decription: '海纳百川，有容乃大',
