@@ -1,6 +1,8 @@
 import React from 'react';
-import { Table, Card, Badge, DatePicker, Input, Select, Button, Icon, Divider } from 'antd';
+import { Table, Card, Badge, DatePicker, Input, Select, Button, Icon, Divider, Popconfirm, message } from 'antd';
 import moment from 'moment';
+import Modal from '@/common/components/Modal';
+import ManageDetail from './component/ManageDetail';
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -28,30 +30,60 @@ class Manage extends React.Component{
       </span>
     ),
   }, {
-    title: '创建时间',
+    title: '发布时间',
     dataIndex: 'createTime',
   }, {
     title: '操作',
     dataIndex: 'operation',
-    render: (_, record) => (
-      <>
-        <a
-          onClick={() => {
-          }}
-        >
-          处理
-        </a>
-        <Divider type="vertical" />
-        <a href="" style={{ color: 'red' }}>删除</a>
-      </>
-    ),
+    render: (_, record) => {
+      const that = this;
+      return (
+        <>
+          <a onClick={() => {
+              that.handleSolve(record.articlename)
+            }}
+          >
+            处理
+          </a>
+          <Divider type="vertical" />
+          <Popconfirm placement="top" title="是否确认删除嘛?" onConfirm={this.confirm} okText="Yes" cancelText="No">
+            <a href="" style={{ color: 'red' }}>删除</a>
+          </Popconfirm>
+        </>
+      )
+    }
   }]
 
   state = {
+    visible: false
+  }
 
+  confirm = () => {
+    message.success('删除成功');
+  }
+
+
+  handleSolve = articlename => {
+    this.props.history.push('/publish/Audit')
+    // this.setState({
+    //   visible: true
+    // })
+  }
+
+  handleOk = () => {
+    this.setState({
+      visible: false
+    })
+  }
+
+  handleCancel = () => {
+    this.setState({
+      visible: false
+    })
   }
 
   render() {
+    const { visible } = this.state;
     const dataSource = [];
     for (let i = 0; i < 23; i++) {
       dataSource.push({
@@ -77,6 +109,8 @@ class Manage extends React.Component{
           >
             <Option value={0}>未审核</Option>
             <Option value={1}>审核中</Option>
+            <Option value={2}>已发布</Option>
+            <Option value={3}>已撤销</Option>
           </Select>
           <Input
             placeholder="请输入查询的文章名"
@@ -84,9 +118,6 @@ class Manage extends React.Component{
           />
           <Button type="primary" style={{ marginLeft: 10 }} icon="search">
             查找
-          </Button>
-          <Button type="danger" style={{ marginLeft: 10 }} icon="minus-circle">
-            重置
           </Button>
         </Card>
         <Card 
@@ -98,29 +129,20 @@ class Manage extends React.Component{
             columns={this.columns}
             dataSource={dataSource}
             rowKey="id"
-            expandedRowRender={record => (
-              <div style={{ margin: 0, textAlign: 'left' }}>
-                <p>
-                  <span>
-                    章节： section1
-                  </span>
-                  &nbsp; &nbsp;
-                  <span>
-                    状态：  <Badge status="success" /> 已发布
-                  </span>
-                  &nbsp; &nbsp;
-                  <span>
-                    章节时间： {moment(new Date()).format('YYYY/MM/DD hh:mm:ss')}
-                  </span>
-                  &nbsp; &nbsp;
-                  <span>
-                    章节内容： daqing
-                  </span>
-                </p>
-              </div>
-            )}
           />
         </Card>
+        <Modal
+          title="处理详情"
+          visible={visible}
+          onOk={this.handleOk}
+          onCancel={this.handleCancel}
+          showOk={true}
+          showCancel={true}
+          okText="确认"
+          cancelText="取消"
+        >
+          <ManageDetail />
+        </Modal>
       </>
     )
   }
