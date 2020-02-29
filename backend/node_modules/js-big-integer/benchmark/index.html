@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Benchmarks for some JavaScript implementations of arbitrary length integers</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script defer="defer" src="libs.js"></script>
+<script defer="defer" src="index.js"></script>
+<!-- Latest compiled and minified CSS -->
+<style>
+a {
+  color: #337ab7;
+  text-decoration: none;
+}
+th, td {
+  padding: 0.125em;
+}
+
+table > tbody > tr > th {
+  text-align: left;
+}
+
+table[sortable] > thead > tr > td {
+  cursor: pointer;
+}
+thead > tr > td:before {
+  content: "\002B0d";
+}
+thead > tr > td[sorted="1"]:before {
+  content: "\002B06";
+}
+thead > tr > td[sorted="reversed 1"]:before {
+  content: "\002B07";
+}
+
+table.tests > tbody > tr > td {
+  max-width: 200px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+table.tests > tbody > tr {
+  display: none;
+}
+table.tests > tbody > tr.y {
+  display: table-row;
+}
+
+table.results {
+  table-layout: fixed;
+}
+
+table.results > tbody > tr > td:first-child {
+  max-width: 240px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+table.results > tbody > tr > td {
+  width: 60px;
+  height: 2.5em;
+  min-width: 60px;
+  overflow: hidden;
+}
+
+table.results > tbody > tr > td:first-of-type {
+  min-width: 20px;
+  width: 20px;
+}
+
+</style>
+</head>
+<body>
+
+<p><button class="benchmarks">Run Benchmarks</button><button class="tests">Run Tests</button> <span class="working" hidden=hidden>Please wait...</span></p>
+
+<div style="display: none">
+
+</div>
+
+<div id="table-container"></div>
+
+<div id="info-table-container"></div>
+
+<table class="tests">
+<caption>tests</caption>
+<tr class="y"><td>-</td></tr>
+</table>
+</details>
+
+<a href="https://github.com/Yaffle/BigInteger/tree/gh-pages">Fork me on GitHub</a>
+</body>
+</html>
