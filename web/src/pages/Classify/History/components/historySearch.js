@@ -45,7 +45,7 @@ class HistorySearch extends React.Component {
               options={options}
             />
             <FormElement>
-              <Button type="primary">查找</Button>
+              <Button type="primary" icon="search">查询</Button>
             </FormElement>
           </FormRow>
         </Form>

@@ -1,6 +1,6 @@
 import React from 'react';
-import { Card, Row, Col, Icon, Input, List, Radio, Avatar } from 'antd'
-import { PlusCircleOutlined, MailOutlined, PhoneOutlined } from '@ant-design/icons';
+import { Card, Row, Col, Input, List, Radio, Avatar, Button, Popconfirm, message  } from 'antd'
+import { MailOutlined, PhoneOutlined } from '@ant-design/icons';
 import InfiniteScroll from 'react-infinite-scroller';
 import styles from './style.less';
 import BaseView from './component/BaseView';
@@ -20,6 +20,10 @@ class Home extends React.Component {
     })
   }
 
+  confirm = () => {
+    message.success('添加成功！');
+  }
+
   render() {
     const userList = [
       'user1',
@@ -27,12 +31,38 @@ class Home extends React.Component {
       'user3',
       'user4'
     ];
+    const text = '确认添加好友？';
+    const friends = [];
+    for (let i = 0; i < 15; i++) {
+      friends.push({
+        username: `用户${i + 1}`,
+      })
+    }
+    // const friendsList = friends.map((item, index, arr) => {
+    const friendsList = (
+      <Row type="flex" justify="start">
+        {friends.map((item, index) => 
+          (
+            <Col key={index}>
+              <div style={{ display: 'flex', flexDirection: 'row' }}>
+                <Avatar icon="user" style={{ color: 'red', }} size={40} />
+                <div style={{ display: 'flex', flexDirection: 'column', marginLeft: 10, marginRight: 9 }}>
+                  {item.username}
+                  <Popconfirm placement="top" title={text} onConfirm={this.confirm} okText="确认" cancelText="取消">
+                    <Button type="primary" size="small">加好友</Button>
+                  </Popconfirm>
+                </div>
+              </div>
+            </Col>
+         ))}
+      </Row>)
+
     const { chooseKey } = this.state;
     return (
       <div>
         <Row gutter={24}>
-          <Col lg={7} md={24} style={{ paddingRight: -12, height: 818, display:'flex', flexDirection: 'column' }}>
-            <div style={{ }}>
+          <Col lg={7} md={24} style={{ paddingRight: -12, height: 818, display: 'flex', flexDirection: 'column' }}>
+            <div style={{}}>
               <Card
                 title={<span>个人名片</span>}
                 bordered={false}
@@ -59,27 +89,13 @@ class Home extends React.Component {
                   style={{ marginTop: 10, paddingLeft: 10, paddingRight: 10 }}
                 />
                 <div style={{ width: '100%', marginTop: 10, background: '#fff' }}>
-                  <List
-                    grid={{ gutter: 16, column: 4 }}
-                    dataSource={userList}
-                    renderItem={item => (
-                      <List.Item>
-                        <Card
-                          hoverable
-                          cover={<img alt="example" src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png" />}
-                        >
-                          <div style={{ textAlign: 'center' }}>
-                            <p>{item}</p>
-                            <PlusCircleOutlined />
-                          </div>
-                        </Card>
-                      </List.Item>
-                    )}
-                  />
+                  <InfiniteScroll className={styles.friendsScroll}>
+                    {friendsList}
+                  </InfiniteScroll>
                 </div>
               </Card>
             </div>
-            <div style={{ width: '100%', background: '#fff', marginTop: 10,  padding: 10, flexGrow:1, }}>
+            <div style={{ width: '100%', background: '#fff', marginTop: 10, padding: 10, flexGrow: 1, }}>
               <Radio.Group
                 defaultValue={chooseKey}
                 buttonStyle="solid"

@@ -145,7 +145,7 @@ class Science extends React.Component {
           <Col span={8}>
             <Card
               bodyStyle={{ height: 608 }}
-              title={<span style={{ fontWeight: 'bold' }}>科学小知识</span>}
+              title={<span style={{ fontWeight: 'bold' }}>历史小故事</span>}
               extra={<div style={{ color: '#2884D8', cursor: 'pointer' }}><Icon type='reload' />&nbsp;换一换</div>}
             >
               <List 

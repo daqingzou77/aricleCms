@@ -5,6 +5,11 @@ import styles from './style.less';
 
 class Step3 extends React.Component {
   
+ handleNextStep = key => {
+   this.props.handleNextStep(key)
+ }
+
+ 
  render() {
       const information = (
         <div className={styles.information}>
@@ -19,7 +24,7 @@ class Step3 extends React.Component {
  
   const extra = (
     <>
-      <Button type="primary" onClick={()=>{}}>
+      <Button type="primary" onClick={() => this.handleNextStep(0)}>
         继续审核
       </Button>
       <Button>查看详情</Button>

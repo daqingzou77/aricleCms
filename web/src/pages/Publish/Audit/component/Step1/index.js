@@ -3,13 +3,32 @@ import { Form, Button, Row, Col } from 'antd';
 import FormElement from '@/components/FormElement';
 
 class Step1 extends React.Component {
+
+  handleNextStep = () => {
+    this.props.handleNextStep(1);
+  }
+
   render() {
     const { form } = this.props;
     const formElementProps = {
       form,
       width: 400
     };
-
+    const selectOptions = [
+      {
+        label: '科学',
+        value: 0,
+      }, {
+        label: '历史',
+        value: 1,
+      }, {
+        label: '文学',
+        value: 2,
+      }, {
+        label: '体育',
+        value: 3
+      }
+    ];
     return (
       <>
         <Row type="flex" justify="space-around" align="middle">
@@ -17,7 +36,7 @@ class Step1 extends React.Component {
             <Form>
               <FormElement 
                 {...formElementProps}
-                label="文章名"
+                label="文章名称"
                 field="articlename"
               />
               <FormElement 
@@ -27,11 +46,19 @@ class Step1 extends React.Component {
               />
               <FormElement 
                 {...formElementProps}
+                label="文章类型"
+                type="select"
+                field="articleType"
+                options={selectOptions}
+              />
+              <FormElement 
                 label="文章内容"
                 field="articleContent"
-              />
+              >
+                <a>《三国演义》</a>
+              </FormElement>
               <FormElement style={{ textAlign: 'center' }}>
-                <Button type="primary">下一步</Button>
+                <Button type="primary" onClick={this.handleNextStep}>下一步</Button>
               </FormElement>
             </Form>    
           </Col>

@@ -83,7 +83,7 @@ class Science extends React.Component {
       </div>
     ))
     return (
-      <div>
+      <div style={{ width: '100%', height: '100%'}}>
         <Row gutter={24}>
           <Col>
             <Card
@@ -133,6 +133,7 @@ class Science extends React.Component {
                     )}
                     {formItems}
                     {collapsed ? null : (
+                      
                       <div>
                         <FormElement>
                           <Button

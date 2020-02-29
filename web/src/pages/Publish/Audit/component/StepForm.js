@@ -10,6 +10,10 @@ const { Step } = Steps;
 
 class StepForm extends React.Component {
   
+  state = {
+    currentStep: 0
+  }
+
   getCurrentStep() {
     const { current } = this.props;
       switch (current) {
@@ -24,15 +28,21 @@ class StepForm extends React.Component {
     }
   }
 
+  handleNextStep = key => {
+    this.setState({
+      currentStep: key
+    })
+  };
+
   render() {
-    const currentStep = 2;
+    const { currentStep } = this.state;
     let stepComponent;
     if (currentStep === 1) {
-      stepComponent = <Step2 />;
+      stepComponent = <Step2 handleNextStep={this.handleNextStep} />;
     } else if (currentStep === 2) {
-      stepComponent = <Step3 />;
+      stepComponent = <Step3 handleNextStep={this.handleNextStep} />;
     } else {
-      stepComponent = <Step1 />;
+      stepComponent = <Step1 handleNextStep={this.handleNextStep} />;
     }
 
     return(

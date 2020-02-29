@@ -4,6 +4,11 @@ import FormElement from '@/components/FormElement';
 import styles from './style.less';
 
 class Step2 extends React.Component {
+
+  handleNextStep = key => {
+    this.props.handleNextStep(key);
+  }
+
   render() {
     const { form } = this.props;
     const formElementProps = {
@@ -26,10 +31,10 @@ class Step2 extends React.Component {
         </Descriptions>
         <Divider style={{ margin: '24px 0' }} />
         <FormElement style={{ textAlign: 'center'}}>
-          <Button type="primary" onClick={()=>{}}>
+          <Button type="primary" onClick={()=> this.handleNextStep(2)}>
             提交
           </Button>
-          <Button onClick={()=>{}} style={{ marginLeft: 8 }}>
+          <Button onClick={() => this.handleNextStep(0)}>
             上一步
           </Button>
         </FormElement>

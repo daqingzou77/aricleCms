@@ -92,26 +92,29 @@ class Health extends React.Component {
             >
               {dataLayout}
               <div style={{ textAlign: 'center' }}>
-                <Button 
-                  type='primary'
-                  style={{ marginRight: 10 }}
-                >
-                  查询
-                </Button>
                 <Button
                   disabled={this.defaultArray.length >= 16}
                   onClick={this.handleAdd}
                   style={{ marginRight: 10 }}
-                  type="ghost"
+                  type="dashed"
+                  icon="plus-circle"
                 >
                   添加
                 </Button>
                 <Button
+                  style={{ marginRight: 10 }}
                   disabled={this.defaultArray.length <= 1}
                   onClick={this.deleteLast}
                   type="danger"
+                  icon="minus-circle"
                 >
                   删除最后一项
+                </Button>
+                <Button 
+                  type='primary'
+                  icon="search"
+                >
+                  查询
                 </Button>
               </div>
 
@@ -183,7 +186,7 @@ class Health extends React.Component {
           <Col span={8}>
             <Card
               bodyStyle={{ height: 608 }}
-              title={<span style={{ fontWeight: 'bold' }}>科学小知识</span>}
+              title={<span style={{ fontWeight: 'bold' }}>体育小常识</span>}
               extra={<div style={{ color: '#2884D8', cursor: 'pointer' }}><Icon type='reload' />&nbsp;换一换</div>}
             >
               <List
