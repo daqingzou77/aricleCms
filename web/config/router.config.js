@@ -72,9 +72,14 @@ export default [
       routes: [
         {
           path: '/userCenter/personCenter',
-          name: 'usrCenter',
+          name: 'userCenter',
           component: './UserCenter/PersonCenter',
         },
+        {
+          path: '/userCenter/userManage',
+          name: 'userManage',
+          component: './UserCenter/UserManage',
+        }
       ]
     },
     {

@@ -58,32 +58,11 @@ class Home extends React.Component {
         {/* 统计模块 */}
         <div className={style.statistics}>
           <DataBlock
-            color="#9999CC"
-            color2='#ff6086'
-            count={12}
-            tip="系统访客"
-            icon="area-chart"
-          />
-          <DataBlock
             color="#CC00CC"
             color2='#fda33a'
             count={11}
             tip="文章发布"
             icon="column-height"
-          />
-          <DataBlock
-            color="#999933"
-            color2="#7c69ff"
-            count={11}
-            tip="注册用户"
-            icon="block"
-          />
-          <DataBlock
-            color="#993366"
-            color2='#029cf5'
-            count={12}
-            tip="系统作者"
-            icon="user"
           />
           <DataBlock
             color="#660033"
@@ -110,7 +89,7 @@ class Home extends React.Component {
             color="#FF0000"
             color2="#029cf5"
             count={11}
-            tip="拉黑数"
+            tip="文章拉黑"
             icon="block"
           />
         </div>

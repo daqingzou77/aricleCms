@@ -1,6 +1,6 @@
 import { formatMessage as _formatMessage } from 'umi/locale';
 import React from 'react';
-import { Icon, message, Col, Row, Button, Tag, Badge } from 'antd';
+import { Icon, message, Col, Row, Button, Tag, Badge, } from 'antd';
 import { Link, withRouter } from 'react-router-dom';
 // import Modal from '@/common/components/dialog/Modal';
 
@@ -127,6 +127,12 @@ const menuList = [
         title: '消息中心',
         icon: icPhoneCheckin,
         path: '/userCenter/messageCenter',
+      },
+      {
+        key: 503,
+        title: '用户管理',
+        icon: icNewLog,
+        path: '/userCenter/userManage'
       }
     ],
   },
@@ -294,7 +300,6 @@ class SystemMenu extends React.Component {
           visible={visibleCard}
           onOk={this.handleCardOk}
           onCancel={this.handleCardCancel}
-          width="fit-content"
           showCancel={true}
           showOk={true}
           cancelText="取消"
