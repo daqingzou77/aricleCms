@@ -9,6 +9,7 @@ class Articles {
     this.init();
   }
 
+
   init() {
     this.app.post('/api/article/addArticle', this.addArticle.bind(this)); // 新增文章
     this.app.get('/api/article/getArticleList', this.getArticleList.bind(this)); // 获取文章信息列表
@@ -27,7 +28,7 @@ class Articles {
     this.articles.findOne({ articlename })
     .then(doc => {
       if(doc) {
-        return res.tools.setJson(1, '该文章已存在', [])
+        return res.tools.setJson(0, '该文章已存在', [])
       } else {
         this.articles.create(addParam)
         .then(data => {
@@ -41,27 +42,25 @@ class Articles {
   getArticleList(req, res, next) {
     this.articles.find({})
     .then(doc => {
-      res.tools.setJson('0', '查询成功', doc)
+      res.tools.setJson(0, '查询成功', doc)
     })
     .catch(err => next(err));
   }
 
   getArticleByOptions(req, res, next) {
-    const { articlename = '', startTime = '', endTime = '', status = 1 } = req.body;
-    let time = {};
-    let articleTime = Object.assign(time);
-    console.log('articleTime', articleTime);
-    this.articles.findOne({
-      articlename,
-      status,
-      publishTime: status === 1 ? {$gte: startTime, $lte: endTime} : '',
-      auditTime: status === 2 ? {$gte: startTime, $lte: endTime}: '',
-      passTime: status === 3 ? {$gte: startTime, $lte: endTime}: '',
-      revokeTime: status === 4 ? {$gte: startTime, $lte: endTime}: '',
+    const { articlename = '', startTime, endTime, status = 1 } = req.body;
+    this.articles.find({
+      articlename: !articlename ? { $regex: '' } : articlename,
+      status: !status ? { $regex: '' } : status,
+      publishTime: status === 1 && startTime ? {$gte: startTime, $lt: endTime} : '',
+      auditTime: status === 2 && startTime ? {$gte: startTime, $lt: endTime}: '',
+      passTime: status === 3 && startTime ? {$gte: startTime, $lt: endTime}: '',
+      revokeTime: status === 4 && startTime ? {$gte: new Date(startTime), $lte:new Date(endTime)}: { $lte: new Date() },
     })
     .then(doc => {
+      console.log('doc', doc);
       if (!doc) {
-        res.tools.setJson(1, '文章不存在', doc)
+        res.tools.setJson(0, '文章不存在', doc)
       } else {
         res.tools.setJson(0, '文章查询成功', doc);
       }
@@ -75,14 +74,14 @@ class Articles {
     this.articles.findOne({ articlename })
     .then(doc => {
       if(!doc) {
-        return res.tool.setJson(1, '该文章不存在', doc);
+        return res.tool.setJson(0, '该文章不存在', doc);
       } else {
         this.articles.updateOne({articlename} , {$set:  updateParam })
         .then( doc => {
           if (doc.nModified > 0) {
             return res.tools.setJson(0, '修改成功', doc);
           } else {
-            return res.tools.setJson(1, '修改失败', []);
+            return res.tools.setJson(0, '修改失败', []);
           }
         })
       }
@@ -99,7 +98,7 @@ class Articles {
       if (doc.deletedCount > 0) {
         res.tools.setJson(0, '删除成功', doc);
       } else {
-        res.tools.setJson(1, '文章不存在', doc)
+        res.tools.setJson(0, '文章不存在', doc)
       }
     })
     .catch(err => next(err));
@@ -108,11 +107,11 @@ class Articles {
   findArticleStatus(req, res, next) {
     const articlename = req.query.articlename;
     console.log(articlename)
-    this.articles.find({ articlename}, {articlename: 1, author: 1, status: 1, publishTime: 1, auditTime: 1, passTime: 1, revokeTime: 1 })
+    this.articles.findOne({ articlename}, {articlename: 1, author: 1, status: 1, publishTime: 1, auditTime: 1, passTime: 1, revokeTime: 1 })
     .then(doc => {
       if (!doc) {
         console.log(doc);
-        res.tools.setJson(1, '查询失败', []);
+        res.tools.setJson(0, '查询失败', []);
       } else {
         console.log(doc);
         res.tools.setJson(0, '查询成功', doc);
@@ -122,7 +121,23 @@ class Articles {
 
   solveArticleItem(req, res, next) {
    const { status, articlename } = req.body;
-   this.articles.updateOne({ articlename}, {$set: { status }})
+   console.log('status', status)
+   let passTime, auditTime, publishTime, revokeTime ='';
+   switch (status) {
+     case 1: publishTime = new Date();break;
+     case 2: auditTime = new Date();break;
+     case 3: passTime = new Date();break;
+     case 4: revokeTime = new Date();break;
+   }
+   this.articles.updateOne({ articlename}, {$set: { status, publishTime, auditTime, passTime, revokeTime }})
+   .then(doc => {
+     if(doc.nModified > 0) {
+        res.tools.setJson(0, '处理成功', doc);
+     } else {
+      res.tools.setJson(0, '处理失败', doc);
+     }
+   })
+   .catch(err => next(err));
   }
 
   getArticleByMutiKeys(req, res, next) {

@@ -17,7 +17,7 @@ export default class SystemHeader extends React.PureComponent {
   }
 
   componentDidMount() {
-    this.getUopLoginUserInfo()
+    // this.getUopLoginUserInfo()
   }
 
   getUopLoginUserInfo = () => {

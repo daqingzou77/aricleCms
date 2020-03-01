@@ -1,12 +1,21 @@
+/* eslint-disable default-case */
 import React from 'react';
-import { Table, Card, Badge, DatePicker, Input, Select, Button, Icon, Divider, Popconfirm, message } from 'antd';
+import { Table, Card, Badge, DatePicker, Input, Select, Button, Icon, Divider, Popconfirm, message, Form } from 'antd';
 import moment from 'moment';
 import Modal from '@/common/components/Modal';
 import ManageDetail from './component/ManageDetail';
+import {
+  getArticleList,
+  getArticleByOptions,
+  deleteArticleItem,
+  findArticleStatus,
+  solveArticleItem
+} from '@/services/articleSevice'
+
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
-class Manage extends React.Component{
+class Manage extends React.Component {
 
   columns = [{
     title: '文章名',
@@ -17,6 +26,16 @@ class Manage extends React.Component{
   }, {
     title: '文章类型',
     dataIndex: 'articleType',
+    render: (_, record) => {
+      let text;
+      switch (record.articleType) {
+        case 0: text = "科学"; break;
+        case 1: text = "历史"; break;
+        case 2: text = "文学"; break;
+        case 3: text = "体育"; break;
+      }
+      return text
+    }
   }, {
     title: '文章描述',
     dataIndex: 'ariticleDescription',
@@ -25,12 +44,12 @@ class Manage extends React.Component{
     dataIndex: 'status',
     render: (_, record) => {
       let publishSta;
-      switch(record.status) {
-        case 0: publishSta = {st: 'error', text: '未发布'}; break;
-        case 1: publishSta = {st: 'warning', text: '已发布'}; break;
-        case 2: publishSta = {st: 'processing', text: '审核中'}; break;
-        case 3: publishSta = {st: 'success', text: '通过'}; break;
-        case 4: publishSta = {st: 'default', text: '撤销'}
+      switch (record.status) {
+        case 0: publishSta = { st: 'error', text: '未发布' }; break;
+        case 1: publishSta = { st: 'warning', text: '已发布' }; break;
+        case 2: publishSta = { st: 'processing', text: '审核中' }; break;
+        case 3: publishSta = { st: 'success', text: '通过' }; break;
+        case 4: publishSta = { st: 'default', text: '撤销' }
       }
       return (
         <span>
@@ -39,24 +58,24 @@ class Manage extends React.Component{
       )
     }
   }, {
-    title: '时间',
+    title: '文章创建时间',
     dataIndex: 'createTime'
   }, {
     title: '操作',
     dataIndex: 'operation',
     render: (_, record) => {
       const that = this;
-      const { articlename, status} = record;
+      const { articlename, status } = record;
       return (
         <>
           <a onClick={() => {
-              that.handleSolve(articlename, status)
-            }}
+            that.handleSolve(articlename, status)
+          }}
           >
             处理
           </a>
           <Divider type="vertical" />
-          <Popconfirm placement="top" title="是否确认删除嘛?" onConfirm={this.confirm} okText="Yes" cancelText="No">
+          <Popconfirm placement="top" title="是否确认删除嘛?" onConfirm={() => this.handleConfirm(articlename)} okText="Yes" cancelText="No">
             <a href="" style={{ color: 'red' }}>删除</a>
           </Popconfirm>
         </>
@@ -67,29 +86,147 @@ class Manage extends React.Component{
   state = {
     visible: false,
     modal: '',
+    dataSource: [],
+    modalValue: {},
+    startTime: '',
+    endTime: '',
+    selectOption: 1,
+    param: ''
   }
 
-  confirm = () => {
-    message.success('删除成功');
+  componentDidMount() {
+    this.getArticleList();
+  }
+
+  handleDateChange = (date, string) => {
+    const { selectOption, param } = this.state;
+    const [startTime, endTime] = date;
+    this.setState({
+      startTime,
+      endTime
+    })
+    this.getArticleByOptions(param, startTime, endTime, selectOption);
+  }
+
+  handleOnChange = value => {
+    console.log('value', value);
+    const { param, startTime, endTime } = this.state;
+    this.setState({
+      selectOption: value
+    });
+    this.getArticleByOptions(param, startTime, endTime, value);
+  }
+
+  handleInputChange = e => {
+   const { startTime, endTime, selectOption } = this.state;
+   this.setState({
+     param: e.target.value
+   });
+   this.getArticleByOptions(e.target.value, startTime, endTime, selectOption);
+  }
+
+  // 条件查询
+  handleClickSeach = () => {
+    const { selectOption, startTime, endTime, param  } = this.state;
+    this.getArticleByOptions(param, startTime, endTime, selectOption)
+  }
+
+  getArticleByOptions =  (articlename, startTime, endTime, status ) => {
+    getArticleByOptions({
+      articlename,
+      startTime,
+      endTime,
+      status,
+    },({ data })=>{
+      console.log('getArticleByOptions-data', data);
+      this.setState({
+        dataSource: data
+      })
+    },
+    e => console.log('getArticleByOptions-error', e.toString())
+    )
+  }
+
+  // 查询所有文章信息
+  getArticleList = () => {
+    getArticleList({}, ({ data }) => {
+      data.map(item => {
+        item.createTime = `${moment(item.createTime).format('YYYY-MM-DD hh:mm:ss')}`
+      })
+      this.setState({
+        dataSource: data
+      })
+    },
+      e => console.log('getArticleList-error', e.toString())
+    )
+  }
+
+ // 删除
+  handleConfirm = articlename => {
+    deleteArticleItem({
+      articlename
+    }, ({data}) => {
+      if(data.deletedCount > 0) {
+        message.success('删除成功');
+      } else {
+        message.success('删除失败');
+      }
+    })
+   this.getArticleList();
   }
 
   // 0 未发布 1 已发布 2 审核中 3 通过 4 已撤销
   handleSolve = (articlename, status) => {
-    // this.props.history.push('/publish/Audit')
-    switch(status) {
-      case 0: this.setState({ modal: 'publish' });break;
-      case 1: this.setState({ modal: 'audit' });break;
-      case 2: this.setState({ modal: 'pass' });break;
-      case 3: this.setState({ modal: 'revoke' });break;
-      case 4: this.setState({ modal: 'none'}); break;
-      default: break;
-    }
-    this.setState({
-      visible: true
-    })
+    findArticleStatus({
+      articlename,
+    }, ({ data }) => {
+      console.log('findAriticleStatus-data', data)
+      switch (status) {
+        case 0: this.setState({ modal: 'publish' }); break;
+        case 1: this.setState({ modal: 'audit' }); break;
+        case 2: this.setState({ modal: 'pass' }); break;
+        case 3: this.setState({ modal: 'revoke' }); break;
+        case 4: this.setState({ modal: 'none' }); break;
+        default: break;
+      }
+      this.setState({
+        visible: true,
+        modalValue: data
+      })
+    },
+      e => console.log('findAriticleStatus-error', e.toString())
+    )
   }
 
+  // 处理文章
   handleOk = () => {
+    const { form } = this.props
+    form.validateFields((err, values) => {
+      if (!err) {
+        const { articlename, status } = values;
+        let state;
+        switch (status) {
+          case '未发布': state = 0;break;
+          case '发布中': state = 1;break;
+          case '审核中': state = 2;break
+          case '通过': state = 3;break
+          case '撤销': state = 4;
+        }
+        solveArticleItem({
+          articlename,
+          status: state
+        },
+          ({ data }) => {
+            console.log('solveArticleItem-data', data);
+            if (data.nModified > 0) {
+             this.getArticleList();
+              message.success('处理成功');
+            }
+          },
+          e => console.log('solveArticleItem-error', e.toString())
+        )
+      }
+    })
     this.setState({
       visible: false
     })
@@ -102,19 +239,8 @@ class Manage extends React.Component{
   }
 
   render() {
-    const { visible, modal } = this.state;
-    const dataSource = [];
-    for (let i = 0; i < 23; i++) {
-      dataSource.push({
-        articlename: `水浒绪论${i + 1}`,
-        author: '施耐庵',
-        articleType: '小说',
-        status: 3,
-        ariticleDescription: '本章节..',
-        createTime: `${moment(new Date).format('YYYY-MM-DD hh:mm:ss')}（发布）`
-      })
-    }
-    return(
+    const { visible, modal, dataSource, modalValue, selectOption } = this.state;
+    return (
       <>
         <Card>
           <RangePicker
@@ -126,26 +252,29 @@ class Manage extends React.Component{
           <Select
             style={{ marginRight: 10, width: 200 }}
             placeholder="请选择查询条件"
+            onChange={this.handleOnChange}
+            defaultValue={selectOption}
           >
-            <Option value={0}>未审核</Option>
-            <Option value={1}>审核中</Option>
-            <Option value={2}>已发布</Option>
-            <Option value={3}>已撤销</Option>
+            <Option value={1}>已发布</Option>
+            <Option value={2}>审核中</Option>
+            <Option value={3}>通过</Option>
+            <Option value={4}>已撤销</Option>
           </Select>
           <Input
             placeholder="请输入查询的文章名"
             style={{ width: 250 }}
+            onChange={this.handleInputChange}
           />
-          <Button type="primary" style={{ marginLeft: 10 }} icon="search">
+          <Button type="primary" style={{ marginLeft: 10 }} icon="search" onClick={this.handleClickSeach}>
             查找
           </Button>
         </Card>
-        <Card 
+        <Card
           style={{ marginTop: 10 }}
           title={<span style={{ fontWeight: 'bold' }}>文章列表</span>}
           extra={<div style={{ color: '#2884D8', cursor: 'pointer' }}><Icon type="reload" /> 刷新</div>}
         >
-          <Table 
+          <Table
             columns={this.columns}
             dataSource={dataSource}
             rowKey="id"
@@ -161,11 +290,11 @@ class Manage extends React.Component{
           okText="确认"
           cancelText="取消"
         >
-          <ManageDetail modalType={modal} />
+          <ManageDetail modalType={modal} modalValue={modalValue} form={this.props.form} />
         </Modal>
       </>
     )
   }
 }
 
-export default Manage;
+export default Form.create({ name: 'Manage' })(Manage);

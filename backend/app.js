@@ -25,7 +25,7 @@ app.use(log4js.connectLogger(logger('normal'), {level:'auto', format: ':method :
 app.use(bodyParse.json()); // 解析url信息中的参数
 app.use(bodyParse.urlencoded({ extended: false }));
 app.use(cookieParse(config.secret)); //解析签名cookie
-app.use(cors({ credentials: true, origin: 'http://localhost:8000'}));  // 响应带cookie的跨域请求
+app.use(cors());  // 响应带cookie的跨域请求
 
 
 // 设置session

@@ -26,41 +26,9 @@ class ScheduleLayout extends React.Component {
   }
 
   componentDidMount() {
-    // document.title = formatMessage({ id: 'guet.schedule.combat_duty_software' });
     document.title = '文章管理系统'
-    this.getUopUser();
-    this.getBacklogRemind();
   }
 
-  getBacklogRemind = () => {
-    getBacklogRemind({
-    },
-      ({ data }) => {
-        console.log('getBacklogRemind-data', data);
-        if (data !== undefined) {
-          const { isRemind, } = data;
-          this.setState({
-            isRemind,
-          })
-        }
-      },
-      e => console.log('getBacklogRemind-error', e.toString()),
-    )
-
-  }
-
-  getUopUser = () => {
-    getUopUser(
-      undefined,
-      ({ data }) => {
-        localStorage.setItem('userId', data.id);
-        localStorage.setItem('userName', data.userName);
-        localStorage.setItem('permission', data.permission);
-        this.initSocketIo(data.id);
-      },
-      () => { }
-    );
-  };
 
   initSocketIo = userId => {
     const { isRemind } = this.state;
