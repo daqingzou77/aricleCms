@@ -14,10 +14,12 @@ class Tools {
    */
   setJson(code, message, data) {
     return this.res.json({
-      meta: {
-        code: code || 0,
-        message: message
-      },
+      // meta: {
+      //   code: code || 0,
+      //   message: message
+      // },
+      code: code || 1,
+      message: message || '',
       data: data || null,
     })
   }

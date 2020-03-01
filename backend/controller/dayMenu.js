@@ -51,7 +51,6 @@ class DayMenus {
 
   updateMorning(req, res, next) {
     const { dishName = '', mornings } = req.body;
-    console.log(mornings);
     this.model.findOne({ dishName })
       .then(doc => {
         if (doc === null) {

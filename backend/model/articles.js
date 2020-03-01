@@ -35,15 +35,13 @@ const articleSchema = mongoose.Schema({
     author: String,
     articleType: Number, // 0 科学 1 历史 2 文学 3 体育
     ariticleDescription: String,
-    createTime: Date,
+    createTime: {type: Date, default: new Date()},
     status: {type: Number, default: 0}, // 0 未发布 1 已发布 2 审核中 3 通过 4 已撤销
     articleContents: String,
-    articleTime: [{
-      publishTime: Date,
-      auditTime: Date,
-      passTime: Date,
-      revokeTime: Date,
-    }],
+    publishTime: { type: Date, default: ''},
+    auditTime: { type: Date, default: ''},
+    passTime: { type: Date, default: ''},
+    revokeTime: { type: Date, default: ''},
     likes: {type: Number, default: 0},
     dislikes: {type: Number, default: 0},
     comments: {type: Number, default: 0},

@@ -1,7 +1,8 @@
-[2019-11-04T22:37:58.422] [INFO] normal - POST /api/user/toLogin 200
-[2019-11-04T22:40:41.616] [WARN] normal - GET /api/user/logOut 304
-[2019-11-04T22:40:47.364] [INFO] normal - GET /api/user/logOut 200
-[2019-11-04T22:40:58.424] [INFO] normal - GET /api/user/getCaptch 200
-[2019-11-04T22:41:01.796] [INFO] normal - OPTIONS /api/user/toLogin 204
-[2019-11-04T22:41:02.240] [INFO] normal - POST /api/user/toLogin 200
-[2019-11-04T22:44:12.671] [INFO] normal - GET /api/user/logOut 200
+[2020-03-01T18:28:34.307] [INFO] normal - GET /api/article/findArticleStatus?articlename=%E7%BA%A2%E6%A5%BC%E6%A2%A6 200
+[2020-03-01T18:28:43.245] [INFO] normal - GET /api/article/findArticleStatus 200
+[2020-03-01T18:29:02.370] [INFO] normal - GET /api/article/findArticleStatus 200
+[2020-03-01T18:29:23.984] [INFO] normal - GET /api/article/findArticleStatus 200
+[2020-03-01T18:29:35.961] [INFO] normal - GET /api/article/findArticleStatus?articlename=%E7%BA%A2%E6%A5%BC%E6%A2%A6 200
+[2020-03-01T18:29:48.353] [INFO] normal - GET /api/article/findArticleStatus?articlename=%E7%BA%A2%E6%A5%BC%E6%A2%A6 200
+[2020-03-01T18:30:11.279] [INFO] normal - GET /api/article/findArticleStatus?articlename=%E7%BA%A2%E6%A5%BC%E6%A2%A6 200
+[2020-03-01T18:31:14.956] [INFO] normal - GET /api/article/findArticleStatus?articlename=%E7%BA%A2%E6%A5%BC%E6%A2%A6 200

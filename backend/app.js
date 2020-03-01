@@ -43,14 +43,14 @@ app.use(session({
 app.use(/\/api/, tools);
 app.use(/\/api/, express.static('public'));
 
-app.use(/\/api/, (req, res, next) => {
-  console.log(req.session.userName);
-  if (req.session.userName || req.path.indexOf('/user/toLogin') !== -1 || req.path.indexOf('/user/getCaptch') !== -1 ) {
-    next();
-  } else {
-    res.tools.setJson(503, '无访问权限', []);
-  }
-});
+// app.use(/\/api/, (req, res, next) => {
+//   console.log(req.session.userName);
+//   if (req.session.userName || req.path.indexOf('/user/toLogin') !== -1 || req.path.indexOf('/user/getCaptch') !== -1 ) {
+//     next();
+//   } else {
+//     res.tools.setJson(503, '无访问权限', []);
+//   }
+// });
 
 routes(app);
 

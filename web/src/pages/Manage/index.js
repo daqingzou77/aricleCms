@@ -152,7 +152,7 @@ class Manage extends React.Component{
           />
         </Card>
         <Modal
-          title={modal}
+          title="文章处理"
           visible={visible}
           onOk={this.handleOk}
           onCancel={this.handleCancel}

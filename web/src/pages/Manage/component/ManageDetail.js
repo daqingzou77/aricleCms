@@ -7,7 +7,7 @@ class ManageDetai extends React.Component {
     const { form, modalType } = this.props;
     const FormElementProps = {
       form,
-      width: 300
+      width: 350
     }
     const plainOptions = ['未发布','发布中','审核中', '通过','撤销'];
     let label = {};
@@ -40,6 +40,7 @@ class ManageDetai extends React.Component {
             label="文章状态"
             field="status"
             type="radio-group"
+            width={350}
             options={plainOptions}
             initialValue={label.init}
             form={this.props.form}
