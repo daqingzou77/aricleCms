@@ -23,24 +23,34 @@ class Manage extends React.Component{
   }, {
     title: '文章状态',
     dataIndex: 'status',
-    render: () => (
-      <span>
-        <Badge status="success" />
-        已发布
-      </span>
-    ),
+    render: (_, record) => {
+      let publishSta;
+      switch(record.status) {
+        case 0: publishSta = {st: 'error', text: '未发布'}; break;
+        case 1: publishSta = {st: 'warning', text: '已发布'}; break;
+        case 2: publishSta = {st: 'processing', text: '审核中'}; break;
+        case 3: publishSta = {st: 'success', text: '通过'}; break;
+        case 4: publishSta = {st: 'default', text: '撤销'}
+      }
+      return (
+        <span>
+          <Badge status={publishSta.st} text={publishSta.text} />
+        </span>
+      )
+    }
   }, {
-    title: '发布时间',
-    dataIndex: 'createTime',
+    title: '时间',
+    dataIndex: 'createTime'
   }, {
     title: '操作',
     dataIndex: 'operation',
     render: (_, record) => {
       const that = this;
+      const { articlename, status} = record;
       return (
         <>
           <a onClick={() => {
-              that.handleSolve(record.articlename)
+              that.handleSolve(articlename, status)
             }}
           >
             处理
@@ -55,19 +65,28 @@ class Manage extends React.Component{
   }]
 
   state = {
-    visible: false
+    visible: false,
+    modal: '',
   }
 
   confirm = () => {
     message.success('删除成功');
   }
 
-
-  handleSolve = articlename => {
-    this.props.history.push('/publish/Audit')
-    // this.setState({
-    //   visible: true
-    // })
+  // 0 未发布 1 已发布 2 审核中 3 通过 4 已撤销
+  handleSolve = (articlename, status) => {
+    // this.props.history.push('/publish/Audit')
+    switch(status) {
+      case 0: this.setState({ modal: 'publish' });break;
+      case 1: this.setState({ modal: 'audit' });break;
+      case 2: this.setState({ modal: 'pass' });break;
+      case 3: this.setState({ modal: 'revoke' });break;
+      case 4: this.setState({ modal: 'none'}); break;
+      default: break;
+    }
+    this.setState({
+      visible: true
+    })
   }
 
   handleOk = () => {
@@ -83,15 +102,16 @@ class Manage extends React.Component{
   }
 
   render() {
-    const { visible } = this.state;
+    const { visible, modal } = this.state;
     const dataSource = [];
     for (let i = 0; i < 23; i++) {
       dataSource.push({
         articlename: `水浒绪论${i + 1}`,
         author: '施耐庵',
         articleType: '小说',
+        status: 3,
         ariticleDescription: '本章节..',
-        createTime: moment(new Date).format('YYYY-MM-DD hh:mm:ss')
+        createTime: `${moment(new Date).format('YYYY-MM-DD hh:mm:ss')}（发布）`
       })
     }
     return(
@@ -132,7 +152,7 @@ class Manage extends React.Component{
           />
         </Card>
         <Modal
-          title="处理详情"
+          title={modal}
           visible={visible}
           onOk={this.handleOk}
           onCancel={this.handleCancel}
@@ -141,7 +161,7 @@ class Manage extends React.Component{
           okText="确认"
           cancelText="取消"
         >
-          <ManageDetail />
+          <ManageDetail modalType={modal} />
         </Modal>
       </>
     )

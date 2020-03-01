@@ -5,35 +5,58 @@ import mongoose from 'mongoose';
  * 文章名 articlename
  * 头像 avatar
  * 作者 author
- * 文章类型 articleType 科学 0、历史 1、纪实 2、文学 3、体育 4、明星 5
+ * 文章类型 articleType 0 科学 1 历史 2 文学 3 体育
  * 文章描述 ariticleDescription
  * 创建时间 createTime
- * 状态 status  0 未发布 1 审核中 2 通过
- * 文章内容 articleContents: [{ 
-      章节 section
-      章节内容 content
-      章节时间 sectionTime
-      状态 status  0 未发布 1 审核中 2 通过
-      发布时间 publishTime
-      审核时间 auditTime
-      通过时间 passTime
-      点赞数 likes   
-      拉黑数 dislikes
-      评论数 comments
-      收藏数 favorites
-      评论 commentList：[{ username, commentContent, commentTime }]
-    }]
+ * 状态 status  0 未发布 1 已发布 2 审核中 3 通过 4 已撤销
+ * 文章内容 articleContents 
+ * 文章时间 articleTime: [{
+ *   发布时间 publishTime
+     审核时间 auditTime
+     通过时间 passTime
+     撤销时间 revokeTime
+  }]
+   点赞数 likes   
+   拉黑数 dislikes
+   评论数 comments
+   收藏数 favorites
+   评论内容 commentList：[{ 
+     评论人 commenter, 
+     评论内容 commentContent, 
+     评论时间 commentTime
+     点赞 likes   
+     拉黑 dislikes
+   }]
  * 
  */
-const article = mongoose.Schema({
+const articleSchema = mongoose.Schema({
     articlename: String,
     avatar: String,
     author: String,
-    articleType: Number,
+    articleType: Number, // 0 科学 1 历史 2 文学 3 体育
     ariticleDescription: String,
     createTime: Date,
-    status: Number,
+    status: {type: Number, default: 0}, // 0 未发布 1 已发布 2 审核中 3 通过 4 已撤销
     articleContents: String,
+    articleTime: [{
+      publishTime: Date,
+      auditTime: Date,
+      passTime: Date,
+      revokeTime: Date,
+    }],
+    likes: {type: Number, default: 0},
+    dislikes: {type: Number, default: 0},
+    comments: {type: Number, default: 0},
+    favorites: {type: Number, default: 0},
+    commentList: [{
+      commenter: String,
+      CommentContent: String,
+      commentTime: Date,
+      likes: {type: Number, default: 0},
+      dislikes: {type: Number, default: 0}
+    }]
 });
 
-export default mongoose.model('article', article)
+articleSchema.index({id: 1});
+
+export default mongoose.model('article', articleSchema)
