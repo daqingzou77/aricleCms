@@ -168,7 +168,7 @@ class Science extends React.Component {
             <Card
               title={<span style={{ fontWeight: 'bold' }}>搜索结果</span>}
             >
-              <Empty />
+              <Empty description={<span>无匹配结果</span>}  />
             </Card>
           </Col>
         </Row>
@@ -181,7 +181,7 @@ class Science extends React.Component {
             >
               <List
                 itemLayout="vertical"
-                dataSource={hotArticles}
+                // dataSource={hotArticles}
                 renderItem={item => (
                   <List.Item
                     key={item.articlename}

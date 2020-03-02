@@ -116,7 +116,7 @@ class Home extends React.Component {
             >
               <List
                 itemLayout="vertical"
-                dataSource={listData}
+                // dataSource={listData}
                 renderItem={item => (
                   <List.Item
                     key={item.name}
@@ -148,7 +148,7 @@ class Home extends React.Component {
             >
               <List
                 itemLayout="vertical"
-                dataSource={hotArticles}
+                // dataSource={hotArticles}
                 renderItem={item => (
                   <List.Item
                     key={item.articlename}

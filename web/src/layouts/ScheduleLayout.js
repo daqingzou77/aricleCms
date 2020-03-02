@@ -1,17 +1,22 @@
 import React from 'react';
 import { formatMessage, getLocale, setLocale } from 'umi/locale';
+import { ConfigProvider } from 'antd';
+import { FrownOutlined } from '@ant-design/icons';
 import Cookies from 'universal-cookie';
-import { Modal } from 'antd';
 import SocketIo from 'socket.io-client';
 import moment from 'moment';
 import SystemHeader from '../components/SystemHeader';
 import SystemMenu from '../components/SystemMenu';
 import styles from './Schedule.less';
 import SystemFooter from '../components/SystemFooter';
-import { getUopUser, getBacklogRemind } from '@/services/scheduleService';
+// import { getUopUser, getBacklogRemind } from '@/services/scheduleService';
 
-
-const { error, warning } = Modal;
+const customizeRenderEmpty = () => (
+  <div style={{ textAlign: 'center', }}>
+    <FrownOutlined style={{ fontSize: 30, marginTop: '50%' }} />
+    <p style={{ fontWeight: 'bold'}}>暂无数据</p>
+  </div>
+);
 class ScheduleLayout extends React.Component {
   constructor(props) {
     super(props);
@@ -22,7 +27,7 @@ class ScheduleLayout extends React.Component {
   }
 
   componentWillMount() {
-    this.checkLocale();
+    // this.checkLocale();
   }
 
   componentDidMount() {
@@ -132,8 +137,11 @@ class ScheduleLayout extends React.Component {
       <>
         <SystemHeader />
         <SystemMenu changeOpenToolbar={this.changeOpenToolbar} />
+        
         <div style={{ top: isOpenToolbar ? 109 + 45 : 30 + 45 }} className={styles.content}>
-          {children}
+          <ConfigProvider renderEmpty={customizeRenderEmpty}>
+           {children}
+          </ConfigProvider>
         </div>
         <SystemFooter />
       </>

@@ -126,7 +126,7 @@ class Health extends React.Component {
             <Card
               title={<span style={{ fontWeight: 'bold' }}>搜索结果</span>}
             >
-              <Empty />
+              <Empty description={false} />
             </Card>
           </Col>
         </Row>

@@ -1,7 +1,8 @@
 /* eslint-disable default-case */
 import React from 'react';
-import { Table, Card, Badge, DatePicker, Input, Select, Button, Icon, Divider, Popconfirm, message, Form } from 'antd';
+import { Table, Card, Badge, DatePicker, Input, Select, Button, Icon, Divider, Popconfirm, message, Form, ConfigProvider } from 'antd';
 import moment from 'moment';
+import { MehOutlined } from '@ant-design/icons';
 import Modal from '@/common/components/Modal';
 import ManageDetail from './component/ManageDetail';
 import {
@@ -15,6 +16,14 @@ import {
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
+
+const customizeRenderEmpty = () => (
+  <div style={{ textAlign: 'center' }}>
+    <MehOutlined style={{ fontSize: 20 }} />
+    <p>暂无数据</p>
+  </div>
+);
+
 class Manage extends React.Component {
 
   columns = [{
@@ -118,32 +127,32 @@ class Manage extends React.Component {
   }
 
   handleInputChange = e => {
-   const { startTime, endTime, selectOption } = this.state;
-   this.setState({
-     param: e.target.value
-   });
-   this.getArticleByOptions(e.target.value, startTime, endTime, selectOption);
+    const { startTime, endTime, selectOption } = this.state;
+    this.setState({
+      param: e.target.value
+    });
+    this.getArticleByOptions(e.target.value, startTime, endTime, selectOption);
   }
 
   // 条件查询
   handleClickSeach = () => {
-    const { selectOption, startTime, endTime, param  } = this.state;
+    const { selectOption, startTime, endTime, param } = this.state;
     this.getArticleByOptions(param, startTime, endTime, selectOption)
   }
 
-  getArticleByOptions =  (articlename, startTime, endTime, status ) => {
+  getArticleByOptions = (articlename, startTime, endTime, status) => {
     getArticleByOptions({
       articlename,
       startTime,
       endTime,
       status,
-    },({ data })=>{
+    }, ({ data }) => {
       console.log('getArticleByOptions-data', data);
       this.setState({
         dataSource: data
       })
     },
-    e => console.log('getArticleByOptions-error', e.toString())
+      e => console.log('getArticleByOptions-error', e.toString())
     )
   }
 
@@ -161,18 +170,18 @@ class Manage extends React.Component {
     )
   }
 
- // 删除
+  // 删除
   handleConfirm = articlename => {
     deleteArticleItem({
       articlename
-    }, ({data}) => {
-      if(data.deletedCount > 0) {
+    }, ({ data }) => {
+      if (data.deletedCount > 0) {
         message.success('删除成功');
       } else {
         message.success('删除失败');
       }
     })
-   this.getArticleList();
+    this.getArticleList();
   }
 
   // 0 未发布 1 已发布 2 审核中 3 通过 4 已撤销
@@ -206,10 +215,10 @@ class Manage extends React.Component {
         const { articlename, status } = values;
         let state;
         switch (status) {
-          case '未发布': state = 0;break;
-          case '发布中': state = 1;break;
-          case '审核中': state = 2;break
-          case '通过': state = 3;break
+          case '未发布': state = 0; break;
+          case '发布中': state = 1; break;
+          case '审核中': state = 2; break
+          case '通过': state = 3; break
           case '撤销': state = 4;
         }
         solveArticleItem({
@@ -219,7 +228,7 @@ class Manage extends React.Component {
           ({ data }) => {
             console.log('solveArticleItem-data', data);
             if (data.nModified > 0) {
-             this.getArticleList();
+              this.getArticleList();
               message.success('处理成功');
             }
           },
@@ -274,11 +283,14 @@ class Manage extends React.Component {
           title={<span style={{ fontWeight: 'bold' }}>文章列表</span>}
           extra={<div style={{ color: '#2884D8', cursor: 'pointer' }}><Icon type="reload" /> 刷新</div>}
         >
-          <Table
-            columns={this.columns}
-            dataSource={dataSource}
-            rowKey="id"
-          />
+          <ConfigProvider renderEmpty={customizeRenderEmpty}>
+            <Table
+              columns={this.columns}
+              dataSource={dataSource}
+              rowKey="id"
+            />
+
+          </ConfigProvider>
         </Card>
         <Modal
           title="文章处理"
