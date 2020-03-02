@@ -1,8 +1,3 @@
-[2020-03-01T18:28:34.307] [INFO] normal - GET /api/article/findArticleStatus?articlename=%E7%BA%A2%E6%A5%BC%E6%A2%A6 200
-[2020-03-01T18:28:43.245] [INFO] normal - GET /api/article/findArticleStatus 200
-[2020-03-01T18:29:02.370] [INFO] normal - GET /api/article/findArticleStatus 200
-[2020-03-01T18:29:23.984] [INFO] normal - GET /api/article/findArticleStatus 200
-[2020-03-01T18:29:35.961] [INFO] normal - GET /api/article/findArticleStatus?articlename=%E7%BA%A2%E6%A5%BC%E6%A2%A6 200
-[2020-03-01T18:29:48.353] [INFO] normal - GET /api/article/findArticleStatus?articlename=%E7%BA%A2%E6%A5%BC%E6%A2%A6 200
-[2020-03-01T18:30:11.279] [INFO] normal - GET /api/article/findArticleStatus?articlename=%E7%BA%A2%E6%A5%BC%E6%A2%A6 200
-[2020-03-01T18:31:14.956] [INFO] normal - GET /api/article/findArticleStatus?articlename=%E7%BA%A2%E6%A5%BC%E6%A2%A6 200
+[2020-03-02T10:47:32.692] [INFO] normal - POST /api/article/solveArticleItem 200
+[2020-03-02T10:47:32.706] [INFO] normal - OPTIONS /api/article/getArticleList 204
+[2020-03-02T10:47:32.711] [INFO] normal - GET /api/article/getArticleList 200
