@@ -19,7 +19,9 @@ class Articles {
     this.app.get('/api/article/findArticleStatus', this.findArticleStatus.bind(this)); // 获取文章处理信息
     this.app.post('/api/article/solveArticleItem', this.solveArticleItem.bind(this)); // 处理单例文章信息 
 
-    this.app.post('/api/article/getArticleByMutiKeys', this.getArticleByMutiKeys.bind(this)); // 多关键字查询
+    // this.app.post('/api/article/getArticleByMutiKeys', this.getArticleByMutiKeys.bind(this)); // 多关键字查询
+    this.app.post('/api/article/')
+
   }
   
   addArticle(req, res, next) {
@@ -140,9 +142,6 @@ class Articles {
    .catch(err => next(err));
   }
 
-  getArticleByMutiKeys(req, res, next) {
-    
-  }
 }
 
 export default Articles;

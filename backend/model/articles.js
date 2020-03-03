@@ -46,6 +46,7 @@ const articleSchema = mongoose.Schema({
     dislikes: {type: Number, default: 0},
     comments: {type: Number, default: 0},
     favorites: {type: Number, default: 0},
+    keywords: {type: Array, default: []},
     commentList: [{
       commenter: String,
       CommentContent: String,
