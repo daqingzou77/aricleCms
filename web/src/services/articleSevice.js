@@ -2,11 +2,6 @@ import { get, post, deletes, put } from '../common/http';
 
 const scheduleBaseUrl = process.env.apiBaseUrl;
 
-// 新增文章
-export const addArticle = (data, successCb, failCb) => {
-  post(`${scheduleBaseUrl}/api/article/addArticle`, data, successCb, failCb);
-};
-
 // 获取文章信息列表
 export const getArticleList = (data, successCb, failCb) => {
   get(`${scheduleBaseUrl}/api/article/getArticleList`, data, successCb, failCb);

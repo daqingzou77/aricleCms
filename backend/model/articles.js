@@ -34,7 +34,7 @@ const articleSchema = mongoose.Schema({
     avatar: String,
     author: String,
     articleType: Number, // 0 科学 1 历史 2 文学 3 体育
-    ariticleDescription: String,
+    articleDescription: String,
     createTime: {type: Date, default: new Date()},
     status: {type: Number, default: 0}, // 0 未发布 1 已发布 2 审核中 3 通过 4 已撤销
     articleContents: String,

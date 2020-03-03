@@ -8,6 +8,13 @@ import moment from 'moment';
 import Modal from '@/common/components/Modal';
 import AddModal from './component/AddModal';
 import UploadModal from './component/UploadModal';
+import {
+  saveArticleRecord,
+  publishArticle,
+  getEditRecord,
+  getArticleDetail,
+  getPublishedArtilces
+} from '@/services/publishService'
 import styles from './styles.less';
 
 class PublishOnline extends React.Component {
@@ -23,7 +30,7 @@ class PublishOnline extends React.Component {
     dataIndex: 'articleType',
   }, {
     title: '文章简述',
-    dataIndex: 'ariticleDescription',
+    dataIndex: 'articleDescription',
   }, {
     title: '文章状态',
     dataIndex: 'status',
@@ -35,25 +42,52 @@ class PublishOnline extends React.Component {
     ),
   }, {
     title: '发布时间',
-    dataIndex: 'createTime',
+    dataIndex: 'publishTime',
+    render: (_, record) => (
+      <span>{moment(record.create).format('YYYY-MM-DD hh:mm:ss')}</span>
+    )
   }]
 
   state = {
     showRichText: false,
     editorContent: '',
     editorState: '',
+    dataSource: [],
     addModalVisible: false,
     uploadModalVisble: false,
+    currentName: '',
+    currentAuthor: '',
+    currentType: '',
   }
+
+   componentDidMount() {
+     this.getPublishedArtilces();
+   }
+
+   // 获取已发布文章列表
+   getPublishedArtilces = () => {
+    getPublishedArtilces({},({ data }) => {
+      this.setState({
+        dataSource: data
+      })
+    },
+    e => console.log('getPublishedArtilces-error', e.toString())
+    )
+   }
 
   // 保存文章编辑
   handleSaveEdit = () => {
-    const { blocks } = this.state.editorContent;
-    console.log(this.state.editorContent);
-    this.setState({
-      content: this.state.editorContent
-    })
-    message.success('保存编辑成功！');
+    const { editorContent, currentName, currentAuthor } = this.state;
+    saveArticleRecord({
+      editTitle: currentName,
+      editAuthor: currentAuthor,
+      editContent: editorContent
+    }, ({ data }) => {
+      console.log(data);
+      message.success('保存编辑成功！');
+    },
+    e => console.log('saveArticleRecord-error', e.toString())
+    )
   }
 
   // 新增章节内容弹窗
@@ -66,13 +100,16 @@ class PublishOnline extends React.Component {
   handleArticleOk = () => {
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        const { articlename, author, ...keywords } = values
-        console.log('keywords', keywords);
+        const { articlename, author, articleType } = values
+        this.setState({
+          addModalVisible: false,
+          currentName: articlename,
+          currentAuthor: author,
+          currentType: articleType,
+        })
       }
     })
-    this.setState({
-      addModalVisible: false
-    })
+   
   }
 
   handleArticleCancel = () => {
@@ -134,18 +171,16 @@ class PublishOnline extends React.Component {
   }
 
   render() {
-    const { editorState, editorContent, showRichText, addModalVisible, uploadModalVisble } = this.state;
+    const { editorState, editorContent, showRichText, dataSource, addModalVisible, uploadModalVisble, currentName, currentAuthor, currentType } = this.state;
     const { form } = this.props;
-    const dataSource = [];
-    for (let i = 0; i < 23; i++) {
-      dataSource.push({
-        articlename: `水浒绪论${i + 1}`,
-        author: '施耐庵',
-        articleType: '小说',
-        ariticleDescription: '本章节..',
-        createTime: moment(new Date).format('YYYY-MM-DD hh:mm:ss')
-      })
+    let type;
+    switch(currentType) {
+      case 0: type = '科学';break;
+      case 1: type = '历史';break;
+      case 2: type = '文学';break;
+      case 3: type = '体育';break;
     }
+
 
     const content = (
       <InfiniteScroll style={{ height: 100, overFlow: 'auto' }}>
@@ -166,7 +201,7 @@ class PublishOnline extends React.Component {
           <Button type="primary" icon="upload" style={{ marginLeft: 15 }} onClick={this.handleUploadModal}>文章上传</Button>
         </Card>
         <Card
-          title={<span style={{ fontWeight: 'bold' }}>三国演义</span>}
+          title={<span style={{ fontWeight: 'bold' }}>文章编辑{currentName ? `---${type}` : null}</span>}
           extra={
             <Popover placement="bottom" title="记录详情" content={content} trigger="click">
               <span style={{ color: '#2884D8', cursor: 'pointer' }}>
@@ -176,7 +211,8 @@ class PublishOnline extends React.Component {
           }
         >
           <div className={styles.sectionName}>
-            文章名： <Input value="三国演义" disabled style={{ width: 300 }} />
+            文章名称： <Input value={currentName} disabled style={{ width: 300, marginRight: 15 }} />
+            文章作者： <Input value={currentAuthor} disabled style={{ width: 300 }} />
           </div>
           <Editor
             editorState={editorState}
@@ -199,7 +235,7 @@ class PublishOnline extends React.Component {
             rowKey="id"
             expandedRowRender={record => (
               <div style={{ margin: 0, textAlign: 'left' }}>
-                {keys.map((item, index) => {
+                {record.keywords.map((item, index) => {
                   return (
                     <span>关键词{index + 1}：<Tag>{item}</Tag></span>
                   )

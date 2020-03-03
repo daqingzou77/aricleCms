@@ -5,7 +5,9 @@
 // import users from '../controller/user';
 // import vedioList from '../controller/vedioList';
 import Articles from '../controller/article'; 
+import Publish from '../controller/publish';
 
 export default (app)=> {
   new Articles(app);
+  new Publish(app);
 }

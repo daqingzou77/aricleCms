@@ -2,11 +2,6 @@ import { get, post } from '../common/http';
 
 const scheduleBaseUrl = process.env.apiBaseUrl;
 
-// 新增文章
-export const addPublishOnlineArticle = (data, successCb, failCb) => {
-  post(`${scheduleBaseUrl}/api/publishOnline/addPublishOnlineArticle`, data, successCb, failCb);
-}
-
 // 保存文章编辑记录
 export const saveArticleRecord = (data, successCb, failCb) => {
   post(`${scheduleBaseUrl}/api/publishOnline/saveArticleRecord`, data, successCb, failCb);
