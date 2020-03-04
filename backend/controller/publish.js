@@ -68,7 +68,8 @@ class PublishOnline {
 
   getPublishedArtilces(req, res, next) {  
     this.articles.find({
-      status: 0
+      status: 0,
+      articleType: 0
     })
     .then(doc => {
       return res.tools.setJson(0, '获取发布文章成功', doc);t     

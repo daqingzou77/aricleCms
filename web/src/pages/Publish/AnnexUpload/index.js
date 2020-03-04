@@ -4,6 +4,12 @@ import moment from 'moment';
 import { PlusCircleOutlined, MinusCircleOutlined } from '@ant-design/icons';
 import InfiniteScroll from 'react-infinite-scroller';
 import FormElement from '@/components/FormElement';
+import {
+  annexUpload,
+  downloadAnnex,
+  articleAnnexUpload,
+  getAnnexRecord
+} from '@/services/annexService'
 import styles from './style.less';
 
 const { Dragger } = Upload;
@@ -41,6 +47,20 @@ class AnnexUpload extends React.Component {
     required: true,
     keysArrays: [1],
   }
+ 
+  componentDidMount() {
+    this.getAnnexRecord();
+  }
+
+  getAnnexRecord = () => {
+    getAnnexRecord({},({ data }) => {
+      this.state({
+        dataSource: data
+      })
+    },
+    e => console.log('getAnnexRecord-error', e.toString())
+    )
+  }
 
   handleAddKeys = () => {
     const { keysArrays } = this.state;
@@ -62,9 +82,54 @@ class AnnexUpload extends React.Component {
     })
   }
 
+  handleOnBefore = file => {
+    const { name } = file;
+    console.log('name', name);
+    const newName = name.substring(name.lastIndexOf('.'), name.length);
+    if(newName !== '.doc' || newName !== '.docx') {
+      message.warning('请选择文档');
+      return;
+    }
+  }
+
+  handleOnComfirm = () => {
+    const { form } = this.props;
+    form.validateFields((err, values) => {
+      if (!err) {
+        const { articlename, author, articleType, articleDescription, ...keyword } = values;
+        const keywords = [];
+        for (let obj in keyword) {
+          keywords.push(keyword[obj]);
+        }
+        articleAnnexUpload({
+          articlename,
+          author,
+          articleType,
+          articleForm: 0,
+          articleDescription,
+          keywords
+        }, ({ data }) => {
+          if (data.length === 0) {
+            message.error('该文章已存在！');
+          } else {
+            message.success('文章发布成功！');
+            this.getAnnexRecord();
+          }
+          form.resetFileds();
+        },
+          e => console.log('publishArticle-error', e.toString())
+        )
+      }
+    })
+  }
+
+  handleReset = () => {
+    this.props.form.resetFields();
+  }
+
   render() {
     const { form } = this.props;
-    const { required, keysArrays } = this.state;
+    const { required, keysArrays,dataSource } = this.state;
     const options = [{
       label: '科学',
       value: 0
@@ -84,33 +149,24 @@ class AnnexUpload extends React.Component {
       width: 620,
     }
 
-    const dataSource = [];
-    for (let i = 0; i < 23; i++) {
-      dataSource.push({
-        articlename: `水浒绪论${i + 1}`,
-        author: '施耐庵',
-        articleType: '小说',
-        ariticleDescription: '本章节..',
-        createTime: moment(new Date).format('YYYY-MM-DD hh:mm:ss')
-      })
-    }
-
     const props = {
       name: 'file',
       multiple: true,
-      action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
-      onChange(info) {
-        const { status } = info.file;
-        if (status !== 'uploading') {
-          console.log(info.file, info.fileList);
-        }
-        if (status === 'done') {
-          message.success(`${info.file.name} file uploaded successfully.`);
-        } else if (status === 'error') {
-          message.error(`${info.file.name} file upload failed.`);
-        }
-      },
+      action: 'http://localhost:9999/api/annex/annexUpload',
+
+      // onChange(info) {
+      //   const { status } = info.file;
+      //   if (status !== 'uploading') {
+      //     console.log(info.file, info.fileList);
+      //   }
+      //   if (status === 'done') {
+      //     message.success(`${info.file.name} file uploaded successfully.`);
+      //   } else if (status === 'error') {
+      //     message.error(`${info.file.name} file upload failed.`);
+      //   }
+      // },
     };
+
     const keywords = (
       <InfiniteScroll className={keysArrays.length > 3 ? styles.annexScroll : null}>
         {
@@ -148,7 +204,7 @@ class AnnexUpload extends React.Component {
     return (
       <>
         <Card
-          title={<span style={{ fontWeight: 'bold' }}>文章附件上传</span>}
+          title={<span style={{ fontWeight: 'bold' }}>文章上传</span>}
           extra={<span style={{ cursor: 'pointer', color: '#2884D8' }}><Icon type="reload" /> 刷新</span>}
         >
           <Row type="flex" justify="space-around" align="middle">
@@ -156,35 +212,42 @@ class AnnexUpload extends React.Component {
               <Form>
                 <FormElement
                   {...FormElementProps}
-                  label="文件标题"
-                  field="annexName"
+                  label="文章标题"
+                  field="articlename"
                   required={required}
+                  autoComplete="off"
                 />
                 <FormElement
                   {...FormElementProps}
-                  label="文件作者"
-                  field="annexAuthor"
+                  label="文章作者"
+                  field="author"
                   required={required}
+                  autoComplete="off"
                 />
                 <FormElement
                   {...FormElementProps}
-                  label="文件类型"
-                  field="annexType"
+                  label="文章类型"
+                  field="articleType"
                   type="select"
                   options={options}
                   required={required}
+                  autoComplete="off"
                 />
                 {keywords}
                 <FormElement
                   {...FormElementProps}
-                  label="文件简述"
-                  field="annexDescription"
+                  label="文章简述"
+                  field="articleDescription"
                   type="textarea"
                   rows={3}
                   required={required}
+                  autoComplete="off"
                 />
                 <FormElement>
-                  <Dragger {...props}>
+                  <Dragger 
+                    {...props}
+                    beforeUpload={this.handleOnBefore}
+                  >
                     <p className="ant-upload-drag-icon">
                       <Icon type="inbox" />
                     </p>
@@ -192,8 +255,22 @@ class AnnexUpload extends React.Component {
                   </Dragger>
                 </FormElement>
                 <FormElement style={{ textAlign: 'center' }}>
-                  <Button type="primary" icon="upload" style={{ width: "40%", marginRight: 10 }}>确认发布</Button>
-                  <Button type="danger" icon="delete" style={{ width: '40%' }}>内容重置</Button>
+                  <Button
+                    type="primary"
+                    icon="upload" 
+                    style={{ width: "40%", marginRight: 10 }}
+                    onClick={this.handleOnComfirm}
+                  >
+                    确认发布
+                  </Button>
+                  <Button 
+                    type="danger"
+                    icon="delete" 
+                    style={{ width: '40%' }}
+                    onClick={this.handleReset}
+                  >
+                    内容重置
+                  </Button>
                 </FormElement>
               </Form>
             </Col>

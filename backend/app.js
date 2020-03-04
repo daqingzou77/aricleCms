@@ -57,11 +57,15 @@ routes(app);
 app.use((req, res, next) => {
   const err = new Error('Not Found');
   err.status = 404;
+  err.message = '系统未发现'
   next(err);
 });
 
 app.use((err, req, res, next) => {
-  res.tools.setJson(err.status || 500, '发生错误', []);
+  res.send({
+    status: err.status || 500, 
+    message: err.message || '发生错误'
+  });
 });
 
 export default app;

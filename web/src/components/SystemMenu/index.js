@@ -88,7 +88,7 @@ const menuList = [
       },
       {
         key: 302,
-        title: '文件上传',
+        title: '文章上传',
         icon: icSituation,
         path: '/publish/AnnexUpload',
       },

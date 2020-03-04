@@ -6,8 +6,10 @@
 // import vedioList from '../controller/vedioList';
 import Articles from '../controller/article'; 
 import Publish from '../controller/publish';
+import Annex from '../controller/annex';
 
 export default (app)=> {
   new Articles(app);
   new Publish(app);
+  new Annex(app);
 }
