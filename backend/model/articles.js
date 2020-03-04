@@ -38,6 +38,7 @@ const articleSchema = mongoose.Schema({
     createTime: {type: Date, default: new Date()},
     status: {type: Number, default: 0}, // 0 未发布 1 已发布 2 审核中 3 通过 4 已撤销
     articleContents: String,
+    articleForm: Number, // 0 在线发布 1 附件上传
     publishTime: { type: Date, default: ''},
     auditTime: { type: Date, default: ''},
     passTime: { type: Date, default: ''},

@@ -1,10 +1,15 @@
 import React from 'react';
 import { Upload, Form, Card, Row, Col, Icon, message, Table, Badge, Button } from 'antd';
 import moment from 'moment';
-import FormELement from '@/components/FormElement';
+import { PlusCircleOutlined, MinusCircleOutlined } from '@ant-design/icons';
+import InfiniteScroll from 'react-infinite-scroller';
+import FormElement from '@/components/FormElement';
+import styles from './style.less';
 
 const { Dragger } = Upload;
 class AnnexUpload extends React.Component {
+
+  id = 1;
 
   columns = [{
     title: '文章名',
@@ -32,17 +37,49 @@ class AnnexUpload extends React.Component {
     dataIndex: 'createTime',
   }]
 
+  state = {
+    required: true,
+    keysArrays: [1],
+  }
+
+  handleAddKeys = () => {
+    const { keysArrays } = this.state;
+    if (this.id > 10) {
+      message.warning('关键词输入以达到上限');
+    }
+    keysArrays.push(++this.id);
+    this.setState({
+      keysArrays
+    })
+  }
+
+  handleMinusKeys = () => {
+    const { keysArrays } = this.state;
+    if (this.id === 1) return;
+    keysArrays.pop();
+    this.setState({
+      keysArrays
+    })
+  }
+
   render() {
     const { form } = this.props;
+    const { required, keysArrays } = this.state;
     const options = [{
-      label: 'options1',
-      value: 'options1'
+      label: '科学',
+      value: 0
     }, {
-      label: 'options2',
-      value: 'options2'
+      label: '历史',
+      value: 1
+    }, {
+      label: '文学',
+      value: 2
+    }, {
+      label: '体育',
+      value: 3
     }];
 
-    const formElementProps = {
+    const FormElementProps = {
       form,
       width: 620,
     }
@@ -74,50 +111,96 @@ class AnnexUpload extends React.Component {
         }
       },
     };
-
+    const keywords = (
+      <InfiniteScroll className={keysArrays.length > 3 ? styles.annexScroll : null}>
+        {
+          keysArrays.map(item => {
+            const label = `关键词${item}`;
+            const field = `kewords${item}`;
+            return (
+              <div className={styles.keyword}>
+                <FormElement
+                  style={{ paddingLeft: 5 }}
+                  {...FormElementProps}
+                  label={label}
+                  field={field}
+                  required={required}
+                  autocomplete="off"
+                />
+                <PlusCircleOutlined
+                  className={styles.plusIcon}
+                  onClick={this.handleAddKeys}
+                />
+                {
+                  keysArrays.length > 1 ? (
+                    <MinusCircleOutlined
+                      className={styles.minusIcon}
+                      onClick={this.handleMinusKeys}
+                    />
+                  ) : null
+                }
+              </div>
+            )
+          })
+        }
+      </InfiniteScroll>
+    )
     return (
       <>
         <Card
-          title={<span style={{ fontWeight: 'bold' }}>附件上传</span>}
-          extra={<span style={{ fontWeight: 'bold', cursor: 'pointer' }}><Icon type="delete" /> 重置</span>}
+          title={<span style={{ fontWeight: 'bold' }}>文章附件上传</span>}
+          extra={<span style={{ cursor: 'pointer', color: '#2884D8' }}><Icon type="reload" /> 刷新</span>}
         >
           <Row type="flex" justify="space-around" align="middle">
             <Col>
               <Form>
-                <FormELement
-                  {...formElementProps}
-                  label="上传文件标题"
+                <FormElement
+                  {...FormElementProps}
+                  label="文件标题"
                   field="annexName"
+                  required={required}
                 />
-                <FormELement
-                  {...formElementProps}
-                  label="上传文件类型"
+                <FormElement
+                  {...FormElementProps}
+                  label="文件作者"
+                  field="annexAuthor"
+                  required={required}
+                />
+                <FormElement
+                  {...FormElementProps}
+                  label="文件类型"
                   field="annexType"
                   type="select"
                   options={options}
+                  required={required}
                 />
-                <FormELement>
+                {keywords}
+                <FormElement
+                  {...FormElementProps}
+                  label="文件简述"
+                  field="annexDescription"
+                  type="textarea"
+                  rows={3}
+                  required={required}
+                />
+                <FormElement>
                   <Dragger {...props}>
                     <p className="ant-upload-drag-icon">
                       <Icon type="inbox" />
                     </p>
-                    <p className="ant-upload-text">Click or drag file to this area to upload</p>
-                    <p className="ant-upload-hint">
-                      Support for a single or bulk upload. Strictly prohibit from uploading company data or other
-                      band files
-                    </p>
+                    <p className="ant-upload-text">单击或将文件拖到该区域上传</p>
                   </Dragger>
-                </FormELement>
-                <FormELement style={{ textAlign: 'center' }}>
+                </FormElement>
+                <FormElement style={{ textAlign: 'center' }}>
                   <Button type="primary" icon="upload" style={{ width: "40%", marginRight: 10 }}>确认发布</Button>
-                  <Button type="danger" icon="delete" style={{ width: '40%'}}>内容重置</Button>
-                </FormELement>
+                  <Button type="danger" icon="delete" style={{ width: '40%' }}>内容重置</Button>
+                </FormElement>
               </Form>
             </Col>
           </Row>
         </Card>
         <Card
-          title={<span style={{ fontWeight: 'bold'}}>上传列表</span>}
+          title={<span style={{ fontWeight: 'bold' }}>上传列表</span>}
           style={{ marginTop: 10 }}
           extra={<div style={{ color: '#2884D8', cursor: 'pointer' }}><Icon type='reload' />&nbsp;刷新</div>}
         >

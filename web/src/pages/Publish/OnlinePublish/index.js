@@ -31,9 +31,25 @@ class PublishOnline extends React.Component {
   }, {
     title: '文章类型',
     dataIndex: 'articleType',
+    render: (_, record) => {
+      let text;
+      switch (record.articleType) {
+        case 0: text = "科学"; break;
+        case 1: text = "历史"; break;
+        case 2: text = "文学"; break;
+        case 3: text = "体育"; break;
+      }
+      return text
+    }
   }, {
     title: '文章简述',
     dataIndex: 'articleDescription',
+  }, {
+    title: '文章形式',
+    dataIndex: 'articleForm',
+    render: (_, record) => (
+      <span>{record.articleForm === 0 ? '在线发布': '附件上传'}</span>
+    )
   }, {
     title: '文章状态',
     dataIndex: 'status',
@@ -95,8 +111,8 @@ class PublishOnline extends React.Component {
   // 保存文章编辑
   handleSaveEdit = () => {
     const { editorState, currentName, currentType, currentAuthor } = this.state;
-    console.log('editState', editorState);
-    if (editorState & currentName) {
+    console.log('currentName', currentName);
+    if (editorState && currentName) {
       saveArticleRecord({
         editTitle: currentName,
         editAuthor: currentAuthor,
@@ -171,6 +187,7 @@ class PublishOnline extends React.Component {
           articlename,
           author,
           articleType,
+          articleForm: 0,
           articleDescription,
           keywords
         }, ({ data }) => {
