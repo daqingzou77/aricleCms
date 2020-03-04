@@ -10,6 +10,8 @@ import mongoose from 'mongoose';
  * 创建时间 createTime
  * 状态 status  0 未发布 1 已发布 2 审核中 3 通过 4 已撤销
  * 文章内容 articleContents 
+ * 文章形式 articleForm: Number, // 0 在线发布 1 附件上传
+   附件名 annexname
  * 文章时间 articleTime: [{
  *   发布时间 publishTime
      审核时间 auditTime
@@ -39,6 +41,7 @@ const articleSchema = mongoose.Schema({
     status: {type: Number, default: 0}, // 0 未发布 1 已发布 2 审核中 3 通过 4 已撤销
     articleContents: String,
     articleForm: Number, // 0 在线发布 1 附件上传
+    annexname: String,
     publishTime: { type: Date, default: ''},
     auditTime: { type: Date, default: ''},
     passTime: { type: Date, default: ''},

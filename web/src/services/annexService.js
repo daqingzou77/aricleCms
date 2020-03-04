@@ -1,10 +1,10 @@
-import { get, post } from '../common/http';
+import { get, post, deletes } from '../common/http';
 
 const scheduleBaseUrl = process.env.apiBaseUrl;
 
 // 附件下载
-export const downloadAnnex = function (url, filename) {
-  const form = $('<form></form>').attr('action', url).attr('method', 'POST');
+export const downloadAnnex = function (filename) {
+  const form = $('<form></form>').attr('action', `${scheduleBaseUrl}/api/annex/downloadAnnex`).attr('method', 'POST');
   form.append(
     $('<input/>')
       .attr('type', 'hidden')
@@ -18,6 +18,10 @@ export const downloadAnnex = function (url, filename) {
     .remove();
 };
 
+// 删除上传文档
+export const removeAnnex = (data, successCb, failCb) => {
+  deletes(`${scheduleBaseUrl}/api/annex/removeAnnex`, data, successCb, failCb);
+}
 
 // 文章附件上传
 export const articleAnnexUpload = (data, successCb, failCb) => {

@@ -1,7 +1,7 @@
 import articles from '../model/articles';
 import formidable from 'formidable';
 import url from 'url';
-import fs from 'fs';
+import fs, { copyFile } from 'fs';
 import path from 'path';
 import config from '../config/app.config';
 
@@ -16,9 +16,10 @@ class Annex {
 
   init() {
     this.app.post('/api/annex/annexUpload', this.annexUpload.bind(this)); // 附件上传
-    this.app.get('/api/annex/downloadAnnex', this.downloadAnnex.bind(this)); // 附件下载
+    this.app.post('/api/annex/downloadAnnex', this.downloadAnnex.bind(this)); // 附件下载
+    this.app.delete('/api/annex/removeAnnex', this.removeAnnex.bind(this)); // 删除附件
     this.app.post('/api/annex/articleAnnexUpload', this.articleAnnexUpload.bind(this)); // 文章附件上创建
-    this.app.post('/api/annex/getAnnexRecord', this.getAnnexRecord.bind(this)); // 获取附件上传列表
+    this.app.get('/api/annex/getAnnexRecord', this.getAnnexRecord.bind(this)); // 获取附件上传列表
   }
 
   annexUpload(req, res, next) {
@@ -40,7 +41,7 @@ class Annex {
   }
 
   downloadAnnex(req, res, next) {
-    // const filename = '系统功能模块.doc'
+    const filename = req.body.filename;
     const path = url.resolve(__dirname, config.uploadDir+filename);
     console.log('path', path);
     var size = fs.statSync(path).size;
@@ -51,6 +52,20 @@ class Annex {
       'Content-Length': size
      });
     f.pipe(res);
+  }
+
+  removeAnnex(req, res, next) {
+    const annexname = req.body;
+    console.log('annexname', annexname)
+    fs.readdirSync(config.uploadDir).map((file) => {
+      fs.unlink(`${config.uploadDir}/${file}`,(err) => {
+        if (err) {
+          next(err);
+          return;
+        }
+          res.tools.setJson(0, '附件删除成功', { deleteCount: 1 });
+      });
+    });
   }
 
   articleAnnexUpload(req, res, next) {

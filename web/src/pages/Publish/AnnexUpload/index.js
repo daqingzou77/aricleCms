@@ -1,12 +1,13 @@
 import React from 'react';
-import { Upload, Form, Card, Row, Col, Icon, message, Table, Badge, Button } from 'antd';
+import { Upload, Form, Card, Row, Col, Icon, message, Table, Badge, Button, Tag } from 'antd';
 import moment from 'moment';
 import { PlusCircleOutlined, MinusCircleOutlined } from '@ant-design/icons';
 import InfiniteScroll from 'react-infinite-scroller';
+import CustomizeEmpty from '@/components/CustomizeEmpty';
 import FormElement from '@/components/FormElement';
 import {
-  annexUpload,
   downloadAnnex,
+  removeAnnex,
   articleAnnexUpload,
   getAnnexRecord
 } from '@/services/annexService'
@@ -26,9 +27,26 @@ class AnnexUpload extends React.Component {
   }, {
     title: '文章类型',
     dataIndex: 'articleType',
+    render: (_, record) => {
+      let text;
+      switch (record.articleType) {
+        case 0: text = "科学"; break;
+        case 1: text = "历史"; break;
+        case 2: text = "文学"; break;
+        case 3: text = "体育"; break;
+        default: text = "";
+      }
+      return text
+    }
   }, {
     title: '文章描述',
-    dataIndex: 'ariticleDescription',
+    dataIndex: 'articleDescription',
+  }, {
+    title: '附件名',
+    dataIndex: 'annexname',
+    render: (_, record) => (
+      <a onClick={() => this.downloadAnnex(record.annexname)}>{record.annexname}</a>
+    )
   }, {
     title: '文章状态',
     dataIndex: 'status',
@@ -40,25 +58,31 @@ class AnnexUpload extends React.Component {
     ),
   }, {
     title: '创建时间',
-    dataIndex: 'createTime',
+    dataIndex: 'publishTime',
+    render: (_, record) => <span>{moment(record.publishTime).format('YYYY-MM-DD hh:mm:ss')}</span>
   }]
 
   state = {
     required: true,
     keysArrays: [1],
+    fileList: [],
+    dataSource: [],
+    loading: true,
   }
- 
+
   componentDidMount() {
     this.getAnnexRecord();
   }
 
   getAnnexRecord = () => {
-    getAnnexRecord({},({ data }) => {
-      this.state({
-        dataSource: data
+    getAnnexRecord({}, ({ data }) => {
+      console.log('getAnnexData', data);
+      this.setState({
+        dataSource: data,
+        loading: false
       })
     },
-    e => console.log('getAnnexRecord-error', e.toString())
+      e => console.log('getAnnexRecord-error', e.toString())
     )
   }
 
@@ -83,17 +107,51 @@ class AnnexUpload extends React.Component {
   }
 
   handleOnBefore = file => {
+    const { fileList } = this.state;
     const { name } = file;
-    console.log('name', name);
-    const newName = name.substring(name.lastIndexOf('.'), name.length);
-    if(newName !== '.doc' || newName !== '.docx') {
-      message.warning('请选择文档');
-      return;
+    const extendName = name.substring(name.lastIndexOf('.'), name.length);
+    if (extendName === '.doc' || extendName === '.docx') {
+      fileList.push(file);
+      this.setState({
+        fileList
+      })
+    } else {
+      message.warning('请选择以.doc或者.docx文件结尾的文档上传！');
+      return false;
     }
+    if (fileList.length > 1) {
+      message.warning('如需重新上传，需替换当前文件！');
+      fileList.pop();
+      this.setState({
+        fileList
+      })
+      return false;
+    }
+    return true;
+  }
+
+  handleOnRemove = file => {
+    const { name } = file;
+    removeAnnex({
+      annexname: name
+    }, ({ data }) => {
+      if (data.deleteCount > 0) {
+        message.success('文件删除成功');
+      }
+      this.setState({
+        fileList: []
+      })
+    }, e => console.log('removeAnnex-error', e.toString()))
   }
 
   handleOnComfirm = () => {
     const { form } = this.props;
+    const { fileList } = this.state;
+    if (fileList.length === 0) {
+      message.warning('请上传相关文章附件！');
+      return;
+    }
+    const annexname = fileList.pop().name;
     form.validateFields((err, values) => {
       if (!err) {
         const { articlename, author, articleType, articleDescription, ...keyword } = values;
@@ -107,6 +165,7 @@ class AnnexUpload extends React.Component {
           articleType,
           articleForm: 0,
           articleDescription,
+          annexname,
           keywords
         }, ({ data }) => {
           if (data.length === 0) {
@@ -115,7 +174,7 @@ class AnnexUpload extends React.Component {
             message.success('文章发布成功！');
             this.getAnnexRecord();
           }
-          form.resetFileds();
+          form.resetFields();
         },
           e => console.log('publishArticle-error', e.toString())
         )
@@ -123,13 +182,27 @@ class AnnexUpload extends React.Component {
     })
   }
 
+  downloadAnnex = annexname => {
+    downloadAnnex(annexname);
+  }
+
   handleReset = () => {
-    this.props.form.resetFields();
+    const { form } = this.props;
+    form.resetFields();
+  }
+
+  refresh = () => {
+    this.setState({
+      loading: true
+    })
+    setTimeout(() => {
+      this.getAnnexRecord();
+    }, 1000)
   }
 
   render() {
     const { form } = this.props;
-    const { required, keysArrays,dataSource } = this.state;
+    const { required, keysArrays, dataSource, fileList, loading } = this.state;
     const options = [{
       label: '科学',
       value: 0
@@ -153,18 +226,14 @@ class AnnexUpload extends React.Component {
       name: 'file',
       multiple: true,
       action: 'http://localhost:9999/api/annex/annexUpload',
-
-      // onChange(info) {
-      //   const { status } = info.file;
-      //   if (status !== 'uploading') {
-      //     console.log(info.file, info.fileList);
-      //   }
-      //   if (status === 'done') {
-      //     message.success(`${info.file.name} file uploaded successfully.`);
-      //   } else if (status === 'error') {
-      //     message.error(`${info.file.name} file upload failed.`);
-      //   }
-      // },
+      onChange(info) {
+        const { status } = info.file;
+        if (status === 'done') {
+          message.success('文件上传成功！');
+        } else if (status === 'error') {
+          message.error('文件上传失败！');
+        }
+      },
     };
 
     const keywords = (
@@ -205,7 +274,6 @@ class AnnexUpload extends React.Component {
       <>
         <Card
           title={<span style={{ fontWeight: 'bold' }}>文章上传</span>}
-          extra={<span style={{ cursor: 'pointer', color: '#2884D8' }}><Icon type="reload" /> 刷新</span>}
         >
           <Row type="flex" justify="space-around" align="middle">
             <Col>
@@ -244,9 +312,11 @@ class AnnexUpload extends React.Component {
                   autoComplete="off"
                 />
                 <FormElement>
-                  <Dragger 
+                  <Dragger
                     {...props}
                     beforeUpload={this.handleOnBefore}
+                    fileList={fileList}
+                    onRemove={file => this.handleOnRemove(file)}
                   >
                     <p className="ant-upload-drag-icon">
                       <Icon type="inbox" />
@@ -257,15 +327,15 @@ class AnnexUpload extends React.Component {
                 <FormElement style={{ textAlign: 'center' }}>
                   <Button
                     type="primary"
-                    icon="upload" 
+                    icon="upload"
                     style={{ width: "40%", marginRight: 10 }}
                     onClick={this.handleOnComfirm}
                   >
                     确认发布
                   </Button>
-                  <Button 
+                  <Button
                     type="danger"
-                    icon="delete" 
+                    icon="delete"
                     style={{ width: '40%' }}
                     onClick={this.handleReset}
                   >
@@ -279,34 +349,25 @@ class AnnexUpload extends React.Component {
         <Card
           title={<span style={{ fontWeight: 'bold' }}>上传列表</span>}
           style={{ marginTop: 10 }}
-          extra={<div style={{ color: '#2884D8', cursor: 'pointer' }}><Icon type='reload' />&nbsp;刷新</div>}
+          extra={<div style={{ color: '#2884D8', cursor: 'pointer' }} onClick={this.refresh}><Icon type='reload' />&nbsp;刷新</div>}
         >
-          <Table
-            columns={this.columns}
-            dataSource={dataSource}
-            rowKey="id"
-            expandedRowRender={record => (
-              <div style={{ margin: 0, textAlign: 'left' }}>
-                <p>
-                  <span>
-                    章节： section1
-                  </span>
-                  &nbsp; &nbsp;
-                  <span>
-                    状态：  <Badge status="success" /> 已发布
-                  </span>
-                  &nbsp; &nbsp;
-                  <span>
-                    章节时间： {moment(new Date()).format('YYYY/MM/DD hh:mm:ss')}
-                  </span>
-                  &nbsp; &nbsp;
-                  <span>
-                    章节内容： daqing
-                  </span>
-                </p>
-              </div>
-            )}
-          />
+          <CustomizeEmpty>
+            <Table
+              columns={this.columns}
+              dataSource={dataSource}
+              loading={loading}
+              rowKey="id"
+              expandedRowRender={record => (
+                <div style={{ margin: 0, textAlign: 'left' }}>
+                  {record.keywords.map((item, index) => {
+                    return (
+                      <span>关键词{index + 1}：<Tag>{item}</Tag></span>
+                    )
+                  })}
+                </div>
+              )}
+            />
+          </CustomizeEmpty>
         </Card>
       </>
     )

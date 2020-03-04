@@ -8,6 +8,7 @@ import { EditorState, convertToRaw, ContentState } from 'draft-js';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import InfiniteScroll from 'react-infinite-scroller';
 import moment from 'moment';
+import CustomizeEmpty from '@/components/CustomizeEmpty';
 import Modal from '@/common/components/Modal';
 import AddModal from './component/AddModal';
 import UploadModal from './component/UploadModal';
@@ -19,6 +20,7 @@ import {
   getPublishedArtilces
 } from '@/services/publishService'
 import styles from './styles.less';
+
 
 class PublishOnline extends React.Component {
 
@@ -38,6 +40,7 @@ class PublishOnline extends React.Component {
         case 1: text = "历史"; break;
         case 2: text = "文学"; break;
         case 3: text = "体育"; break;
+        default: text = "";
       }
       return text
     }
@@ -48,7 +51,7 @@ class PublishOnline extends React.Component {
     title: '文章形式',
     dataIndex: 'articleForm',
     render: (_, record) => (
-      <span>{record.articleForm === 0 ? '在线发布': '附件上传'}</span>
+      <span>{record.articleForm === 0 ? '在线发布' : '附件上传'}</span>
     )
   }, {
     title: '文章状态',
@@ -198,7 +201,10 @@ class PublishOnline extends React.Component {
             this.getPublishedArtilces();
           }
           this.setState({
-            uploadModalVisble: false
+            uploadModalVisble: false,
+            currentName: '',
+            currentType: '',
+            currentAuthor: ''
           })
         },
           e => console.log('publishArticle-error', e.toString())
@@ -255,9 +261,6 @@ class PublishOnline extends React.Component {
     })
     setTimeout(() => {
       this.getPublishedArtilces();
-      this.setState({
-        loading: false
-      })
     }, 1000)
   }
 
@@ -276,14 +279,16 @@ class PublishOnline extends React.Component {
     let content;
     if (editRecord.length > 0) {
       content = (
-        <InfiniteScroll style={{ height: 100, overFlow: 'auto' }}>
-          {editRecord.map(item => {
-            const { editTitle, editTime } = item;
-            return (
-              <p><a onClick={() => this.revokeVersion(editTitle, editTime)}>{moment(editTime).format('YYYY-MM-DD hh:mm:SS')}--{editTitle}</a></p>
-            )
-          })}
-        </InfiniteScroll>
+        <div style={{ height: 220, width: 220, overflow: 'auto' }}>
+          <InfiniteScroll>
+            {editRecord.map(item => {
+              const { editTitle, editTime } = item;
+              return (
+                <p><a onClick={() => this.revokeVersion(editTitle, editTime)}>{moment(editTime).format('YYYY-MM-DD hh:mm:SS')}--{editTitle}</a></p>
+              )
+            })}
+          </InfiniteScroll>
+        </div>
       )
     }
 
@@ -322,22 +327,24 @@ class PublishOnline extends React.Component {
           style={{ marginTop: 10 }}
           extra={<div style={{ color: '#2884D8', cursor: 'pointer' }} onClick={this.refresh}><Icon type='reload' />&nbsp;刷新</div>}
         >
-          <Table
-            className="components-table-demo-nested"
-            columns={this.columns}
-            loading={loading}
-            dataSource={dataSource}
-            rowKey="id"
-            expandedRowRender={record => (
-              <div style={{ margin: 0, textAlign: 'left' }}>
-                {record.keywords.map((item, index) => {
-                  return (
-                    <span>关键词{index + 1}：<Tag>{item}</Tag></span>
-                  )
-                })}
-              </div>
-            )}
-          />
+          <CustomizeEmpty>
+            <Table
+              className="components-table-demo-nested"
+              columns={this.columns}
+              loading={loading}
+              dataSource={dataSource}
+              rowKey="id"
+              expandedRowRender={record => (
+                <div style={{ margin: 0, textAlign: 'left' }}>
+                  {record.keywords.map((item, index) => {
+                    return (
+                      <span>关键词{index + 1}：<Tag>{item}</Tag></span>
+                    )
+                  })}
+                </div>
+              )}
+            />
+          </CustomizeEmpty>
         </Card>
         <Modal
           title="新增文章"

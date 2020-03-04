@@ -1,8 +1,8 @@
 /* eslint-disable default-case */
 import React from 'react';
-import { Table, Card, Badge, DatePicker, Input, Select, Button, Icon, Divider, Popconfirm, message, Form, ConfigProvider } from 'antd';
+import { Table, Card, Badge, DatePicker, Input, Select, Button, Icon, Divider, Popconfirm, message, Form } from 'antd';
 import moment from 'moment';
-import { MehOutlined } from '@ant-design/icons';
+import CustomizeEmpty from '@/components/CustomizeEmpty';
 import Modal from '@/common/components/Modal';
 import ManageDetail from './component/ManageDetail';
 import {
@@ -283,14 +283,13 @@ class Manage extends React.Component {
           title={<span style={{ fontWeight: 'bold' }}>文章列表</span>}
           extra={<div style={{ color: '#2884D8', cursor: 'pointer' }}><Icon type="reload" /> 刷新</div>}
         >
-          <ConfigProvider renderEmpty={customizeRenderEmpty}>
+          <CustomizeEmpty>
             <Table
               columns={this.columns}
               dataSource={dataSource}
               rowKey="id"
             />
-
-          </ConfigProvider>
+          </CustomizeEmpty>
         </Card>
         <Modal
           title="文章处理"
