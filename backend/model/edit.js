@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 const editSchema = mongoose.Schema({
  editTitle: String,
  editAuthor: String,
+ editType: Number,
  editTime: { type: Date, default: new Date()},
  editContent: String
 });

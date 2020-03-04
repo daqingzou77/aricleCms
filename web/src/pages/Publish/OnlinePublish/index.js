@@ -1,7 +1,10 @@
+/* eslint-disable no-restricted-syntax */
 import React from 'react';
 import { Card, Button, Input, Icon, Table, Badge, Form, message, Popover, Tag } from 'antd';
 import { Editor } from 'react-draft-wysiwyg';
-import draftjs from 'draftjs-to-html';
+import draftToHtml from 'draftjs-to-html';
+import htmlToDraft from 'html-to-draftjs';
+import { EditorState, convertToRaw, ContentState } from 'draft-js';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import InfiniteScroll from 'react-infinite-scroller';
 import moment from 'moment';
@@ -49,10 +52,11 @@ class PublishOnline extends React.Component {
   }]
 
   state = {
-    showRichText: false,
-    editorContent: '',
+    required: true,
+    loading: true,
     editorState: '',
     dataSource: [],
+    editRecord: [],
     addModalVisible: false,
     uploadModalVisble: false,
     currentName: '',
@@ -60,45 +64,67 @@ class PublishOnline extends React.Component {
     currentType: '',
   }
 
-   componentDidMount() {
-     this.getPublishedArtilces();
-   }
+  componentDidMount() {
+    this.getPublishedArtilces();
+    this.getEditRecord();
+  }
 
-   // 获取已发布文章列表
-   getPublishedArtilces = () => {
-    getPublishedArtilces({},({ data }) => {
+  // 获取已发布文章列表
+  getPublishedArtilces = () => {
+    getPublishedArtilces({}, ({ data }) => {
       this.setState({
-        dataSource: data
+        dataSource: data,
+        loading: false
       })
     },
-    e => console.log('getPublishedArtilces-error', e.toString())
+      e => console.log('getPublishedArtilces-error', e.toString())
     )
-   }
+  }
+
+  // 获取编辑记录
+  getEditRecord = () => {
+    getEditRecord({}, ({ data }) => {
+      this.setState({
+        editRecord: data
+      })
+    },
+      e => console.log('getEditRecord-error', e.toString())
+    )
+  }
 
   // 保存文章编辑
   handleSaveEdit = () => {
-    const { editorContent, currentName, currentAuthor } = this.state;
-    saveArticleRecord({
-      editTitle: currentName,
-      editAuthor: currentAuthor,
-      editContent: editorContent
-    }, ({ data }) => {
-      console.log(data);
-      message.success('保存编辑成功！');
-    },
-    e => console.log('saveArticleRecord-error', e.toString())
-    )
+    const { editorState, currentName, currentType, currentAuthor } = this.state;
+    console.log('editState', editorState);
+    if (editorState & currentName) {
+      saveArticleRecord({
+        editTitle: currentName,
+        editAuthor: currentAuthor,
+        editType: currentType,
+        editContent: draftToHtml(convertToRaw(editorState.getCurrentContent()))
+      }, ({ data }) => {
+        this.getEditRecord();
+        message.success('保存编辑成功！');
+      },
+        e => console.log('saveArticleRecord-error', e.toString())
+      )
+    } else {
+      message.warning('请补充文章必要内容！')
+    }
+
   }
 
   // 新增章节内容弹窗
   handleAddArticle = () => {
     this.setState({
-      addModalVisible: true
+      addModalVisible: true,
+      editorState: ''
     })
   }
 
   handleArticleOk = () => {
-    this.props.form.validateFields((err, values) => {
+    const { form } = this.props;
+    form.validateFields((err, values) => {
       if (!err) {
         const { articlename, author, articleType } = values
         this.setState({
@@ -109,7 +135,7 @@ class PublishOnline extends React.Component {
         })
       }
     })
-   
+
   }
 
   handleArticleCancel = () => {
@@ -123,6 +149,7 @@ class PublishOnline extends React.Component {
     this.setState({
       uploadModalVisble: true
     })
+
   }
 
   handleUploadCancel = () => {
@@ -132,66 +159,117 @@ class PublishOnline extends React.Component {
   }
 
   handleUploadOk = () => {
-    this.setState({
-      uploadModalVisble: false
+    const { form } = this.props;
+    form.validateFields((err, values) => {
+      if (!err) {
+        const { articlename, author, articleType, articleDescription, ...keyword } = values;
+        const keywords = [];
+        for (let obj in keyword) {
+          keywords.push(keyword[obj]);
+        }
+        publishArticle({
+          articlename,
+          author,
+          articleType,
+          articleDescription,
+          keywords
+        }, ({ data }) => {
+          if (data.length === 0) {
+            message.error('该文章已存在！');
+          } else {
+            message.success('文章发布成功！');
+            this.getPublishedArtilces();
+          }
+          this.setState({
+            uploadModalVisble: false
+          })
+        },
+          e => console.log('publishArticle-error', e.toString())
+        )
+      }
     })
   }
 
   // 清空文本
   handleClearContent = () => {
     this.setState({
-      editorState: ''
-    })
-  }
-
-  // 获取文本内容
-  handleGetText = () => {
-    this.setState({
-      showRichText: true
+      editorState: '',
+      currentName: '',
+      currentAuthor: '',
+      currentType: ''
     })
   }
 
   // 编辑器的状态
   onEditorStateChange = (editorState) => {
-    console.log('editorState', editorState);
     this.setState({
       editorState
     })
   }
 
-  // 编辑器内容的状态
-  onEditorChange = (editorContent) => {
-    this.setState({
-      editorContent
-    })
-  }
 
   // 回复原先版本
-  revokeVersion = () => {
+  revokeVersion = (editTitle, editTime) => {
+    getArticleDetail({
+      editTitle,
+      editTime
+    }, ({ data }) => {
+      console.log('getArticleDetail-data', data);
+      const contentBlock = htmlToDraft(data.editContent);
+      console.log('contentBlock', contentBlock);
+      const contentState = ContentState.createFromBlockArray(contentBlock.contentBlocks);
+      console.log('contentState', contentState);
+      const editorState = EditorState.createWithContent(contentState);
+      console.log('editorState', editorState);
+      this.setState({
+        editorState,
+        currentName: data.editTitle,
+        currentType: data.editType,
+        currentAuthor: data.editAuthor
+      });
+    },
+      e => console.log('getArticleDetail-error', e.toString())
+    )
+  }
+
+  refresh = () => {
+    this.setState({
+      loading: true
+    })
+    setTimeout(() => {
+      this.getPublishedArtilces();
+      this.setState({
+        loading: false
+      })
+    }, 1000)
   }
 
   render() {
-    const { editorState, editorContent, showRichText, dataSource, addModalVisible, uploadModalVisble, currentName, currentAuthor, currentType } = this.state;
+    const { required, loading, editorState, dataSource, editRecord, addModalVisible, uploadModalVisble, currentName, currentAuthor, currentType } = this.state;
     const { form } = this.props;
     let type;
-    switch(currentType) {
-      case 0: type = '科学';break;
-      case 1: type = '历史';break;
-      case 2: type = '文学';break;
-      case 3: type = '体育';break;
+    switch (currentType) {
+      case 0: type = '科学'; break;
+      case 1: type = '历史'; break;
+      case 2: type = '文学'; break;
+      case 3: type = '体育'; break;
+      default: type = '';
     }
 
+    let content;
+    if (editRecord.length > 0) {
+      content = (
+        <InfiniteScroll style={{ height: 100, overFlow: 'auto' }}>
+          {editRecord.map(item => {
+            const { editTitle, editTime } = item;
+            return (
+              <p><a onClick={() => this.revokeVersion(editTitle, editTime)}>{moment(editTime).format('YYYY-MM-DD hh:mm:SS')}--{editTitle}</a></p>
+            )
+          })}
+        </InfiniteScroll>
+      )
+    }
 
-    const content = (
-      <InfiniteScroll style={{ height: 100, overFlow: 'auto' }}>
-        <p><a onClick={this.revokeVersion}>2019-12-17 16:30:12--《三国演义》</a></p>
-        <p><a>2020-01-03 16:30:12--《水浒转》</a></p>
-        <p><a>2020-01-03 16:30:12--《水浒转》</a></p>
-        <p><a>2020-01-03 16:30:12--《水浒转》</a></p>
-      </InfiniteScroll>
-    )
-
-    const keys = ['key1', 'key2', 'key3'];
     return (
       <div className={styles.publishOnLine}>
         <Card>
@@ -217,7 +295,6 @@ class PublishOnline extends React.Component {
           <Editor
             editorState={editorState}
             onEditorStateChange={this.onEditorStateChange}
-            onContentStateChange={this.onEditorChange}
             toolbarClassName="toolbarClassName"
             wrapperClassName="wrapperClassName"
             editorClassName="editorClassName"
@@ -226,11 +303,12 @@ class PublishOnline extends React.Component {
         <Card
           title={<span style={{ fontWeight: 'bold' }}>已发布文章</span>}
           style={{ marginTop: 10 }}
-          extra={<div style={{ color: '#2884D8', cursor: 'pointer' }}><Icon type='reload' />&nbsp;刷新</div>}
+          extra={<div style={{ color: '#2884D8', cursor: 'pointer' }} onClick={this.refresh}><Icon type='reload' />&nbsp;刷新</div>}
         >
           <Table
             className="components-table-demo-nested"
             columns={this.columns}
+            loading={loading}
             dataSource={dataSource}
             rowKey="id"
             expandedRowRender={record => (
@@ -244,23 +322,11 @@ class PublishOnline extends React.Component {
             )}
           />
         </Card>
-        {/* <Modal
-          title=""
-          visible={uploadModalVisble}
-          onCancel={() => {
-            this.setState({
-              showRichText: false
-            })
-          }}
-          footer={null}
-        >
-          {draftjs(editorContent)}
-        </Modal> */}
         <Modal
           title="新增文章"
           visible={addModalVisible}
-          showOk={true}
-          showCancel={true}
+          showOk={required}
+          showCancel={required}
           onOk={this.handleArticleOk}
           onCancel={this.handleArticleCancel}
         >
@@ -269,12 +335,12 @@ class PublishOnline extends React.Component {
         <Modal
           title="文章上传"
           visible={uploadModalVisble}
-          showOk={true}
-          showCancel={true}
+          showOk={required}
+          showCancel={required}
           onOk={this.handleUploadOk}
           onCancel={this.handleUploadCancel}
         >
-          <UploadModal form={form} />
+          <UploadModal form={form} currentName={currentName} currentAuthor={currentAuthor} currentType={currentType} />
         </Modal>
       </div>
     )

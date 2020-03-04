@@ -9,7 +9,8 @@ class UploadModal extends React.Component {
   id = 1;
 
   state = {
-    keywordsArrays: [1]
+    keywordsArrays: [1],
+    required: true,
   }
 
   handleAddKeys = () => {
@@ -35,12 +36,25 @@ class UploadModal extends React.Component {
 
 
   render() {
-    const { form } = this.props;
-    const { keywordsArrays } = this.state;
+    const { form, currentName, currentAuthor, currentType } = this.props;
+    const { keywordsArrays,required } = this.state;
     const FormElementProps = {
       form,
       width: 350,
     }
+    const options = [{
+      label: '科学',
+      value: 0,
+    }, {
+      label: '历史',
+      value: 1,
+    }, {
+      label: '文学',
+      value: 2,
+    }, {
+      label: '体育',
+      value: 3,
+    }];
     const keywords = (
       keywordsArrays.map(item => {
         const label = `关键词${item}`;
@@ -50,6 +64,8 @@ class UploadModal extends React.Component {
             {...FormElementProps}
             label={label}
             field={field}
+            required={required}
+            autocomplete="off"
           />
         )
       })
@@ -62,23 +78,30 @@ class UploadModal extends React.Component {
               {...FormElementProps}
               label="文章名称"
               field="articlename"
+              required={required}
+              message="文章名称不能为空"
               disabled
-            // initialValue={articlename}
+              initialValue={currentName}
             />
             <FormElement
               {...FormElementProps}
               label="文章作者"
               field="author"
+              required={required}
+              message="文章作者不能为空"
               disabled
-            // initialValue={author}
+              initialValue={currentAuthor}
             />
             <FormElement
               {...FormElementProps}
               label="文章类型"
               field="articleType"
+              required={required}
+              message="文章类型不能为空"
               disabled
               type='select'
-            // initialValue={author}
+              options={options}
+              initialValue={currentType}
             />
             <FormElement
               {...FormElementProps}
@@ -86,14 +109,7 @@ class UploadModal extends React.Component {
               field="articleDescription"
               type="textarea"
               rows={3}
-            // initialValue={author}
-            />
-            <FormElement
-              {...FormElementProps}
-              label="文章内容"
-              field="articleContent"
-              type="textarea"
-              rows={8}
+              required={required}
             />
             {keywords}
             <FormElement>
