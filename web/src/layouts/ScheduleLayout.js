@@ -137,10 +137,9 @@ class ScheduleLayout extends React.Component {
       <>
         <SystemHeader />
         <SystemMenu changeOpenToolbar={this.changeOpenToolbar} />
-        
         <div style={{ top: isOpenToolbar ? 109 + 45 : 30 + 45 }} className={styles.content}>
           <ConfigProvider renderEmpty={customizeRenderEmpty}>
-           {children}
+            {children}
           </ConfigProvider>
         </div>
         <SystemFooter />

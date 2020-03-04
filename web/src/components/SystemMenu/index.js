@@ -91,14 +91,8 @@ const menuList = [
         title: '文章上传',
         icon: icSituation,
         path: '/publish/AnnexUpload',
-      },
-      {
-        key: 303,
-        title: '发布审核',
-        icon: icScheduling,
-        path: '/publish/Audit',
-      },
-    ],
+      }
+    ]
   },
   {
     key: 4,
@@ -106,9 +100,15 @@ const menuList = [
     child: [
       {
         key: 401,
+        title: '文章审核',
+        icon: icScheduling,
+        path: '/maintain/audit'
+      },
+      {
+        key: 401,
         title: '文章管理',
         icon: icMailCheckin,
-        path: '/manage',
+        path: '/maintain/manage',
       },
     ],
   },

@@ -54,17 +54,23 @@ export default [
           name: 'annexUpload',
           component: './Publish/AnnexUpload'
         },
-        {
-          path: '/publish/Audit',
-          name: 'audit',
-          component: './Publish/Audit'
-        }
        ] 
      },
      {
-       path: '/manage',
+       path: '/maintain',
        name: 'manage',
-       component: './Manage'
+       routes: [
+        {
+          path: '/maintain/audit',
+          name: 'publishOnline',
+          component: './Maintain/Audit'
+        }, 
+        {
+          path: '/maintain/manage',
+          name: 'publishOnline',
+          component: './Maintain/Manage'
+        }
+       ]
      },
      {
       path: '/userCenter',

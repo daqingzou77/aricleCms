@@ -47,7 +47,7 @@ class Manage extends React.Component {
     }
   }, {
     title: '文章描述',
-    dataIndex: 'ariticleDescription',
+    dataIndex: 'articleDescription',
   }, {
     title: '文章状态',
     dataIndex: 'status',
