@@ -41,6 +41,13 @@ class Home extends React.Component {
     required: true,
     auditArticlename: '',
     anchor: '',
+    auditMessage: {
+      articlename: '',
+      author: '',
+      articleType: '',
+      ariticleDescription: '',
+      articleForm: '',
+    }
   }
 
   clickF = value => {
@@ -103,7 +110,7 @@ class Home extends React.Component {
   }
 
   render() {
-    const { visible, loading, required, auditArticlename } = this.state;
+    const { visible, loading, required, auditArticlename, auditMessage } = this.state;
     this.ifHasAnchorJustScorll();
     const dataSource = [];
     for (let i = 0; i < 31; i++) {
@@ -169,7 +176,7 @@ class Home extends React.Component {
           extra={<div style={{ color: '#2884D8', cursor: 'pointer' }}><Icon type="reload" /> 刷新</div>}
         >
           <div>
-            <StepForm />
+            <StepForm auditMessage={auditMessage} />
           </div>
         </Card>
           <a name="auditCard"></a>

@@ -52,7 +52,7 @@ class AnnexUpload extends React.Component {
     dataIndex: 'status',
     render: () => (
       <span>
-        <Badge status="success" />
+        <Badge status="warning" />
         已发布
       </span>
     ),
@@ -163,7 +163,8 @@ class AnnexUpload extends React.Component {
           articlename,
           author,
           articleType,
-          articleForm: 0,
+          articleForm: 1,
+          status: 1,
           articleDescription,
           annexname,
           keywords
@@ -175,6 +176,10 @@ class AnnexUpload extends React.Component {
             this.getAnnexRecord();
           }
           form.resetFields();
+          this.id = 1;
+          this.setState({
+            keysArrays: [1]
+          })
         },
           e => console.log('publishArticle-error', e.toString())
         )

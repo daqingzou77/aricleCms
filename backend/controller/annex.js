@@ -88,8 +88,8 @@ class Annex {
 
   getAnnexRecord(req, res, next) {  
     this.articles.find({
-      status: 0,
-      articleType: 1
+      status: 1,
+      articleForm: 1
     })
     .then(doc => {
       return res.tools.setJson(0, '获取发布文章成功', doc);t     

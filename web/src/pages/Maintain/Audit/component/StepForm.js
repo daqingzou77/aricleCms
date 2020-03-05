@@ -36,13 +36,14 @@ class StepForm extends React.Component {
 
   render() {
     const { currentStep } = this.state;
+    const { auditMessage } = this.props;
     let stepComponent;
     if (currentStep === 1) {
       stepComponent = <Step2 handleNextStep={this.handleNextStep} />;
     } else if (currentStep === 2) {
       stepComponent = <Step3 handleNextStep={this.handleNextStep} />;
     } else {
-      stepComponent = <Step1 handleNextStep={this.handleNextStep} />;
+      stepComponent = <Step1 handleNextStep={this.handleNextStep} auditMessage={auditMessage} />;
     }
 
     return(

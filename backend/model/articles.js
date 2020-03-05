@@ -12,12 +12,11 @@ import mongoose from 'mongoose';
  * 文章内容 articleContents 
  * 文章形式 articleForm: Number, // 0 在线发布 1 附件上传
    附件名 annexname
- * 文章时间 articleTime: [{
- *   发布时间 publishTime
-     审核时间 auditTime
-     通过时间 passTime
-     撤销时间 revokeTime
-  }]
+ * 发布时间 publishTime
+   审核时间 auditTime
+   通过时间 passTime
+   撤销时间 revokeTime
+   审核人 auditor
    点赞数 likes   
    拉黑数 dislikes
    评论数 comments
@@ -44,6 +43,7 @@ const articleSchema = mongoose.Schema({
     annexname: String,
     publishTime: { type: Date, default: ''},
     auditTime: { type: Date, default: ''},
+    auditor: String,
     passTime: { type: Date, default: ''},
     revokeTime: { type: Date, default: ''},
     likes: {type: Number, default: 0},

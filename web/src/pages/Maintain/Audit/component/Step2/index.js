@@ -31,11 +31,14 @@ class Step2 extends React.Component {
         </Descriptions>
         <Divider style={{ margin: '24px 0' }} />
         <FormElement style={{ textAlign: 'center'}}>
+          <Button
+            style={{ marginRight: 10 }} 
+            onClick={() => this.handleNextStep(0)}
+          >
+            上一步
+          </Button>
           <Button type="primary" onClick={()=> this.handleNextStep(2)}>
             提交
-          </Button>
-          <Button onClick={() => this.handleNextStep(0)}>
-            上一步
           </Button>
         </FormElement>
       </Form>       

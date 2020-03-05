@@ -58,7 +58,7 @@ class PublishOnline extends React.Component {
     dataIndex: 'status',
     render: () => (
       <span>
-        <Badge status="success" />
+        <Badge status="warning" />
         已发布
       </span>
     ),
@@ -179,6 +179,7 @@ class PublishOnline extends React.Component {
 
   handleUploadOk = () => {
     const { form } = this.props;
+    const { editorState } = this.state;
     form.validateFields((err, values) => {
       if (!err) {
         const { articlename, author, articleType, articleDescription, ...keyword } = values;
@@ -191,7 +192,9 @@ class PublishOnline extends React.Component {
           author,
           articleType,
           articleForm: 0,
+          status: 1,
           articleDescription,
+          articleContents: draftToHtml(convertToRaw(editorState.getCurrentContent())),
           keywords
         }, ({ data }) => {
           if (data.length === 0) {
@@ -204,7 +207,8 @@ class PublishOnline extends React.Component {
             uploadModalVisble: false,
             currentName: '',
             currentType: '',
-            currentAuthor: ''
+            currentAuthor: '',
+            editorState: ''
           })
         },
           e => console.log('publishArticle-error', e.toString())

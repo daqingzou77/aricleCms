@@ -68,7 +68,8 @@ class Manage extends React.Component {
     }
   }, {
     title: '文章创建时间',
-    dataIndex: 'createTime'
+    dataIndex: 'createTime',
+    render: (_, record) => (moment(record.createTime).format('YYYY-MM-DD hh:mm:ss'))
   }, {
     title: '操作',
     dataIndex: 'operation',

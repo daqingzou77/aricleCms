@@ -1,6 +1,5 @@
 import React from 'react';
 import { Form, Button, Result, Descriptions } from 'antd';
-import Modal from '@/common/components/Modal';
 import styles from './style.less';
 
 
@@ -22,7 +21,7 @@ class Step3 extends React.Component {
   }
 
   render() {
-    const { visible, required } = this.state;
+    const currentUser = 'daqing';
     const information = (
       <div className={styles.information}>
         <Descriptions column={1}>
@@ -39,7 +38,6 @@ class Step3 extends React.Component {
         <Button type="primary" onClick={() => this.handleNextStep(0)}>
           继续审核
         </Button>
-        <Button onClick={this.handleShowDetail}>查看详情</Button>
       </>
     )
     return (
@@ -47,26 +45,12 @@ class Step3 extends React.Component {
         <Result
           status="success"
           title="审核通过"
-          subTitle="即将发布在系统"
+          subTitle={<p>审核人-<span style={{ fontWeight: 'bold' }}>{currentUser}</span></p>}
           extra={extra}
           className={styles.result}
         >
           {information}
         </Result>
-        <Modal
-          visible={visible}
-          title="处理详情"
-          okText="确认"
-          cancelText='取消'
-          showOk={required}
-          showCancel={required}
-          onCancel={this.handleCancel}
-          onOk={this.handleOk}
-        >
-          <div>
-            
-          </div>
-        </Modal>
       </>
     )
   }

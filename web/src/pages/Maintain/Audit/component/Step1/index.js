@@ -10,12 +10,13 @@ class Step1 extends React.Component {
   }
 
   render() {
-    const { form } = this.props;
+    const { form, auditMessage } = this.props;
+    const { articlename, author, articleType, articleForm, artcileDecription, auditname } = auditMessage;
+    const currentUser = 'daqing';
     const formElementProps = {
       form,
       width: 400
     };
-    const articleForm = 1;
     const selectOptions = [
       {
         label: '科学',
@@ -31,6 +32,15 @@ class Step1 extends React.Component {
         value: 3
       }
     ];
+    const formOptions = [
+      {
+        label: '在线发布',
+        value: 0,
+      }, {
+        label: '文件上传',
+        value: 1,
+      }
+    ];
     return (
       <>
         <Row type="flex" justify="space-around" align="middle">
@@ -40,11 +50,13 @@ class Step1 extends React.Component {
                 {...formElementProps}
                 label="文章名称"
                 field="articlename"
+                initialValue={articlename}
               />
               <FormElement
                 {...formElementProps}
                 label="文章作者"
                 field="author"
+                initialValue={author}
               />
               <FormElement
                 {...formElementProps}
@@ -52,6 +64,7 @@ class Step1 extends React.Component {
                 type="select"
                 field="articleType"
                 options={selectOptions}
+                initialValue={articleType || undefined}
               />
               <FormElement
                 {...formElementProps}
@@ -59,12 +72,14 @@ class Step1 extends React.Component {
                 type="textarea"
                 field="articleDescription"
                 rows={2}
+                initialValue={artcileDecription}
               />
               <FormElement
                 {...formElementProps}
                 label="文章形式"
                 field="articleForm"
                 options={selectOptions}
+                initialValue={articleForm}
               />
               <div className={styles.fontStyle}>
                 <FormElement>
