@@ -1,6 +1,7 @@
 import React from 'react';
 import { Form, Button, Row, Col } from 'antd';
 import FormElement from '@/components/FormElement';
+import styles from './style.less';
 
 class Step1 extends React.Component {
 
@@ -14,6 +15,7 @@ class Step1 extends React.Component {
       form,
       width: 400
     };
+    const articleForm = 1;
     const selectOptions = [
       {
         label: '科学',
@@ -34,33 +36,45 @@ class Step1 extends React.Component {
         <Row type="flex" justify="space-around" align="middle">
           <Col>
             <Form>
-              <FormElement 
+              <FormElement
                 {...formElementProps}
                 label="文章名称"
                 field="articlename"
               />
-              <FormElement 
+              <FormElement
                 {...formElementProps}
                 label="文章作者"
                 field="author"
               />
-              <FormElement 
+              <FormElement
                 {...formElementProps}
                 label="文章类型"
                 type="select"
                 field="articleType"
                 options={selectOptions}
               />
-              <FormElement 
-                label="文章内容"
-                field="articleContent"
-              >
-                <a>《三国演义》</a>
-              </FormElement>
+              <FormElement
+                {...formElementProps}
+                label="文章简述"
+                type="textarea"
+                field="articleDescription"
+                rows={2}
+              />
+              <FormElement
+                {...formElementProps}
+                label="文章形式"
+                field="articleForm"
+                options={selectOptions}
+              />
+              <div className={styles.fontStyle}>
+                <FormElement>
+                  <span>{articleForm === 0 ? "文章内容" : "附件名称"}</span>
+                </FormElement>
+              </div>
               <FormElement style={{ textAlign: 'center' }}>
                 <Button type="primary" onClick={this.handleNextStep}>下一步</Button>
               </FormElement>
-            </Form>    
+            </Form>
           </Col>
         </Row>
       </>
@@ -68,4 +82,4 @@ class Step1 extends React.Component {
   }
 }
 
-export default Form.create({name: 'Step1'})(Step1);
+export default Form.create({ name: 'Step1' })(Step1);
