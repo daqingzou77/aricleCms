@@ -9,7 +9,6 @@ class Articles {
     this.init();
   }
 
-
   init() {
     // 文章管理
     this.app.post('/api/article/addArticle', this.addArticle.bind(this)); // 新增文章
@@ -146,7 +145,6 @@ class Articles {
 
   solveArticleItem(req, res, next) {
    const { status, articlename } = req.body;
-   console.log('status', status)
    let passTime, auditTime, publishTime, revokeTime ='';
    switch (status) {
      case 1: publishTime = new Date();break;
@@ -154,7 +152,7 @@ class Articles {
      case 3: passTime = new Date();break;
      case 4: revokeTime = new Date();break;
    }
-   this.articles.updateOne({ articlename}, {$set: { status, publishTime, auditTime, passTime, revokeTime }})
+   this.articlles.updateOne({ articlename }, {$set: { status, publishTime, auditTime, passTime, revokeTime }})
    .then(doc => {
      if(doc.nModified > 0) {
         res.tools.setJson(0, '处理成功', doc);
@@ -190,11 +188,12 @@ class Articles {
 
   confirmAuditMessage(req, res, next) {
     const { articlename, auditor } = req.body;
-    this.articles.UpdateOne({
+    this.articles.updateOne({
       articlename
     }, { $set: {
       auditTime: new Date(),
-      auditor
+      auditor,
+      status: 3
     }})
     .then(doc => {
       if (doc.nModified > 0) {

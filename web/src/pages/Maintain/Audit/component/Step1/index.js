@@ -1,18 +1,81 @@
 import React from 'react';
-import { Form, Button, Row, Col } from 'antd';
+import { Form, Button, Row, Col, message } from 'antd';
+import { Editor } from 'react-draft-wysiwyg';
+import htmlToDraft from 'html-to-draftjs';
+import { EditorState, ContentState } from 'draft-js';
 import FormElement from '@/components/FormElement';
+import {
+  downloadAnnex
+} from '@/services/annexService'
+import Modal from '@/common/components/Modal';
+import {
+  pushAuditMessage
+} from '@/services/auditService'
 import styles from './style.less';
 
 class Step1 extends React.Component {
 
+  state = {
+    visible: false,
+    editorState: ''
+  }
+
   handleNextStep = () => {
-    this.props.handleNextStep(1);
+    this.pushAuditMessage();
+  }
+
+  pushAuditMessage = () => {
+    const { auditMessage: { articlename }, handleNextStep } = this.props;
+    pushAuditMessage({
+      articlename
+    }, ({ data }) => {
+      if (data.status) {
+        handleNextStep(1);
+      } else {
+        message.error('审核失败！')
+      }
+    }, e => console.log('pushAuditMessage-error', e.toString()))
+  }
+
+  handleClick = (articleForm, name, articleContent) => {
+    if (articleForm === 0) {
+      const contentBlock = htmlToDraft(articleContent);
+      const contentState = ContentState.createFromBlockArray(contentBlock.contentBlocks);
+      const editorState = EditorState.createWithContent(contentState);
+      this.setState({
+        visible: true,
+        editorState
+      })
+    } else {
+      downloadAnnex(name)
+    }
+  }
+
+  onEditorStateChange = (editorState) => {
+    this.setState({
+      editorState
+    })
+  }
+
+  handleOk = () => {
+    this.setState({
+      visible: false
+    })
+  }
+
+  handleCancel = () => {
+    this.setState({
+      visible: false
+    })
   }
 
   render() {
-    const { form, auditMessage } = this.props;
-    const { articlename, author, articleType, articleForm, artcileDecription, auditname } = auditMessage;
+    const { form, auditMessage, } = this.props;
+    const { visible, editorState } = this.state;
+    const { articlename, author, articleType, articleForm, articleDescription, annexname, articleContent } = auditMessage;
     const currentUser = 'daqing';
+    const content = annexname !== '' ? annexname : articlename;
+    console.log('articleContent', articleContent);
     const formElementProps = {
       form,
       width: 400
@@ -51,12 +114,14 @@ class Step1 extends React.Component {
                 label="文章名称"
                 field="articlename"
                 initialValue={articlename}
+                disabled={articlename}
               />
               <FormElement
                 {...formElementProps}
                 label="文章作者"
                 field="author"
                 initialValue={author}
+                disabled={author}
               />
               <FormElement
                 {...formElementProps}
@@ -64,7 +129,8 @@ class Step1 extends React.Component {
                 type="select"
                 field="articleType"
                 options={selectOptions}
-                initialValue={articleType || undefined}
+                initialValue={typeof articleType === 'number' ? articleType : undefined}
+                disabled={typeof articleType === 'number'}
               />
               <FormElement
                 {...formElementProps}
@@ -72,18 +138,22 @@ class Step1 extends React.Component {
                 type="textarea"
                 field="articleDescription"
                 rows={2}
-                initialValue={artcileDecription}
+                initialValue={articleDescription}
+                disabled={articleDescription}
               />
               <FormElement
                 {...formElementProps}
                 label="文章形式"
                 field="articleForm"
-                options={selectOptions}
-                initialValue={articleForm}
+                type="select"
+                options={formOptions}
+                initialValue={typeof articleForm === 'number' ? articleForm : undefined}
+                disabled={typeof articleForm === 'number'}
               />
               <div className={styles.fontStyle}>
                 <FormElement>
-                  <span>{articleForm === 0 ? "文章内容" : "附件名称"}</span>
+                  <span>{articleForm === 1 ? "附件名称" : "文章内容"}</span>
+                  <a onClick={() => this.handleClick(articleForm, content, articleContent)}>{content}</a>
                 </FormElement>
               </div>
               <FormElement style={{ textAlign: 'center' }}>
@@ -92,6 +162,17 @@ class Step1 extends React.Component {
             </Form>
           </Col>
         </Row>
+        <Modal
+          visible={visible}
+          title="内容详情"
+          onCancel={this.handleCancel}
+          onOk={this.handleOk}
+        >
+          <Editor
+            editorState={editorState}
+            onEditorStateChange={this.onEditorStateChange}
+          />
+        </Modal>
       </>
     )
   }

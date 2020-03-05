@@ -11,7 +11,7 @@ class Step3 extends React.Component {
   }
 
   handleNextStep = key => {
-    this.props.handleNextStep(key)
+    this.props.handleNextStep(key, true)
   }
 
   handleShowDetail = () => {
@@ -20,15 +20,29 @@ class Step3 extends React.Component {
     })
   }
 
+  closeCard = () => {
+    this.props.closeCard();
+  }
+
   render() {
     const currentUser = 'daqing';
+    const { auditMessage } = this.props;
+    const { articlename, author, articleType, articleDescription } = auditMessage;
+    let text;
+    switch (articleType) {
+      case 0: text = "科学"; break;
+      case 1: text = "历史"; break;
+      case 2: text = "文学"; break;
+      case 3: text = "体育"; break;
+      default: text = "";
+    }
     const information = (
       <div className={styles.information}>
         <Descriptions column={1}>
-          <Descriptions.Item label="文章名"> 水浒传</Descriptions.Item>
-          <Descriptions.Item label="作者"> 施耐庵</Descriptions.Item>
-          <Descriptions.Item label="文章详情"> 第三章第二小节</Descriptions.Item>
-          <Descriptions.Item label="文章内容"> 第三章讲述了..</Descriptions.Item>
+          <Descriptions.Item label="文章名"> {articlename}</Descriptions.Item>
+          <Descriptions.Item label="作者"> {author}</Descriptions.Item>
+          <Descriptions.Item label="文章类型"> {text}</Descriptions.Item>
+          <Descriptions.Item label="文章简述"> {articleDescription}</Descriptions.Item>
         </Descriptions>
       </div>
     );
@@ -37,6 +51,9 @@ class Step3 extends React.Component {
       <>
         <Button type="primary" onClick={() => this.handleNextStep(0)}>
           继续审核
+        </Button>
+        <Button type="dashed" onClick={() => this.closeCard()}>
+          退出审核
         </Button>
       </>
     )

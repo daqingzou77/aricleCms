@@ -3,6 +3,12 @@ import { Card, Table, Input, DatePicker, Button, Icon, Select, Badge } from 'ant
 import momment from 'moment';
 import Modal from '@/common/components/Modal';
 import StepForm from './component/StepForm';
+import CustomizeEmpty from '@/components/CustomizeEmpty';
+import {
+  getAuditArticleList,
+  getArticlesByOptions,
+  getAuditDetail
+} from '@/services/auditService';
 import styles from './style.less';
 
 const { RangePicker } = DatePicker;
@@ -18,77 +24,171 @@ class Home extends React.Component {
     dataIndex: 'author',
   }, {
     title: '文章类型',
-    dataIndex: 'articleType'
+    dataIndex: 'articleType',
+    render: (_, record) => {
+      let text;
+      switch (record.articleType) {
+        case 0: text = "科学"; break;
+        case 1: text = "历史"; break;
+        case 2: text = "文学"; break;
+        case 3: text = "体育"; break;
+        default: text = "";
+      }
+      return text
+    }
   }, {
     title: '文章简述',
-    dataIndex: 'ariticleDescription'
+    dataIndex: 'articleDescription'
   }, {
     title: '发布时间',
-    dataIndex: 'createTime'
+    dataIndex: 'publishTime',
+    render: (_, record) => momment(record.publishTime).format('YYYY-MM-DD hh:mm:ss')
   }, {
     title: '文章状态',
     dataIndex: 'status',
     render: (text, record) => (
       <span>
-        <Badge status={record.status === 0 ? 'success' : 'error'} text={record.status === 0 ? '审核中' : '未审核'} />
+        <Badge status={record.status === 2 ? 'processing' : 'warning'} text={record.status === 2 ? '审核中' : '未审核'} />
       </span>
     )
   }]
 
   state = {
     visible: false,
-    // loading: true,
+    loading: true,
     required: true,
     auditArticlename: '',
-    anchor: '',
+    display: false,
+    currentname: '',
+    selectOption: 1,
+    startTime: '',
+    endTime: '',
+    param: '',
     auditMessage: {
       articlename: '',
       author: '',
       articleType: '',
-      ariticleDescription: '',
+      articleDescription: '',
       articleForm: '',
     }
   }
 
-  clickF = value => {
-    window.scrollTo(0, 1000);
-    // console.log('clientHeight', document.documentElement.clientHeight)
-    // console.log('可视距离', document.body.scrollHeight)
-    // console.log('纵向滑动距离', document.documentElement.scrollTop)
-    // this.setState({
-    //   anchor : value,
-    // })
+  componentDidMount() {
+    this.getAuditArticleList();
   }
 
-  ifHasAnchorJustScorll = () => {
-    const { anchor } = this.state;
-    console.log("anchor ", anchor);
-    // 对应id的话, 滚动到相应位置
-    if (anchor) {
-      const anchorElement = document.getElementById(anchor);
-      console.log('anchorElement', anchorElement)
-      if (anchorElement) {
-        window.scrollTo(0, anchorElement.offsetTop - window.innerHeight / 2);
-      }
-    }
-    // 没有的话，滚动到头部
-    else {
-      document.body.scrollTop = document.documentElement.scrollTop = 0;
-    }
+  getAuditArticleList = () => {
+    getAuditArticleList({}, ({ data }) => {
+      this.setState({
+        dataSource: data,
+        loading: false
+      })
+    },
+      e => console.log('getAuditArticleList-error', e.toString())
+    )
+  }
+
+  handleDateChange = (date, string) => {
+    const { selectOption, param } = this.state;
+    const [startTime, endTime] = date;
+    this.setState({
+      startTime,
+      endTime
+    })
+    this.getArticleByOptions(param, startTime, endTime, selectOption);
+  }
+
+  handleOnChange = value => {
+    console.log('value', value);
+    const { param, startTime, endTime } = this.state;
+    this.setState({
+      selectOption: value
+    });
+    this.getArticleByOptions(param, startTime, endTime, value);
+  }
+
+  handleInputChange = e => {
+    const { startTime, endTime, selectOption } = this.state;
+    this.setState({
+      param: e.target.value
+    });
+    this.getArticleByOptions(e.target.value, startTime, endTime, selectOption);
+  }
+
+  // 条件查询
+  handleClickSeach = () => {
+    const { selectOption, startTime, endTime, param } = this.state;
+    this.getArticleByOptions(param, startTime, endTime, selectOption)
+  }
+
+  getArticleByOptions = (articlename, startTime, endTime, status) => {
+    getArticlesByOptions({
+      articlename,
+      startTime,
+      endTime,
+      status,
+    }, ({ data }) => {
+      console.log('getArticleByOptions-data', data);
+      this.setState({
+        dataSource: data
+      })
+    },
+      e => console.log('getArticleByOptions-error', e.toString())
+    )
   }
 
   handleOnRow = name => {
     this.setState({
-      auditArticlename: name,
+      currentname: name,
       visible: true
     })
   }
 
+  showCard = () => {
+    this.setState({
+      display: true
+    })
+  }
+
+  closeCard = () => {
+    this.setState({
+      display: false
+    })
+    this.getAuditArticleList();
+  }
+
   handleOk = () => {
-    const el = document.createElement('a');
-    el.href = "#auditCard";
-    document.body.appendChild(el);
-    el.click();
+    const { currentname } = this.state;
+    this.getAuditDetail(currentname);
+    this.showCard();
+    this.setState({
+      auditArticlename: currentname,
+      visible: false
+    })
+  }
+
+  getAuditDetail = name => {
+    getAuditDetail({
+      articlename: name
+    }, ({ data }) => {
+      const { articlename, author, articleType, articleDescription, articleForm, articleContent, annexname } = data;
+      this.setState({
+        auditMessage: {
+          articlename,
+          author,
+          articleType,
+          articleDescription,
+          articleForm,
+          annexname,
+          articleContent
+        }
+      })
+    },
+      e => console.log('getAuditDetail-error', e.toString())
+    )
+  }
+
+  handleCancel = () => {
     this.setState({
       visible: false
     })
@@ -103,6 +203,7 @@ class Home extends React.Component {
       loading: true
     })
     setTimeout(() => {
+      this.getAuditArticleList()
       this.setState({
         loading: false
       })
@@ -110,19 +211,7 @@ class Home extends React.Component {
   }
 
   render() {
-    const { visible, loading, required, auditArticlename, auditMessage } = this.state;
-    this.ifHasAnchorJustScorll();
-    const dataSource = [];
-    for (let i = 0; i < 31; i++) {
-      dataSource.push({
-        articlename: `文章${i + 1}`,
-        author: `作者${i + 1}`,
-        articleType: '小说',
-        ariticleDescription: '本文简述...',
-        createTime: momment(new Date).format('YYYY-MM-DD hh:mm:ss'),
-        status: 1,
-      })
-    }
+    const { visible, loading, required, auditArticlename, currentname, auditMessage, dataSource, display, selectOption } = this.state;
     return (
       <div>
         <Card>
@@ -135,15 +224,24 @@ class Home extends React.Component {
           <Select
             style={{ marginRight: 10, width: 200 }}
             placeholder="请选择查询条件"
+            onChange={this.handleOnChange}
+            defaultValue={selectOption}
           >
-            <Option value={0}>未审核</Option>
-            <Option value={1}>审核中</Option>
+            <Option value={1}>未审核</Option>
+            <Option value={2}>审核中</Option>
           </Select>
           <Input
             placeholder="请输入查询的文章名"
             style={{ width: 250 }}
+            onChange={this.handleInputChange}
+
           />
-          <Button type="primary" style={{ marginLeft: 10 }} icon="search">
+          <Button
+            type="primary"
+            style={{ marginLeft: 10 }}
+            icon="search"
+            onClick={this.handleClickSeach}
+          >
             查找
           </Button>
         </Card>
@@ -158,28 +256,29 @@ class Home extends React.Component {
               <Icon type="reload" /> 刷新
             </div>}
         >
-          <Table
-            rowKey='id'
-            loading={loading}
-            columns={this.columns}
-            dataSource={dataSource}
-            onRow={record => {
-              return {
-                onClick: e => this.handleOnRow(record.articlename)
-              }
-            }}
-          />
+          <CustomizeEmpty>
+            <Table
+              rowKey='id'
+              loading={loading}
+              columns={this.columns}
+              dataSource={dataSource}
+              onRow={record => {
+                return {
+                  onClick: e => this.handleOnRow(record.articlename)
+                }
+              }}
+            />
+          </CustomizeEmpty>
         </Card>
         <Card
-          style={{ marginTop: 10 }}
-          title={<span style={{ fontWeight: 'bold' }}>审核文章{auditArticlename ? `:《${auditArticlename}》` : null }</span>}
+          style={{ marginTop: 10, display: display ? '' : 'none' }}
+          title={<span style={{ fontWeight: 'bold' }}>审核文章{auditArticlename ? `:《${auditArticlename}》` : null}</span>}
           extra={<div style={{ color: '#2884D8', cursor: 'pointer' }}><Icon type="reload" /> 刷新</div>}
         >
           <div>
-            <StepForm auditMessage={auditMessage} />
+            <StepForm auditMessage={auditMessage} closeCard={this.closeCard} />
           </div>
         </Card>
-          <a name="auditCard"></a>
         <Modal
           visible={visible}
           title="操作提示"
@@ -190,7 +289,7 @@ class Home extends React.Component {
           onCancel={this.handleCancel}
           onOk={this.handleOk}
         >
-          <div className={styles.messeageTip}>是否确认审核<span className={styles.auditname}>《{auditArticlename}》</span>？</div>
+          <div className={styles.messeageTip}>是否确认审核<span className={styles.auditname}>《{currentname}》</span>？</div>
         </Modal>
       </div>
     )

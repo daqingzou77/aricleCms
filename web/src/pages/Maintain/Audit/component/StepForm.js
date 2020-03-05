@@ -11,7 +11,8 @@ const { Step } = Steps;
 class StepForm extends React.Component {
   
   state = {
-    currentStep: 0
+    currentStep: 0,
+    reback: false,
   }
 
   getCurrentStep() {
@@ -28,20 +29,28 @@ class StepForm extends React.Component {
     }
   }
 
-  handleNextStep = key => {
+  handleNextStep = (key, reback) => {
     this.setState({
-      currentStep: key
+      currentStep: key,
+      reback
     })
   };
 
+  closeCard = () => {
+    this.props.closeCard()
+  }
+
   render() {
-    const { currentStep } = this.state;
-    const { auditMessage } = this.props;
+    const { currentStep, reback } = this.state;
+    let { auditMessage } = this.props;
+    if (reback) {
+      auditMessage = {}
+    }
     let stepComponent;
     if (currentStep === 1) {
-      stepComponent = <Step2 handleNextStep={this.handleNextStep} />;
+      stepComponent = <Step2 handleNextStep={this.handleNextStep} auditMessage={auditMessage} />;
     } else if (currentStep === 2) {
-      stepComponent = <Step3 handleNextStep={this.handleNextStep} />;
+      stepComponent = <Step3 handleNextStep={this.handleNextStep} auditMessage={auditMessage} closeCard={this.closeCard} />;
     } else {
       stepComponent = <Step1 handleNextStep={this.handleNextStep} auditMessage={auditMessage} />;
     }

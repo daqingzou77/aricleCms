@@ -20,7 +20,7 @@ const app = express();
 // const store = new sessionStore({url: config.mongo.sessionUrl});
 
 
-app.use(log4js.connectLogger(logger('normal'), {level:'auto', format: ':method :url :status'}));  //日志
+// app.use(log4js.connectLogger(logger('normal'), {level:'auto', format: ':method :url :status'}));  //日志
 
 app.use(bodyParse.json()); // 解析url信息中的参数
 app.use(bodyParse.urlencoded({ extended: false }));

@@ -194,7 +194,7 @@ class PublishOnline extends React.Component {
           articleForm: 0,
           status: 1,
           articleDescription,
-          articleContents: draftToHtml(convertToRaw(editorState.getCurrentContent())),
+          articleContent: draftToHtml(convertToRaw(editorState.getCurrentContent())),
           keywords
         }, ({ data }) => {
           if (data.length === 0) {
@@ -243,11 +243,8 @@ class PublishOnline extends React.Component {
     }, ({ data }) => {
       console.log('getArticleDetail-data', data);
       const contentBlock = htmlToDraft(data.editContent);
-      console.log('contentBlock', contentBlock);
       const contentState = ContentState.createFromBlockArray(contentBlock.contentBlocks);
-      console.log('contentState', contentState);
       const editorState = EditorState.createWithContent(contentState);
-      console.log('editorState', editorState);
       this.setState({
         editorState,
         currentName: data.editTitle,
