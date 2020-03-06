@@ -47,6 +47,11 @@ class History extends React.Component {
     });
   };
 
+  handleReset = () => {
+    const { form } = this.props;
+    form.resetFields();
+  }
+
   handleOnQuery = () => {
     const { form } = this.props;
     form.validateFields((err, values) => {
@@ -63,7 +68,6 @@ class History extends React.Component {
   }
 
   getArticleByMutiKeys = keywords => {
-    console.log('keywords', keywords);
     getArticleByMutiKeys({
       queryKeywords: keywords
     }, ({ data }) => {
@@ -93,7 +97,7 @@ class History extends React.Component {
           <Col>
             <Card
               title={<span style={{ fontWeight: 'bold' }}>多关键词检索</span>}
-              extra={<span style={{ fontWeight: 'bold', cursor: 'pointer' }}><Icon type="delete" /> 重置</span>}
+              extra={<span style={{ fontWeight: 'bold', cursor: 'pointer' }} onClick={this.handleReset}><Icon type="delete" /> 重置</span>}
             >
               <HistorySearch handleOnQuery={this.handleOnQuery} form={form} />
             </Card>
