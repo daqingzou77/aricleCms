@@ -2,7 +2,6 @@ import articles from '../model/articles';
 import Encrypt from '../utils/encrypt';
 const BigInt = require('big-integer');
 
-
 class Articles {
   constructor(app) {
     Object.assign(this, {

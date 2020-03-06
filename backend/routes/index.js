@@ -7,9 +7,11 @@
 import Articles from '../controller/article'; 
 import Publish from '../controller/publish';
 import Annex from '../controller/annex';
+import Classify from '../controller/classify';
 
 export default (app)=> {
   new Articles(app);
   new Publish(app);
   new Annex(app);
+  new Classify(app);
 }

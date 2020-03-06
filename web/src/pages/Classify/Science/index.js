@@ -8,14 +8,17 @@ import FormRow from '@/components/FormRow';
 import Table from '../component/Table';
 import styles from './style.less';
 import {
-  getArticleByMutiKeys
+  getArticleByMutiKeys,
+  getHotRecommandFromScience,
+  getLiveUpdateFromScience,
+  getScienceTips
 } from '@/services/classifyService'
-import {
-  hotArticles,
-  dailyUpdate,
-  avatarColor,
-  scienceTips
-} from './mock';
+// import {
+//   hotArticles,
+//   dailyUpdate,
+//   avatarColor,
+//   scienceTips
+// } from './mock';
 
 const { Text } = Typography;
 
@@ -27,8 +30,44 @@ class Science extends React.Component {
   state = {
     collapsed: true,
     dataSource: [],
-    loading: false
+    loading: false,
+    hotArticles: [],
+    // dailyUpdate: [],
+    // avatarColor: [],
+    scienceTips: []
+
   }
+
+  componentDidMount() {
+    this.getHotRecommandFromScience();
+    // this.getLiveUpdateFromScience();
+    this.getScienceTips();
+  }
+
+  getHotRecommandFromScience = () => {
+    getHotRecommandFromScience({}, ({ data }) => {
+      this.setState({
+        hotArticles: data
+      })
+    },
+    e => console.log('getHotRecommandFromScience-error', e.toString())
+    )
+  }
+
+  getLiveUpdateFromScience = () => {
+
+  }
+
+  getScienceTips = () => {
+    getScienceTips({}, ({ data }) => {
+      this.setState({
+        scienceTips: data
+      })
+    },
+    e => console.log('getScienceTips-error', e.toString())
+    )
+  }
+
 
   handleOnRemove = () => {
     const { form } = this.props;
@@ -104,7 +143,7 @@ class Science extends React.Component {
   }
 
   render() {
-    const { collapsed, dataSource, loading } = this.state;
+    const { collapsed, dataSource, loading, hotArticles, dailyUpdate, scienceTips } = this.state;
     const { form } = this.props;
     const { getFieldDecorator, getFieldValue } = form;
     getFieldDecorator('keys', { initialValue: [] });
@@ -240,7 +279,7 @@ class Science extends React.Component {
             >
               <List
                 itemLayout="vertical"
-                // dataSource={hotArticles}
+                dataSource={hotArticles}
                 renderItem={item => (
                   <List.Item
                     key={item.articlename}
