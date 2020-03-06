@@ -49,9 +49,6 @@ class Step3 extends React.Component {
 
     const extra = (
       <>
-        <Button type="primary" onClick={() => this.handleNextStep(0)}>
-          继续审核
-        </Button>
         <Button type="dashed" onClick={() => this.closeCard()}>
           退出审核
         </Button>

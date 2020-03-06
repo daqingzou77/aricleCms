@@ -17,7 +17,7 @@ const EncryptTools = new Encrypt(keywords);
 // console.log('密文索引向量', EncryptTools.getCiphertextDoor(queryVectorArray).toString());
 
 const result = EncryptTools.uploadCiphertextIndex(fileVectorArray, articlename, author);
-// console.log('result', result)
+console.log('result', result.toString())
 const { I1, θ } = result;
 const Q1 = EncryptTools.getCiphertextDoor(queryVectorArray);
 // console.log('Q1', Q1.toString());

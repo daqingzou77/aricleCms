@@ -7,6 +7,9 @@ import FormElement from '@/components/FormElement';
 import FormRow from '@/components/FormRow';
 import styles from './style.less';
 import {
+  getArticleByMutiKeys
+} from '@/services/classifyService'
+import {
   hotArticles,
   dailyUpdate,
   avatarColor,
@@ -20,7 +23,7 @@ class Science extends React.Component {
   id = 0;
 
   state = {
-    collapsed: false,
+    collapsed: true,
   }
 
   handleOnRemove = () => {
@@ -43,6 +46,20 @@ class Science extends React.Component {
     });
   };
 
+  handleOnQuery = () => {
+    const { form } = this.props;
+    form.validateFields((err, values) => {
+      if(!err) {
+       const {keyword1, keys, ...otherKeywords} = values
+       const queryKeywords = [keyword1];
+       for (let obj in otherKeywords) {
+         queryKeywords.push(otherKeywords[obj]);
+       }
+       this.getArticleByMutiKeys(queryKeywords);
+      }
+    }) 
+  }
+
   handleOnCollapseChange = collapsed => {
     const { form } = this.props;
     this.id = 0;
@@ -54,13 +71,23 @@ class Science extends React.Component {
     });
   }
 
+
+  getArticleByMutiKeys = queryKeywords => {
+    getArticleByMutiKeys({
+      queryKeywords
+    },({ data }) => {
+      console.log('getArticleByMutiKeys-data', data);
+    },
+    e => console.log('getArticleByMutiKeys-error', e.toString())
+    )
+  }
+
   render() {
     const { collapsed } = this.state;
     const { form } = this.props;
     const { getFieldDecorator, getFieldValue } = form;
     getFieldDecorator('keys', { initialValue: [] });
     const keys = getFieldValue('keys');
-    console.log('keys', keys);
     const formElementProps = {
       form,
       width: 300,
@@ -101,6 +128,7 @@ class Science extends React.Component {
                       label="关键词1"
                       field="keyword1"
                       ref={node => this.nameDom = node}
+                      required={true}
                     />
                     <FormElement
                       {...formElementProps}
@@ -155,7 +183,14 @@ class Science extends React.Component {
                         </FormElement>
                       </div>)}
                     <FormElement>
-                      <Button type="primary" icon="search" htmlType="submit" style={{ marginLeft: 20 }}>查询</Button>
+                      <Button 
+                        type="primary" 
+                        icon="search"
+                        style={{ marginLeft: 20 }}
+                        onClick={this.handleOnQuery}
+                      >
+                        查询
+                      </Button>
                     </FormElement>
                   </FormRow>
                 </Form>

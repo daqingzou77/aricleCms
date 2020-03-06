@@ -33,6 +33,7 @@ class Encrypt {
   // 根据查询词组生成密文搜索陷门
   getCiphertextDoor(queryVectorArray) {
     const queryArray = this.queryIndexVector(queryVectorArray);
+    console.log('queryArray', queryArray);
     const Ci = this.randomArrayCi();
     const Q1 = this.cipherTextDoor(queryArray, this.m, Ci);
     return Q1;

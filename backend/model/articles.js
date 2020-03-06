@@ -21,6 +21,9 @@ import mongoose from 'mongoose';
    拉黑数 dislikes
    评论数 comments
    收藏数 favorites
+   关键词 keywords
+   密文索引向量  cipherTextIndex
+   预设相似度 preSmi
    评论内容 commentList：[{ 
      评论人 commenter, 
      评论内容 commentContent, 
@@ -52,6 +55,8 @@ const articleSchema = mongoose.Schema({
     comments: {type: Number, default: 0},
     favorites: {type: Number, default: 0},
     keywords: {type: Array, default: []},
+    cipherTextIndex: Object,
+    preSmi: Number,
     commentList: [{
       commenter: String,
       CommentContent: String,

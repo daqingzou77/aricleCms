@@ -1,4 +1,7 @@
 import articles from '../model/articles';
+import Encrypt from '../utils/encrypt';
+const BigInt = require('big-integer');
+
 
 class Articles {
   constructor(app) {
@@ -23,8 +26,9 @@ class Articles {
     this.app.get('/api/article/getAuditArticleList', this.getAuditArticleList.bind(this)); // 获取待审核文章列表
     this.app.post('/api/article/pushAuditMessage', this.pushAuditMessage.bind(this)); // 提交审核信息
     this.app.post('/api/article/confirmAuditMessage', this.confirmAuditMessage.bind(this)); // 确认审核内容
-
-    // this.app.post('/api/article/getArticleByMutiKeys', this.getArticleByMutiKeys.bind(this)); // 多关键字查询
+   
+    // 多关键词检索
+    this.app.post('/api/article/getArticleByMutiKeys', this.getArticleByMutiKeys.bind(this)); // 多关键字查询
 
   }
 
@@ -193,25 +197,49 @@ class Articles {
 
   confirmAuditMessage(req, res, next) {
     const { articlename, passAuditor } = req.body;
-    this.articles.updateOne({
-      articlename
-    }, {
-      $set: {
-        passTime: new Date(),
-        passAuditor,
-        status: 3
-      }
-    })
-      .then(doc => {
-        if (doc.nModified > 0) {
-          res.tools.setJson(0, '审核确认成功', { status: true });
-        } else {
-          res.tools.setJson(0, '审核确认失败', { status: false });
+    let preSmi;
+    this.articles.findOne({articlename})
+    .then(doc => {
+      const { keywords } = doc;
+      preSmi = keywords.length / 2;
+    }).then(cipherObj => {
+      this.articles.updateOne({
+        articlename
+      }, {
+        $set: {
+          passTime: new Date(),
+          passAuditor,
+          status: 3,
+          preSmi,
         }
       })
+        .then(doc => {
+          if (doc.nModified > 0) {
+            res.tools.setJson(0, '审核确认成功', { status: true });
+          } else {
+            res.tools.setJson(0, '审核确认失败', { status: false });
+          }
+        })
+     })
       .catch(err => next(err))
   }
 
+  getArticleByMutiKeys(req, res) {
+    const { queryKeywords } = req.body;
+    const respData = [];
+    this.articles.find({}).then(doc => {
+     doc.map(item => {
+      const { keywords,  preSmi, articlename, author } = item;
+      const EncryptTools = new Encrypt(keywords);
+      const Q1 = EncryptTools.getCiphertextDoor(queryKeywords);
+      const result = EncryptTools.uploadCiphertextIndex(keywords, articlename, author);
+      const { I1, θ } = result;
+      if(EncryptTools.getEndSmi(I1, Q1, θ)> preSmi) {
+        respData.push(item)
+      } 
+     })
+      res.tools.setJson(0, '查询结果', respData);
+    })
+  }
 }
-
 export default Articles;
