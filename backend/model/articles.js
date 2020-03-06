@@ -45,6 +45,7 @@ const articleSchema = mongoose.Schema({
     auditTime: { type: Date, default: ''},
     auditor: String,
     passTime: { type: Date, default: ''},
+    passAuditor:String,
     revokeTime: { type: Date, default: ''},
     likes: {type: Number, default: 0},
     dislikes: {type: Number, default: 0},

@@ -26,8 +26,10 @@ class Step1 extends React.Component {
 
   pushAuditMessage = () => {
     const { auditMessage: { articlename }, handleNextStep } = this.props;
+    const auditor = 'daqing';
     pushAuditMessage({
-      articlename
+      articlename,
+      auditor
     }, ({ data }) => {
       if (data.status) {
         handleNextStep(1);

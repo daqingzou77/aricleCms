@@ -193,11 +193,7 @@ class Home extends React.Component {
       visible: false
     })
   }
-
-  handleDateChange = (date, dateString) => {
-    console.log(date, dateString)
-  }
-
+  
   handleFresh = () => {
     this.setState({
       loading: true

@@ -100,7 +100,7 @@ class AnnexUpload extends React.Component {
   handleMinusKeys = () => {
     const { keysArrays } = this.state;
     if (this.id === 1) return;
-    keysArrays.pop();
+    keysArrays.pop(--this.id);
     this.setState({
       keysArrays
     })

@@ -13,9 +13,10 @@ class Step2 extends React.Component {
   }
 
   handleConfirm = articlename => {
+    const passAuditor = 'daqing';
     confirmAuditMessage({
       articlename,
-      auditor: 'daqing'
+      passAuditor
     }, ({ data }) => {
        if(data.status) {
          this.handleNextStep(2)
