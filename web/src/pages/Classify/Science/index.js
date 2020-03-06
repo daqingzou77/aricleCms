@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react';
-import { Button, Form, Card, Row, Col, Icon, List, Typography, Empty, Avatar } from 'antd';
+import { Button, Form, Card, Row, Col, Icon, List, Typography, Empty, Avatar, Spin } from 'antd';
 import InfiniteScroll from 'react-infinite-scroller';
 import moment from 'moment';
 import QueryBar from '@/components/QueryBar';
@@ -27,7 +27,7 @@ class Science extends React.Component {
   state = {
     collapsed: true,
     dataSource: [],
-    loading: true
+    loading: false
   }
 
   handleOnRemove = () => {
@@ -54,14 +54,19 @@ class Science extends React.Component {
     const { form } = this.props;
     form.validateFields((err, values) => {
       if (!err) {
+        this.setState({
+          loading: true
+        })
         const { keyword1, keys, ...otherKeywords } = values
         const queryKeywords = [keyword1];
         for (let obj in otherKeywords) {
           queryKeywords.push(otherKeywords[obj]);
         }
-        this.getArticleByMutiKeys(queryKeywords);
+        setTimeout(() => {
+          this.getArticleByMutiKeys(queryKeywords);
+        }, 1000)
       }
-    })
+    });
   }
 
   handleOnCollapseChange = collapsed => {
@@ -79,7 +84,8 @@ class Science extends React.Component {
     const { form } = this.props;
     form.resetFields();
     this.setState({
-      dataSource:[]
+      dataSource: [],
+      collapsed: true,
     })
   }
 
@@ -216,18 +222,12 @@ class Science extends React.Component {
         <Row gutter={24} style={{ marginTop: 10 }}>
           <Col>
             <Card
-              title={<span style={{ fontWeight: 'bold' }}>搜索结果</span>}
+              title={<span style={{ fontWeight: 'bold' }}>查询结果</span>}
             >
-              {
-                dataSource.length > 0 ? (
-                  <Table
-                    loading={loading}
-                    dataSource={dataSource}
-                  />
-                ) : (
-                  <Empty description={<span>无匹配结果</span>} />
-                  )
-              }
+              <Table
+                loading={loading}
+                dataSource={dataSource}
+              />
             </Card>
           </Col>
         </Row>

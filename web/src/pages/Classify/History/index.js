@@ -1,9 +1,10 @@
-import React, { Fragment } from 'react';
-import { Button, Form, Card, Row, Col, Icon, List, Typography, Empty, Avatar } from 'antd';
+/* eslint-disable no-nested-ternary */
+import React from 'react';
+import { Form, Card, Row, Col, Icon, List, Typography, Avatar  } from 'antd';
 import InfiniteScroll from 'react-infinite-scroller';
 import moment from 'moment';
-import FormElement from '@/components/FormElement';
 import HistorySearch from './components/historySearch';
+import Table from '../component/Table';
 import styles from './style.less';
 import {
   hotArticles,
@@ -11,15 +12,19 @@ import {
   avatarColor,
   scienceTips
 } from './mock';
+import {
+  getArticleByMutiKeys
+} from '@/services/classifyService';
 
 const { Text } = Typography;
 
 
-class Science extends React.Component {
+class History extends React.Component {
   id = 0;
 
   state = {
-    collapsed: false,
+    loading: false,
+    dataSource: []
   }
 
   handleOnRemove = () => {
@@ -42,32 +47,46 @@ class Science extends React.Component {
     });
   };
 
+  handleOnQuery = () => {
+    const { form } = this.props;
+    form.validateFields((err, values) => {
+      if (!err) {
+        const { keywords } = values;
+        this.setState({
+          loading: true
+        });
+        setTimeout(()=>{
+          this.getArticleByMutiKeys(keywords);
+        }, 1000)
+      }
+    })
+  }
+
+  getArticleByMutiKeys = keywords => {
+    console.log('keywords', keywords);
+    getArticleByMutiKeys({
+      queryKeywords: keywords
+    }, ({ data }) => {
+      console.log('getArticleByMutiKeys-data', data);
+      this.setState({
+        dataSource: data,
+        loading: false
+      })
+    },
+      e => console.log('getArticleByMutiKeys-error', e.toString())
+    )
+  }
+
   render() {
     const { form } = this.props;
     const { getFieldDecorator, getFieldValue } = form;
+    const { loading, dataSource } = this.state;
     getFieldDecorator('keys', { initialValue: [] });
-    const keys = getFieldValue('keys');
-    console.log('keys', keys);
-    const formElementProps = {
-      form,
-      width: 300,
-      style: { paddingLeft: 16 },
-    };
     const IconText = ({ type, text }) => (
       <span>
         <Icon type={type} />{text}
       </span>
     );
-    const formItems = keys.map((value, index) => (
-      <div>
-        <FormElement
-          key={`keywords${7 + index}`}
-          {...formElementProps}
-          label={`关键词${7 + index}`}
-          field={`keyword${7 + index}`}
-        />
-      </div>
-    ))
     return (
       <div>
         <Row gutter={24}>
@@ -76,7 +95,7 @@ class Science extends React.Component {
               title={<span style={{ fontWeight: 'bold' }}>多关键词检索</span>}
               extra={<span style={{ fontWeight: 'bold', cursor: 'pointer' }}><Icon type="delete" /> 重置</span>}
             >
-              <HistorySearch />
+              <HistorySearch handleOnQuery={this.handleOnQuery} form={form} />
             </Card>
           </Col>
         </Row>
@@ -85,7 +104,10 @@ class Science extends React.Component {
             <Card
               title={<span style={{ fontWeight: 'bold' }}>搜索结果</span>}
             >
-              <Empty description={false} />
+              <Table 
+                dataSource={dataSource}
+                loading={loading}
+              />
             </Card>
           </Col>
         </Row>
@@ -164,4 +186,4 @@ class Science extends React.Component {
   }
 }
 
-export default Form.create({ name: 'science' })(Science);
+export default Form.create({ name: 'history' })(History);

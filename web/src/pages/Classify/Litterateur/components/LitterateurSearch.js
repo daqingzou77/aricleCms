@@ -1,21 +1,29 @@
 import React from 'react';
 import { Tag, Input, Icon } from 'antd';
 import FormElement from '@/components/FormElement';
+import {
+  getArticleByMutiKeys
+} from '@/services/classifyService';
 import styles from './style.less';
 
 class LitterateurSearch extends React.Component {
 
   state = {
-    tags: ['Tag 1', 'Tag 2', 'Tag 3'],
+    tags: [],
     inputVisible: false,
     inputValue: '',
   };
 
-  handleClose = removedTag => {
-    const tags = this.state.tags.filter(tag => tag !== removedTag);
-    console.log(tags);
-    this.setState({ tags });
-  };
+  handleOnQuery = () => {
+    const { tags } = this.state;
+    getArticleByMutiKeys({
+      queryKeywords: tags
+    }, ({ data }) => {
+      this.props.handleOnSave(data)
+    },
+      e => console.log('getArticleByMutiKeys-error', e.toString())
+    )
+  }
 
   showInput = () => {
     this.setState({ inputVisible: true }, () => this.input.focus());
@@ -23,6 +31,12 @@ class LitterateurSearch extends React.Component {
 
   handleInputChange = e => {
     this.setState({ inputValue: e.target.value });
+  };
+
+  handleClose = removedTag => {
+    const { tags } = this.state;
+    const tagList = tags.filter(tag => tag !== removedTag);
+    this.setState({ tags: tagList });
   };
 
   handleInputConfirm = () => {
@@ -60,19 +74,15 @@ class LitterateurSearch extends React.Component {
       </span>);
   };
 
-  searchTag = (
-    <span style={{ display: 'inline-block' }}>
-      <FormElement>
-        <Tag style={{ color: 'black' }}>
-          <Icon type="search" /> 查询
-        </Tag>
-      </FormElement>
-    </span>
 
-  )
 
   render() {
-    const { tags, inputVisible, inputValue } = this.state;
+    const { inputVisible, inputValue, tags } = this.state;
+    const { clearTags, restartTags } = this.props;
+    if (clearTags) {
+      tags.splice(0, tags.length);
+      restartTags()
+    }
     const tagChild = tags.map(this.forMap);
     return (
       <div className={styles.litterateurSearch}>
@@ -81,13 +91,19 @@ class LitterateurSearch extends React.Component {
           <span style={{ display: 'inline-block' }}>
             <FormElement>
               <Tag onClick={this.showInput} style={{ color: 'black', borderStyle: 'dashed' }}>
-                <Icon type="plus" /> New Tag
+                <Icon type="plus" /> 输入关键词
               </Tag>
             </FormElement>
           </span>
         )}
         {!inputVisible && (
-          this.searchTag
+          <span style={{ display: 'inline-block' }} onClick={this.handleOnQuery}>
+            <FormElement>
+              <Tag style={{ color: 'black' }}>
+                <Icon type="search" /> 查询
+              </Tag>
+            </FormElement>
+          </span>
         )}
         {inputVisible && (
           <Input

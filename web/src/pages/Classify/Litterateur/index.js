@@ -1,9 +1,9 @@
 import React from 'react';
-import { Form, Card, Row, Col, Icon, List, Typography, Empty, Avatar } from 'antd';
+import { Form, Card, Row, Col, Icon, List, Typography, Avatar } from 'antd';
 import InfiniteScroll from 'react-infinite-scroller';
 import moment from 'moment';
-import FormElement from '@/components/FormElement';
 import LittearteurSearch from './components/LitterateurSearch';
+import Table from '../component/Table';
 import styles from './style.less';
 import {
   hotArticles,
@@ -19,7 +19,9 @@ class Science extends React.Component {
   id = 0;
 
   state = {
-    collapsed: false,
+    dataSource: [],
+    clearTags: false,
+    loading: false
   }
 
   handleOnRemove = () => {
@@ -42,54 +44,53 @@ class Science extends React.Component {
     });
   };
 
-  handleOnCollapseChange = collapsed => {
-    const { form } = this.props;
-    this.id = 0;
+
+  handleOnSave = data => {
     this.setState({
-      collapsed
-    });
-    form.setFieldsValue({
-      keys: [],
-    });
+      loading: true
+    })
+    setTimeout(() => {
+      this.setState({
+        loading: false,
+        dataSource: data
+      })
+    }, 1000)
+  }
+
+  handleReset = () => {
+    this.setState({
+      dataSource: [],
+      clearTags: true
+    })
+  }
+
+  restartTags = () => {
+    this.setState({
+      clearTags: false
+    })
   }
 
   render() {
-    const { collapsed } = this.state;
-    const { form } = this.props;
-    const { getFieldDecorator, getFieldValue } = form;
-    getFieldDecorator('keys', { initialValue: [] });
-    const keys = getFieldValue('keys');
-    console.log('keys', keys);
-    const formElementProps = {
-      form,
-      width: 300,
-      style: { paddingLeft: 16 },
-    };
+    const { dataSource, loading, clearTags } = this.state;
     const IconText = ({ type, text }) => (
       <span>
         <Icon type={type} />{text}
       </span>
     );
-
-    const formItems = keys.map((value, index) => (
-      <div>
-        <FormElement
-          key={`keywords${7 + index}`}
-          {...formElementProps}
-          label={`关键词${7 + index}`}
-          field={`keyword${7 + index}`}
-        />
-      </div>
-    ))
+    
     return (
       <div>
         <Row gutter={24}>
           <Col>
             <Card
               title={<span style={{ fontWeight: 'bold' }}>多关键词检索</span>}
-              extra={<span style={{ fontWeight: 'bold', cursor: 'pointer' }}><Icon type="delete" /> 重置</span>}
+              extra={<span style={{ fontWeight: 'bold', cursor: 'pointer' }} onClick={this.handleReset}><Icon type="delete" /> 重置</span>}
             >
-              <LittearteurSearch />
+              <LittearteurSearch 
+                clearTags={clearTags} 
+                handleOnSave={this.handleOnSave} 
+                restartTags={this.restartTags}
+              />
             </Card>
           </Col>
         </Row>
@@ -98,7 +99,7 @@ class Science extends React.Component {
             <Card
               title={<span style={{ fontWeight: 'bold' }}>搜索结果</span>}
             >
-              <Empty description={false} />
+              <Table dataSource={dataSource} loading={loading} />
             </Card>
           </Col>
         </Row>

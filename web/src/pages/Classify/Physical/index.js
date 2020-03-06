@@ -5,6 +5,10 @@ import moment from 'moment';
 import styles from './style.less';
 import FormElement from '@/components/FormElement';
 import FormRow from '@/components/FormRow';
+import Table from '../component/Table';
+import {
+  getArticleByMutiKeys
+} from '@/services/classifyService'
 import {
   hotArticles,
   dailyUpdate,
@@ -20,6 +24,41 @@ class Health extends React.Component {
   defaultArray = [1];
 
   state = {
+    loading: false,
+    dataSource: []
+  }
+
+  handleOnQuery = () => {
+    const { form } = this.props;
+    form.validateFields((err, values) => {
+      if (!err) {
+        this.setState({
+          loading: true
+        })
+        const { keyword1, ...otherKeywords } = values
+        const queryKeywords = [keyword1];
+        for (let obj in otherKeywords) {
+          queryKeywords.push(otherKeywords[obj]);
+        }
+        setTimeout(() => {
+          this.getArticleByMutiKeys(queryKeywords);
+        }, 1000)
+      } 
+    })
+  }
+
+  getArticleByMutiKeys = queryKeywords => {
+    getArticleByMutiKeys({
+      queryKeywords
+    }, ({ data }) => {
+      console.log('getArticleByMutiKeys-data', data);
+      this.setState({
+        dataSource: data,
+        loading: false
+      })
+    },
+      e => console.log('getArticleByMutiKeys-error', e.toString())
+    )
   }
 
   handleAdd = () => {
@@ -39,9 +78,17 @@ class Health extends React.Component {
     setFieldsValue();
   };
 
+  handleReset = () => {
+    const { form } = this.props;
+    form.resetFields();
+    this.setState({
+      dataSource: [],
+    })
+  }
+
   render() {
     const { form } = this.props;
-    const { positionDynamicListState } = this.state;
+    const { dataSource, loading } = this.state;
     const formElementProps = {
       form,
       width: 300,
@@ -49,28 +96,29 @@ class Health extends React.Component {
     };
     const dataLayout = this.defaultArray.map((item, index) => {
       return (
-        <div key={index} className={styles.border}>
+        <div className={styles.border}>
           <div className={styles.title}>{`关键词组${index + 1}`}</div>
           <FormRow>
             <FormElement
-              label="keyword1"
+              label="关键词1"
               {...formElementProps}
-              field="keyword1"
+              field={`keyword${index*4+1}`}
+              required={true}
             />
             <FormElement
-              label="keyword2"
+              label="关键词2"
               {...formElementProps}
-              field="keyword2"
+              field={`keyword${index*4+2}`}
             />
             <FormElement
-              label="keyword3"
+              label="关键词3"
               {...formElementProps}
-              field="keyword3"
+              field={`keyword${index*4+3}`}
             />
             <FormElement
-              label="keyword4"
+              label="关键词4"
               {...formElementProps}
-              field="keyword4"
+              field={`keyword${index*4+4}`}
             />
           </FormRow>
         </div>
@@ -88,7 +136,7 @@ class Health extends React.Component {
           <Col>
             <Card
               title={<span style={{ fontWeight: 'bold' }}>多关键词检索</span>}
-              extra={<span style={{ fontWeight: 'bold', cursor: 'pointer' }}><Icon type="delete" /> 重置</span>}
+              extra={<span style={{ fontWeight: 'bold', cursor: 'pointer' }} onClick={this.handleReset}><Icon type="delete" /> 重置</span>}
             >
               {dataLayout}
               <div style={{ textAlign: 'center' }}>
@@ -113,6 +161,7 @@ class Health extends React.Component {
                 <Button 
                   type='primary'
                   icon="search"
+                  onClick={this.handleOnQuery}
                 >
                   查询
                 </Button>
@@ -126,7 +175,7 @@ class Health extends React.Component {
             <Card
               title={<span style={{ fontWeight: 'bold' }}>搜索结果</span>}
             >
-              <Empty description={false} />
+              <Table dataSource={dataSource} loading={loading} />
             </Card>
           </Col>
         </Row>

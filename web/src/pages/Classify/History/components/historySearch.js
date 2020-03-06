@@ -4,7 +4,9 @@ import TagSelect from './TagSelect';
 import StandardFormRow from '@/components/StandardFormRow'
 import FormElement from '@/components/FormElement';
 import FormRow from '@/components/FormRow';
+import CustomEmpty from '@/components/CustomizeEmpty';
 import fakeTagList from './mock';
+
 
 class HistorySearch extends React.Component {
 
@@ -17,6 +19,10 @@ class HistorySearch extends React.Component {
       selectOptions: selectArrays
     })
   };
+
+  handleQuery = () => {
+    this.props.handleOnQuery();
+  }
 
   render() {
     const { form } = this.props;
@@ -36,16 +42,18 @@ class HistorySearch extends React.Component {
             <TagSelect saveSelect={this.saveSelect} />
           </StandardFormRow>
           <FormRow>
-            <FormElement
-              {...formElementProps}
-              mode="tags"
-              type="select"
-              field="keyword4"
-              placeholder="请选择查询关键词"
-              options={options}
-            />
+            <CustomEmpty>
+              <FormElement
+                {...formElementProps}
+                mode="tags"
+                type="select"
+                field="keywords"
+                placeholder="请选择查询关键词"
+                options={options}
+              />
+            </CustomEmpty>
             <FormElement>
-              <Button type="primary" icon="search">查询</Button>
+              <Button type="primary" icon="search" onClick={this.handleQuery}>查询</Button>
             </FormElement>
           </FormRow>
         </Form>

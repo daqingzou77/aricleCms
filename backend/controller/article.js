@@ -226,6 +226,7 @@ class Articles {
 
   getArticleByMutiKeys(req, res) {
     const { queryKeywords } = req.body;
+    console.log(queryKeywords);
     const respData = [];
     this.articles.find({}).then(doc => {
      doc.map(item => {

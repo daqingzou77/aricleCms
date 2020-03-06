@@ -1,5 +1,6 @@
+/* eslint-disable no-nested-ternary */
 import React from 'react';
-import { Table } from 'antd';
+import { Table, Spin, Empty } from 'antd';
 import htmlToDraft from 'html-to-draftjs';
 import { EditorState, ContentState } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
@@ -7,9 +8,10 @@ import Modal from '@/common/components/Modal';
 import {
   downloadAnnex
 } from '@/services/annexService'
+import styles from './style.less';
 
 export default class Tables extends React.Component {
- 
+
   columns = [{
     title: '文章名',
     dataIndex: 'articlename',
@@ -44,8 +46,8 @@ export default class Tables extends React.Component {
     datIndex: 'articleContent',
     render: (_, record) => {
       const { articleForm, annexname, articlename, articleContent } = record;
-      return   (
-        <a onClick={() => this.handleClick(annexname, articleForm, articleContent )}>{articleForm === 0 ? articlename : annexname}</a>
+      return (
+        <a onClick={() => this.handleClick(annexname, articleForm, articleContent)}>{articleForm === 0 ? articlename : annexname}</a>
       )
     }
   }];
@@ -86,11 +88,20 @@ export default class Tables extends React.Component {
     const { editorState, visible } = this.state;
     return (
       <>
-        <Table 
-          dataSource={dataSource}
-          loading={loading}
-          columns={this.columns}
-        />
+        {
+          loading ? (
+            <Spin spinning={loading} style={{ marginLeft: '50%' }} />
+          ) :
+            dataSource.length > 0 ? (
+              <Table
+                dataSource={dataSource}
+                loading={loading}
+                columns={this.columns}
+              />
+            ) : (
+              <Empty description={<span className={styles.matchFontStyle}>无匹配结果</span>} />
+              )
+        }
         <Modal
           visible={visible}
           title="内容详情"
@@ -102,7 +113,7 @@ export default class Tables extends React.Component {
             onEditorStateChange={this.onEditorStateChange}
           />
         </Modal>
-      </> 
+      </>
     )
   }
 }
