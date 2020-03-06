@@ -7,13 +7,16 @@ import HistorySearch from './components/historySearch';
 import Table from '../component/Table';
 import styles from './style.less';
 import {
-  hotArticles,
-  dailyUpdate,
+//   hotArticles,
+//   dailyUpdate,
   avatarColor,
-  scienceTips
+//   scienceTips
 } from './mock';
 import {
-  getArticleByMutiKeys
+  getArticleByMutiKeys,
+  getHotRecommandFromHistory,
+  getLiveUpdateFromHistory,
+  getHistoricalStorys,
 } from '@/services/classifyService';
 
 const { Text } = Typography;
@@ -24,7 +27,37 @@ class History extends React.Component {
 
   state = {
     loading: false,
-    dataSource: []
+    dataSource: [],
+    hotArticles: [],
+    // dailyUpdate: [],
+    // avatarColor: [],
+    hitoricalStorys: []
+  }
+
+  componentDidMount() {
+    this.getHotRecommandFromHistory();
+    // this.getLiveUpdateFromHistory();
+    this.getHistoricalStorys();
+  }
+
+  getHotRecommandFromHistory = () => {
+    getHotRecommandFromHistory({}, ({ data }) => {
+      this.setState({
+        hotArticles: data
+      })
+    },
+    e => console.log('getHotRecommandFromHistory-error', e.toString())
+    )
+  }
+
+  getHistoricalStorys = () => {
+    getHistoricalStorys({}, ({ data }) => {
+      this.setState({
+        hitoricalStorys: data
+      })
+    },
+    e => console.log('getHistoricalStorys-error', e.toString())
+    )
   }
 
   handleOnRemove = () => {
@@ -84,7 +117,7 @@ class History extends React.Component {
   render() {
     const { form } = this.props;
     const { getFieldDecorator, getFieldValue } = form;
-    const { loading, dataSource } = this.state;
+    const { loading, dataSource, hotArticles, hitoricalStorys } = this.state;
     getFieldDecorator('keys', { initialValue: [] });
     const IconText = ({ type, text }) => (
       <span>
@@ -153,7 +186,7 @@ class History extends React.Component {
               <InfiniteScroll className={styles.infiniteScroll}>
                 <List
                   itemLayout="vertical"
-                  dataSource={dailyUpdate}
+                  // dataSource={dailyUpdate}
                   renderItem={(item, index) => (
                     <List.Item key={item.author}>
                       <List.Item.Meta
@@ -175,7 +208,7 @@ class History extends React.Component {
               extra={<div style={{ color: '#2884D8', cursor: 'pointer' }}><Icon type='reload' />&nbsp;换一换</div>}
             >
               <List 
-                dataSource={scienceTips}
+                dataSource={hitoricalStorys}
                 renderItem={item => (
                   <List.Item>
                     <Typography.Text mark>[ITEM]</Typography.Text> {item}

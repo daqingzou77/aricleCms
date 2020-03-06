@@ -7,14 +7,17 @@ import FormElement from '@/components/FormElement';
 import FormRow from '@/components/FormRow';
 import Table from '../component/Table';
 import {
-  getArticleByMutiKeys
+  getArticleByMutiKeys,
+  getHotRecommandFromPhysic,
+  getLiveUpdateFromPhysic,
+  getSportSense
 } from '@/services/classifyService'
-import {
-  hotArticles,
-  dailyUpdate,
-  avatarColor,
-  scienceTips,
-} from './mock';
+// import {
+//   hotArticles,
+//   dailyUpdate,
+//   avatarColor,
+//   scienceTips,
+// } from './mock';
 
 const { Text } = Typography;
 
@@ -25,7 +28,35 @@ class Health extends React.Component {
 
   state = {
     loading: false,
-    dataSource: []
+    dataSource: [],
+    hotArticles: [],
+    sportSense: []
+  }
+  
+  componentDidMount() {
+    this.getHotRecommandFromPhysic();
+    this.getSportSense()
+  }
+
+  getHotRecommandFromPhysic = () => {
+    getHotRecommandFromPhysic({}, ({ data }) => {
+      this.setState({
+        hotArticles: data
+      })
+    },
+    e => console.log('getHotRecommandFromPhysic-error', e.toString())
+    )
+  }
+
+  getSportSense = () => {
+    getSportSense({}, ({ data }) => {
+      this.setState({
+        sportSense: data
+      })
+    },
+    e => console.log('getSportSense-error', e.toString())
+    )
+
   }
 
   handleOnQuery = () => {
@@ -88,7 +119,7 @@ class Health extends React.Component {
 
   render() {
     const { form } = this.props;
-    const { dataSource, loading } = this.state;
+    const { dataSource, loading, hotArticles, sportSense } = this.state;
     const formElementProps = {
       form,
       width: 300,
@@ -217,7 +248,7 @@ class Health extends React.Component {
               <InfiniteScroll className={styles.infiniteScroll}>
                 <List
                   itemLayout="vertical"
-                  dataSource={dailyUpdate}
+                  // dataSource={dailyUpdate}
                   renderItem={(item, index) => (
                     <List.Item key={item.author}>
                       <List.Item.Meta
@@ -239,7 +270,7 @@ class Health extends React.Component {
               extra={<div style={{ color: '#2884D8', cursor: 'pointer' }}><Icon type='reload' />&nbsp;换一换</div>}
             >
               <List
-                dataSource={scienceTips}
+                dataSource={sportSense}
                 renderItem={item => (
                   <List.Item>
                     <Typography.Text mark>[ITEM]</Typography.Text> {item}

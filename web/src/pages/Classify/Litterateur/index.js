@@ -5,12 +5,17 @@ import moment from 'moment';
 import LittearteurSearch from './components/LitterateurSearch';
 import Table from '../component/Table';
 import styles from './style.less';
+// import {
+//   hotArticles,
+//   dailyUpdate,
+//   avatarColor,
+//   scienceTips
+// } from './mock';
 import {
-  hotArticles,
-  dailyUpdate,
-  avatarColor,
-  scienceTips
-} from './mock';
+  getHotRecommandFromLitterateur,
+  getLiveUpdateFromLitterateur,
+  getExcerpts
+} from '@/services/classifyService';
 
 const { Text } = Typography;
 
@@ -21,7 +26,34 @@ class Science extends React.Component {
   state = {
     dataSource: [],
     clearTags: false,
-    loading: false
+    loading: false,
+    hotArticles: [],
+    excerpts: []
+  }
+  
+  componentDidMount() {
+    this.getHotRecommandFromLitterateur();
+    this.getExcerpts();
+  }
+
+  getHotRecommandFromLitterateur = () => {
+    getHotRecommandFromLitterateur({}, ({ data }) => {
+      this.setState({
+        hotArticles: data
+      })
+    },
+    e => console.log('getHotRecommandFromLitterateur-error', e.toString())
+    )
+  }
+
+  getExcerpts = () => {
+    getExcerpts({}, ({ data }) => {
+      this.setState({
+        excerpts: data
+      })
+    },
+    e => console.log('getExcerpts-error', e.toString())
+    )
   }
 
   handleOnRemove = () => {
@@ -71,7 +103,7 @@ class Science extends React.Component {
   }
 
   render() {
-    const { dataSource, loading, clearTags } = this.state;
+    const { dataSource, loading, clearTags, excerpts, hotArticles } = this.state;
     const IconText = ({ type, text }) => (
       <span>
         <Icon type={type} />{text}
@@ -141,7 +173,7 @@ class Science extends React.Component {
               <InfiniteScroll className={styles.infiniteScroll}>
                 <List
                   itemLayout="vertical"
-                  dataSource={dailyUpdate}
+                  // dataSource={dailyUpdate}
                   renderItem={(item, index) => (
                     <List.Item key={item.author}>
                       <List.Item.Meta
@@ -163,7 +195,7 @@ class Science extends React.Component {
               extra={<div style={{ color: '#2884D8', cursor: 'pointer' }}><Icon type='reload' />&nbsp;换一换</div>}
             >
               <List
-                dataSource={scienceTips}
+                dataSource={excerpts}
                 renderItem={item => (
                   <List.Item>
                     <Typography.Text mark>[ITEM]</Typography.Text> {item}

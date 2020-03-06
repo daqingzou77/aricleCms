@@ -57,7 +57,7 @@ export const getLiveUpdateFromLitterateur = (data, successCb, failCb) => {
   get(`${scheduleBaseUrl}/api/classify/getLiveUpdateFromLitterateur`, data, successCb, failCb);
 }
 
-// 科学小知识
+// 金句
 export const getExcerpts = (data, successCb, failCb) => {
   get(`${scheduleBaseUrl}/api/classify/getExcerpts`, data, successCb, failCb);
 }
