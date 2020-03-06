@@ -5,6 +5,7 @@ import moment from 'moment';
 import QueryBar from '@/components/QueryBar';
 import FormElement from '@/components/FormElement';
 import FormRow from '@/components/FormRow';
+import Table from '../component/Table';
 import styles from './style.less';
 import {
   getArticleByMutiKeys
@@ -20,10 +21,13 @@ const { Text } = Typography;
 
 
 class Science extends React.Component {
+
   id = 0;
 
   state = {
     collapsed: true,
+    dataSource: [],
+    loading: true
   }
 
   handleOnRemove = () => {
@@ -49,15 +53,15 @@ class Science extends React.Component {
   handleOnQuery = () => {
     const { form } = this.props;
     form.validateFields((err, values) => {
-      if(!err) {
-       const {keyword1, keys, ...otherKeywords} = values
-       const queryKeywords = [keyword1];
-       for (let obj in otherKeywords) {
-         queryKeywords.push(otherKeywords[obj]);
-       }
-       this.getArticleByMutiKeys(queryKeywords);
+      if (!err) {
+        const { keyword1, keys, ...otherKeywords } = values
+        const queryKeywords = [keyword1];
+        for (let obj in otherKeywords) {
+          queryKeywords.push(otherKeywords[obj]);
+        }
+        this.getArticleByMutiKeys(queryKeywords);
       }
-    }) 
+    })
   }
 
   handleOnCollapseChange = collapsed => {
@@ -71,19 +75,30 @@ class Science extends React.Component {
     });
   }
 
+  handleReset = () => {
+    const { form } = this.props;
+    form.resetFields();
+    this.setState({
+      dataSource:[]
+    })
+  }
 
   getArticleByMutiKeys = queryKeywords => {
     getArticleByMutiKeys({
       queryKeywords
-    },({ data }) => {
+    }, ({ data }) => {
       console.log('getArticleByMutiKeys-data', data);
+      this.setState({
+        dataSource: data,
+        loading: false
+      })
     },
-    e => console.log('getArticleByMutiKeys-error', e.toString())
+      e => console.log('getArticleByMutiKeys-error', e.toString())
     )
   }
 
   render() {
-    const { collapsed } = this.state;
+    const { collapsed, dataSource, loading } = this.state;
     const { form } = this.props;
     const { getFieldDecorator, getFieldValue } = form;
     getFieldDecorator('keys', { initialValue: [] });
@@ -110,19 +125,19 @@ class Science extends React.Component {
       </div>
     ))
     return (
-      <div style={{ width: '100%', height: '100%'}}>
+      <div style={{ width: '100%', height: '100%' }}>
         <Row gutter={24}>
           <Col>
             <Card
               title={<span style={{ fontWeight: 'bold' }}>多关键词检索</span>}
-              extra={<span style={{ fontWeight: 'bold', cursor: 'pointer' }}><Icon type="delete" /> 重置</span>}
+              extra={<span style={{ fontWeight: 'bold', cursor: 'pointer' }} onClick={this.handleReset}><Icon type="delete" /> 重置</span>}
             >
               <QueryBar
                 collapsed={collapsed}
                 onCollapsedChange={collapsed => this.handleOnCollapseChange(collapsed)}
               >
                 <Form onSubmit={this.handleSearch} autoComplete="off">
-                  <FormRow>        
+                  <FormRow>
                     <FormElement
                       {...formElementProps}
                       label="关键词1"
@@ -161,7 +176,7 @@ class Science extends React.Component {
                     )}
                     {formItems}
                     {collapsed ? null : (
-                      
+
                       <div>
                         <FormElement>
                           <Button
@@ -183,8 +198,8 @@ class Science extends React.Component {
                         </FormElement>
                       </div>)}
                     <FormElement>
-                      <Button 
-                        type="primary" 
+                      <Button
+                        type="primary"
                         icon="search"
                         style={{ marginLeft: 20 }}
                         onClick={this.handleOnQuery}
@@ -203,7 +218,16 @@ class Science extends React.Component {
             <Card
               title={<span style={{ fontWeight: 'bold' }}>搜索结果</span>}
             >
-              <Empty description={<span>无匹配结果</span>}  />
+              {
+                dataSource.length > 0 ? (
+                  <Table
+                    loading={loading}
+                    dataSource={dataSource}
+                  />
+                ) : (
+                  <Empty description={<span>无匹配结果</span>} />
+                  )
+              }
             </Card>
           </Col>
         </Row>
@@ -266,13 +290,13 @@ class Science extends React.Component {
               title={<span style={{ fontWeight: 'bold' }}>科学小知识</span>}
               extra={<div style={{ color: '#2884D8', cursor: 'pointer' }}><Icon type='reload' />&nbsp;换一换</div>}
             >
-              <List 
+              <List
                 dataSource={scienceTips}
                 renderItem={item => (
                   <List.Item>
                     <Typography.Text mark>[ITEM]</Typography.Text> {item}
                   </List.Item>
-                )}            
+                )}
               />
             </Card>
           </Col>

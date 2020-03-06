@@ -23,7 +23,6 @@ class Encrypt {
   // 上传密文索引向量
   uploadCiphertextIndex(fileVectorArray, articlename, author) {
     const fileArray = this.fileIndexVector(fileVectorArray);
-    console.log('fileArray', fileArray);
     const θ = this.getHashθ(articlename, author);
     const Ai = this.randomArrayAi();
     const I1 = this.ciphertextIndexVector(fileArray, θ, Ai);
@@ -33,7 +32,6 @@ class Encrypt {
   // 根据查询词组生成密文搜索陷门
   getCiphertextDoor(queryVectorArray) {
     const queryArray = this.queryIndexVector(queryVectorArray);
-    console.log('queryArray', queryArray);
     const Ci = this.randomArrayCi();
     const Q1 = this.cipherTextDoor(queryArray, this.m, Ci);
     return Q1;

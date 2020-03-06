@@ -43,7 +43,6 @@ class Annex {
   downloadAnnex(req, res, next) {
     const filename = req.body.filename;
     const path = url.resolve(__dirname, config.uploadDir+filename);
-    console.log('path', path);
     var size = fs.statSync(path).size;
     var f = fs.createReadStream(path);
     res.writeHead(200, {

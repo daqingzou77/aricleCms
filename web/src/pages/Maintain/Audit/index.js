@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card, Table, Input, DatePicker, Button, Icon, Select, Badge } from 'antd';
-import momment from 'moment';
+import moment from 'moment';
 import Modal from '@/common/components/Modal';
 import StepForm from './component/StepForm';
 import CustomizeEmpty from '@/components/CustomizeEmpty';
@@ -14,7 +14,7 @@ import styles from './style.less';
 const { RangePicker } = DatePicker;
 const { Option } = Select;
 
-class Home extends React.Component {
+class Audit extends React.Component {
 
   columns = [{
     title: '文章名',
@@ -42,7 +42,7 @@ class Home extends React.Component {
   }, {
     title: '发布时间',
     dataIndex: 'publishTime',
-    render: (_, record) => momment(record.publishTime).format('YYYY-MM-DD hh:mm:ss')
+    render: (_, record) => moment(record.publishTime).format('YYYY-MM-DD hh:mm:ss')
   }, {
     title: '文章状态',
     dataIndex: 'status',
@@ -292,5 +292,4 @@ class Home extends React.Component {
   }
 }
 
-
-export default Home;
+export default Audit;
