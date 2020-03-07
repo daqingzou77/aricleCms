@@ -5,6 +5,7 @@ import littrateurMock from '../initData/litterateur';
 import physicMock from '../initData/physic';
 import Tools from '../utils/tools';
 
+
 const Tool = new Tools();
 const { hotScience, scienceTips } = scienceMock;
 const { historicalArticles, historicalStorys } = historMock;
@@ -40,7 +41,7 @@ class Classify {
 
   getHotRecommandFromScience(req, res, next) {
     const responData = Tool.mockData(3, hotScience, 'articlename');
-    console.log('responData', responData);
+    console.log(1);
     res.tools.setJson(0, '科学热门推荐获取成功', responData);
   }
 

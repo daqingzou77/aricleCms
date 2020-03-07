@@ -86,9 +86,9 @@ class Science extends React.Component {
           <Col span={8} style={{ paddingRight: 0 }}>
             <LiveUpdate keys="science" />
           </Col>
-          <Col span={8}>
+          {/* <Col span={8}>
             <Supplement keys="science" />
-          </Col>
+          </Col>  */}
         </Row>
       </div>
     )

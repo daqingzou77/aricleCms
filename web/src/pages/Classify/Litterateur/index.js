@@ -5,12 +5,9 @@ import moment from 'moment';
 import LittearteurSearch from './components/LitterateurSearch';
 import Table from '../component/Table';
 import styles from './style.less';
-// import {
-//   hotArticles,
-//   dailyUpdate,
-//   avatarColor,
-//   scienceTips
-// } from './mock';
+import Recommend from '../component/Recommend';
+import LiveUpdate from '../component/LiveUpdate';
+import Supplement from '../component/Supplement';
 import {
   getHotRecommandFromLitterateur,
   getLiveUpdateFromLitterateur,
@@ -137,73 +134,14 @@ class Science extends React.Component {
         </Row>
         <Row gutter={24} style={{ marginTop: 10 }}>
           <Col span={8} style={{ paddingRight: 0 }}>
-            <Card
-              title={<span style={{ fontWeight: 'bold' }}>热门推荐</span>}
-              bodyStyle={{ height: 608 }}
-              extra={<div style={{ color: '#2884D8', cursor: 'pointer' }}><Icon type='reload' />&nbsp;换一换</div>}
-            >
-              <List
-                itemLayout="vertical"
-                dataSource={hotArticles}
-                renderItem={item => (
-                  <List.Item
-                    key={item.articlename}
-                    actions={[
-                      <IconText type="star-o" text={item.favorites} key="list-vertical-star-o" />,
-                      <IconText type="like-o" text={item.likes} key="list-vertical-like-o" />,
-                      <IconText type="dislike" text={item.dislikes} key="list-vertical-dislike" />,
-                      <IconText type="message" text={item.messages} key="list-vertical-message" />,
-                    ]}
-                  >
-                    <List.Item.Meta
-                      avatar={<img src={item.articleImgSrc} alt="文章图片" width={120} height={120} />}
-                      title={<Text strong><a href={item.href}>{item.articlename}</a></Text>}
-                      description={item.description}
-                    />
-                  </List.Item>
-                )}
-              />
-            </Card>
+            <Recommend keys="litterateur" />
           </Col>
-          <Col span={8} style={{ paddingRight: 0 }}>
-            <Card
-              title={<span style={{ fontWeight: 'bold' }}>实时更新</span>}
-              extra={<div style={{ color: '#2884D8', cursor: 'pointer' }}><Icon type='reload' />&nbsp;刷新</div>}
-            >
-              <InfiniteScroll className={styles.infiniteScroll}>
-                <List
-                  itemLayout="vertical"
-                  // dataSource={dailyUpdate}
-                  renderItem={(item, index) => (
-                    <List.Item key={item.author}>
-                      <List.Item.Meta
-                        avatar={<Avatar style={{ backgroundColor: avatarColor[index] }} icon="user" />}
-                        title={<Text strong>作者-{item.author}</Text>}
-                        description={item.updateContent}
-                      />
-                      <div style={{ float: 'right', marginTop: '-3%' }}>发布时间：{moment(item.updateTime).format('YYYY-MM-DD hh:mm:ss')}</div>
-                    </List.Item>
-                  )}
-                />
-              </InfiniteScroll>
-            </Card>
+          {/* <Col span={8} style={{ paddingRight: 0 }}>
+            <LiveUpdate />
           </Col>
           <Col span={8}>
-            <Card
-              bodyStyle={{ height: 608 }}
-              title={<span style={{ fontWeight: 'bold' }}>金句小摘抄</span>}
-              extra={<div style={{ color: '#2884D8', cursor: 'pointer' }}><Icon type='reload' />&nbsp;换一换</div>}
-            >
-              <List
-                dataSource={excerpts}
-                renderItem={item => (
-                  <List.Item>
-                    <Typography.Text mark>[ITEM]</Typography.Text> {item}
-                  </List.Item>
-                )}
-              />
-            </Card>
-          </Col>
+            <Supplement />
+          </Col> */}
         </Row>
       </div>
     )

@@ -34,7 +34,6 @@ export default class Recommend extends React.Component {
       } else if (keys === 'physics') {
         this.getHotRecommandFromPhysic();
       }
-      console.log(1);
     }
 
     getHotRecommandFromScience = () => {

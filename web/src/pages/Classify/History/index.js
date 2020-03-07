@@ -79,7 +79,7 @@ class History extends React.Component {
         </Row>
         <Row gutter={24} style={{ marginTop: 10 }}>
           <Col span={8} style={{ paddingRight: 0 }}>
-            {/* <Recommend keys="history" /> */}
+            <Recommend keys="history" />
           </Col>
           <Col span={8} style={{ paddingRight: 0 }}>
             {/* <LiveUpdate keys="history" /> */}
