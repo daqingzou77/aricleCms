@@ -6,7 +6,7 @@ import physicMock from '../initData/physic';
 import Tools from '../utils/tools';
 
 const Tool = new Tools();
-const { hotScience, dailyScience, scienceTips } = scienceMock;
+const { hotScience, scienceTips } = scienceMock;
 
 class Classify {
   constructor(app) {
@@ -53,15 +53,20 @@ class Classify {
   }
 
   getHotRecommandFromHistory(req, res, next) {
-    res.tools.setJson(0, '热门历史推荐获取成功', hotArticles);
+    const responData = Tool.mockData(3, hotScience, 'articlename');
+    res.tools.setJson(0, '科学热门推荐获取成功', responData);
   }
 
   getLiveUpdateFromHistory(req, res, next) {
-    res.tools.setJson(0, '实时更新历史列表成功', dailyUpdate);
+    this.articles.find({ passTime: {$lte: new Date}}).sort({_id: -1}).limit(3)
+    .then(doc => {
+      res.tools.setJson(0, '实时更新科学列表成功', doc)
+    })
   }
 
   getHistoricalStorys(req, res, next) {
-    res.tools.setJson(0, '获取历史典故成功',  scienceTips);
+    const responTips = Tool.mockData(12, scienceTips, 'question');
+    res.tools.setJson(0, '获取科学知识成功',  responTips);
   }
 
   getHotRecommandFromLitterateur(req, res, next) {
