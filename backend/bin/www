@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import app from '../app';
 
-app.set('port', process.env.port || 9999);
+app.set('port', process.env.port || 9007);
 
 const port = app.get('port');
 

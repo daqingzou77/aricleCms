@@ -66,6 +66,7 @@ class Articles {
     this.articles.find({})
       .then(doc => {
         res.tools.setJson(0, '查询成功', doc)
+        console.log('doc', doc);
       })
       .catch(err => next(err));
   }

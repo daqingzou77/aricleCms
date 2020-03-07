@@ -40,6 +40,7 @@ class Classify {
 
   getHotRecommandFromScience(req, res, next) {
     const responData = Tool.mockData(3, hotScience, 'articlename');
+    console.log('responData', responData);
     res.tools.setJson(0, '科学热门推荐获取成功', responData);
   }
 
