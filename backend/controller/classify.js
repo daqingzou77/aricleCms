@@ -1,10 +1,18 @@
 import scienceMock from '../initData/scienceMock';
-const { hotArticles, dailyUpdate, scienceTips } = scienceMock;
+import articles from '../model/articles';
+import historMock from '../initData/historymock';
+import littrateurMock from '../initData/litterateur';
+import physicMock from '../initData/physic';
+import Tools from '../utils/tools';
+
+const Tool = new Tools();
+const { hotScience, dailyScience, scienceTips } = scienceMock;
 
 class Classify {
   constructor(app) {
     Object.assign(this, {
-      app
+      app,
+      articles
     });
     this.init();
   }
@@ -28,15 +36,20 @@ class Classify {
   }
 
   getHotRecommandFromScience(req, res, next) {
-    res.tools.setJson(0, '科学热门推荐获取成功', hotArticles);
+    const responData = Tool.mockData(3, hotScience, 'articlename');
+    res.tools.setJson(0, '科学热门推荐获取成功', responData);
   }
 
   getLiveUpdateFromScience(req, res, next) {
-    res.tools.setJson(0, '实时更新科学列表成功', dailyUpdate);
+    this.articles.find({ passTime: {$lte: new Date}}).sort({_id: -1}).limit(3)
+    .then(doc => {
+      res.tools.setJson(0, '实时更新科学列表成功', doc)
+    })
   }
 
   getScienceTips(req, res, next) {
-    res.tools.setJson(0, '获取科学知识成功',  scienceTips);
+    const responTips = Tool.mockData(12, scienceTips, 'question');
+    res.tools.setJson(0, '获取科学知识成功',  responTips);
   }
 
   getHotRecommandFromHistory(req, res, next) {

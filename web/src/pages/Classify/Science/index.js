@@ -1,18 +1,25 @@
 import React, { Fragment } from 'react';
-import { Button, Form, Card, Row, Col, Icon, List, Typography, Empty, Avatar, Spin } from 'antd';
+import { Button, Form, Card, Row, Col, Icon, List, Typography, Avatar, Spin } from 'antd';
 import InfiniteScroll from 'react-infinite-scroller';
 import moment from 'moment';
+import htmlToDraft from 'html-to-draftjs';
+import { EditorState, ContentState } from 'draft-js';
+import { Editor } from 'react-draft-wysiwyg';
 import QueryBar from '@/components/QueryBar';
 import FormElement from '@/components/FormElement';
 import FormRow from '@/components/FormRow';
 import Table from '../component/Table';
+import Modal from '@/common/components/Modal';
 import styles from './style.less';
 import {
   getArticleByMutiKeys,
   getHotRecommandFromScience,
   getLiveUpdateFromScience,
   getScienceTips
-} from '@/services/classifyService'
+} from '@/services/classifyService';
+import {
+  downloadAnnex
+} from '@/services/annexService';
 // import {
 //   hotArticles,
 //   dailyUpdate,
@@ -21,6 +28,7 @@ import {
 // } from './mock';
 
 const { Text } = Typography;
+const avatarColor = ['#f56a00', '#7265e6', '#ffbf00', '#00a2ae', '#f32432', '#2322d1', "#fff146"];
 
 
 class Science extends React.Component {
@@ -32,15 +40,20 @@ class Science extends React.Component {
     dataSource: [],
     loading: false,
     hotArticles: [],
-    // dailyUpdate: [],
-    // avatarColor: [],
-    scienceTips: []
-
+    dailyScience: [],
+    scienceTips: [],
+    visible: false,
+    answer: '',
+    modalVisible: false,
+    editorState: '',
+    hotLoading: false,
+    liveCardLoading: false,
+    scienTipsLoading: false
   }
 
   componentDidMount() {
     this.getHotRecommandFromScience();
-    // this.getLiveUpdateFromScience();
+    this.getLiveUpdateFromScience();
     this.getScienceTips();
   }
 
@@ -50,12 +63,18 @@ class Science extends React.Component {
         hotArticles: data
       })
     },
-    e => console.log('getHotRecommandFromScience-error', e.toString())
+      e => console.log('getHotRecommandFromScience-error', e.toString())
     )
   }
 
   getLiveUpdateFromScience = () => {
-
+    getLiveUpdateFromScience({}, ({ data }) => {
+      this.setState({
+        dailyScience: data
+      })
+    },
+      e => console.log('getHotRecommandFromScience-error', e.toString())
+    )
   }
 
   getScienceTips = () => {
@@ -64,7 +83,7 @@ class Science extends React.Component {
         scienceTips: data
       })
     },
-    e => console.log('getScienceTips-error', e.toString())
+      e => console.log('getScienceTips-error', e.toString())
     )
   }
 
@@ -128,6 +147,64 @@ class Science extends React.Component {
     })
   }
 
+  handleShowTips = content => {
+    this.setState({
+      visible: true,
+      answer: content
+    })
+  }
+
+  handleClick = (name, articleForm, articleContent) => {
+    if (articleForm === 0) {
+      const contentBlock = htmlToDraft(articleContent);
+      const contentState = ContentState.createFromBlockArray(contentBlock.contentBlocks);
+      const editorState = EditorState.createWithContent(contentState);
+      this.setState({
+        modalVisible: true,
+        editorState
+      })
+    } else {
+      downloadAnnex(name)
+    }
+  }
+
+  handleFreshHot = () => {
+    this.setState({
+      hotLoading: true
+    })
+    setTimeout(() => {
+      this.getHotRecommandFromScience();
+      this.setState({
+        hotLoading: false
+      })
+    }, 1000)
+  }
+
+  handleLiveFresh = () => {
+    this.setState({
+      liveCardLoading: true
+    })
+    setTimeout(() => {
+      this.getLiveUpdateFromScience();
+      this.setState({
+        liveCardLoading: false
+      })
+    }, 1000)
+  }
+
+  handleTipFresh = () => {
+    this.setState({
+      scienTipsLoading: true
+    })
+    setTimeout(() => {
+      this.getScienceTips();
+      this.setState({
+        scienTipsLoading: false
+      })
+    }, 1000)
+  }
+
+
   getArticleByMutiKeys = queryKeywords => {
     getArticleByMutiKeys({
       queryKeywords
@@ -143,7 +220,9 @@ class Science extends React.Component {
   }
 
   render() {
-    const { collapsed, dataSource, loading, hotArticles, dailyUpdate, scienceTips } = this.state;
+    const { collapsed, dataSource, loading, hotArticles,
+      dailyScience, scienceTips, visible, answer,
+      modalVisible, editorState, hotLoading, liveCardLoading, scienTipsLoading } = this.state;
     const { form } = this.props;
     const { getFieldDecorator, getFieldValue } = form;
     getFieldDecorator('keys', { initialValue: [] });
@@ -221,7 +300,6 @@ class Science extends React.Component {
                     )}
                     {formItems}
                     {collapsed ? null : (
-
                       <div>
                         <FormElement>
                           <Button
@@ -275,51 +353,64 @@ class Science extends React.Component {
             <Card
               title={<span style={{ fontWeight: 'bold' }}>热门推荐</span>}
               bodyStyle={{ height: 608 }}
-              extra={<div style={{ color: '#2884D8', cursor: 'pointer' }}><Icon type='reload' />&nbsp;换一换</div>}
+              extra={<div style={{ color: '#2884D8', cursor: 'pointer' }} onClick={this.handleFreshHot}><Icon type='reload' />&nbsp;换一换</div>}
             >
-              <List
-                itemLayout="vertical"
-                dataSource={hotArticles}
-                renderItem={item => (
-                  <List.Item
-                    key={item.articlename}
-                    actions={[
-                      <IconText type="star-o" text={item.favorites} key="list-vertical-star-o" />,
-                      <IconText type="like-o" text={item.likes} key="list-vertical-like-o" />,
-                      <IconText type="dislike" text={item.dislikes} key="list-vertical-dislike" />,
-                      <IconText type="message" text={item.messages} key="list-vertical-message" />,
-                    ]}
-                  >
-                    <List.Item.Meta
-                      avatar={<img src={item.articleImgSrc} alt="文章图片" width={120} height={120} />}
-                      title={<Text strong><a href={item.href}>{item.articlename}</a></Text>}
-                      description={item.description}
-                    />
-                  </List.Item>
-                )}
-              />
+              {
+                hotLoading ? (
+                  <Spin spinning={hotLoading} style={{ marginLeft: '50%', paddingTop: '50%' }} />
+                ) : (
+                  <List
+                    itemLayout="vertical"
+                    dataSource={hotArticles}
+                    renderItem={item => (
+                      <List.Item
+                        key={item.articlename}
+                        actions={[
+                          <IconText type="star-o" text={item.favorites} key="list-vertical-star-o" />,
+                          <IconText type="like-o" text={item.likes} key="list-vertical-like-o" />,
+                          <IconText type="dislike" text={item.dislikes} key="list-vertical-dislike" />,
+                          <IconText type="message" text={item.messages} key="list-vertical-message" />,
+                        ]}
+                      >
+                        <List.Item.Meta
+                          avatar={<img src={item.articleImgSrc} alt="文章图片" width={120} height={120} />}
+                          title={<Text strong><a href={item.href}>{item.articlename}</a></Text>}
+                          description={item.description}
+                        />
+                      </List.Item>
+                    )}
+                  />
+                  )
+              }
             </Card>
           </Col>
           <Col span={8} style={{ paddingRight: 0 }}>
             <Card
               title={<span style={{ fontWeight: 'bold' }}>实时更新</span>}
-              extra={<div style={{ color: '#2884D8', cursor: 'pointer' }}><Icon type='reload' />&nbsp;刷新</div>}
+              extra={<div style={{ color: '#2884D8', cursor: 'pointer' }} onClick={this.handleLiveFresh}><Icon type='reload' />&nbsp;刷新</div>}
             >
               <InfiniteScroll className={styles.infiniteScroll}>
-                <List
-                  itemLayout="vertical"
-                  dataSource={dailyUpdate}
-                  renderItem={(item, index) => (
-                    <List.Item key={item.author}>
-                      <List.Item.Meta
-                        avatar={<Avatar style={{ backgroundColor: avatarColor[index] }} icon="user" />}
-                        title={<Text strong>作者-{item.author}</Text>}
-                        description={item.updateContent}
-                      />
-                      <div style={{ float: 'right', marginTop: '-3%' }}>发布时间：{moment(item.updateTime).format('YYYY-MM-DD hh:mm:ss')}</div>
-                    </List.Item>
-                  )}
-                />
+                {liveCardLoading ? (
+                  <Spin spinning={liveCardLoading} style={{ marginLeft: '50%', paddingTop: '50%' }} />
+                ) : (
+                  <List
+                    itemLayout="vertical"
+                    dataSource={dailyScience}
+                    renderItem={(item, index) => (
+                      <List.Item key={item.author}>
+                        <List.Item.Meta
+                          avatar={<Avatar style={{ backgroundColor: avatarColor[index % 7] }} icon="user" />}
+                          title={<Text strong>作者-{item.author}</Text>}
+                          description={
+                            <span><a onClick={() => this.handleClick(item.annexname, item.articleForm, item.articleContent)}>{item.articleForm === 0 ? `发表文章--《${item.articlename}》` : `上传文件--${item.annexname}`}</a></span>
+                          }
+                        />
+                        <div style={{ float: 'right', marginTop: '-3%' }}>发布时间：{moment(item.passTime).format('YYYY-MM-DD hh:mm:ss')}</div>
+                      </List.Item>
+                      )}
+                  />
+                  )
+                }
               </InfiniteScroll>
             </Card>
           </Col>
@@ -327,18 +418,43 @@ class Science extends React.Component {
             <Card
               bodyStyle={{ height: 608 }}
               title={<span style={{ fontWeight: 'bold' }}>科学小知识</span>}
-              extra={<div style={{ color: '#2884D8', cursor: 'pointer' }}><Icon type='reload' />&nbsp;换一换</div>}
+              extra={<div style={{ color: '#2884D8', cursor: 'pointer' }} onClick={this.handleTipFresh}><Icon type='reload' />&nbsp;换一换</div>}
             >
-              <List
-                dataSource={scienceTips}
-                renderItem={item => (
-                  <List.Item>
-                    <Typography.Text mark>[ITEM]</Typography.Text> {item}
-                  </List.Item>
-                )}
-              />
+              {scienTipsLoading ? (
+                <Spin spinning={scienTipsLoading} style={{ marginLeft: '50%', paddingTop: '50%' }} />
+              ) : (
+                <List
+                  dataSource={scienceTips}
+                  renderItem={item => (
+                    <List.Item>
+                      <Typography.Text mark>Qu.</Typography.Text>
+                      <span style={{ cursor: 'pointer' }} onClick={() => this.handleShowTips(item.answer)}>{item.question}</span>
+                    </List.Item>
+                  )}
+                />
+              )
+              }
             </Card>
           </Col>
+          <Modal
+            title="问题解答"
+            visible={visible}
+            width={300}
+            onOk={() => this.setState({ visible: false, answer: '' })}
+            onCancel={() => this.setState({ visible: false, answer: '' })}
+          >
+            <div style={{ padding: 5, textIndent: '2em' }}>{answer}</div>
+          </Modal>
+          <Modal
+            visible={modalVisible}
+            title="内容详情"
+            onCancel={() => this.setState({ modalVisible: false, editorState: '' })}
+            onOk={() => this.setState({ modalVisible: false, editorState: '' })}
+          >
+            <Editor
+              editorState={editorState}
+            />
+          </Modal>
         </Row>
       </div>
     )

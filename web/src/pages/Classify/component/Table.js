@@ -7,7 +7,7 @@ import { Editor } from 'react-draft-wysiwyg';
 import Modal from '@/common/components/Modal';
 import {
   downloadAnnex
-} from '@/services/annexService'
+} from '@/services/annexService';
 import styles from './style.less';
 
 export default class Tables extends React.Component {
@@ -110,7 +110,6 @@ export default class Tables extends React.Component {
         >
           <Editor
             editorState={editorState}
-            onEditorStateChange={this.onEditorStateChange}
           />
         </Modal>
       </>
