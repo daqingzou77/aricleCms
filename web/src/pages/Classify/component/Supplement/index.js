@@ -31,17 +31,17 @@ export default class Supplement extends React.Component {
     } else if (keys === 'history') {
       this.getHistoricalStorys();
       this.setState({
-        title: '科学小知识'
+        title: '历史小故事'
       })
     } else if (keys === 'litterateur') {
       this.getExcerpts();
       this.setState({
-        title: '科学小知识'
+        title: '优美短句'
       })
-    } else {
+    } else if (keys === 'physics'){
       this.getSportSense();
       this.setState({
-        title: '科学小知识'
+        title: '体育小常识'
       })
     }
   }
@@ -58,7 +58,7 @@ export default class Supplement extends React.Component {
         this.getHistoricalStorys();
       } else if (keys === 'litterateur') {
         this.getExcerpts();
-      } else {
+      } else if (keys === 'physics'){
         this.getSportSense();
       }
        this.setState({
@@ -139,9 +139,9 @@ export default class Supplement extends React.Component {
                   <Text mark>Qu.</Text>
                   <span 
                     style={{ cursor: 'pointer' }} 
-                    onClick={() => this.handleShowTips(item.answer)}
+                    onClick={() => this.handleShowTips(item.detail)}
                   >
-                    {item.question}
+                    {item.description}
                   </span>
                 </List.Item>
               )}

@@ -38,7 +38,7 @@ export default class LiveUpdate extends React.Component {
       this.getLiveUpdateFromHistory();
     } else if (keys === 'litterateur') {
       this.getLiveUpdateFromLitterateur();
-    } else {
+    } else if (keys === 'physics') {
       this.getLiveUpdateFromPhysic();
     }
   }
@@ -55,7 +55,7 @@ export default class LiveUpdate extends React.Component {
         this.getLiveUpdateFromHistory();
       } else if (keys === 'litterateur') {
         this.getLiveUpdateFromLitterateur();
-      } else {
+      } else if (keys === 'physics') {
         this.getLiveUpdateFromPhysic();
       }
       this.setState({

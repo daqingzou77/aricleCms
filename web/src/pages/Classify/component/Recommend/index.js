@@ -31,9 +31,10 @@ export default class Recommend extends React.Component {
         this.getHotRecommandFromHistory();
       } else if (keys === 'litterateur') {
         this.getHotRecommandFromLitterateur();
-      } else {
+      } else if (keys === 'physics') {
         this.getHotRecommandFromPhysic();
       }
+      console.log(1);
     }
 
     getHotRecommandFromScience = () => {
@@ -80,12 +81,21 @@ export default class Recommend extends React.Component {
       this.setState({
         hotLoading: true
       })
-      setTimeout(() => {
-        this.getHotRecommandFromScience();
-        this.setState({
-          hotLoading: false
-        })
-        }, 1000)
+        setTimeout(() => {
+          const { keys } = this.props;
+          if (keys === 'science') {
+            this.getHotRecommandFromScience();
+          } else if (keys === 'history') {
+            this.getHotRecommandFromHistory();
+          } else if (keys === 'litterateur') {
+            this.getHotRecommandFromLitterateur();
+          } else if (keys === 'physics'){
+            this.getHotRecommandFromPhysic();
+          }
+           this.setState({
+            hotLoading: false
+           })
+        }, 1000);
     }
 
     render() {
