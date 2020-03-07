@@ -7,6 +7,9 @@ import Tools from '../utils/tools';
 
 const Tool = new Tools();
 const { hotScience, scienceTips } = scienceMock;
+const { historicalArticles, historicalStorys } = historMock;
+const { hotLitterateurs, excerpts } = littrateurMock;
+const { hotPhysics, sportSense } = physicMock;
 
 class Classify {
   constructor(app) {
@@ -53,24 +56,25 @@ class Classify {
   }
 
   getHotRecommandFromHistory(req, res, next) {
-    const responData = Tool.mockData(3, hotScience, 'articlename');
-    res.tools.setJson(0, '科学热门推荐获取成功', responData);
+    const responData = Tool.mockData(3, historicalArticles, 'articlename');
+    res.tools.setJson(0, '获取热门历史文章成功', responData);
   }
 
   getLiveUpdateFromHistory(req, res, next) {
     this.articles.find({ passTime: {$lte: new Date}}).sort({_id: -1}).limit(3)
     .then(doc => {
-      res.tools.setJson(0, '实时更新科学列表成功', doc)
+      res.tools.setJson(0, '实时更新历史列表成功', doc)
     })
   }
 
   getHistoricalStorys(req, res, next) {
-    const responTips = Tool.mockData(12, scienceTips, 'question');
-    res.tools.setJson(0, '获取科学知识成功',  responTips);
-  }
+    const responTips = Tool.mockData(12, historicalStorys, 'description');
+    res.tools.setJson(0, '获取历史故事成功',  responTips);
+  } 
 
   getHotRecommandFromLitterateur(req, res, next) {
-    res.tools.setJson(0, '热门文学推荐获取成功', hotArticles);
+    const responData = Tool.mockData(3, hotLitterateurs, 'articlename');
+    res.tools.setJson(0, '获取热门历史文章成功', responData);
   }
 
   getLiveUpdateFromLitterateur(req, res, next) {
@@ -78,11 +82,13 @@ class Classify {
   }
 
   getExcerpts(req, res, next) {
-    res.tools.setJson(0, '获取文学金句成功', scienceTips);
+    const excerpt = Tool.mockData(12, excerpts, 'description');
+    res.tools.setJson(0, '获去优美句子成功',  excerpt);
   }
 
   getHotRecommandFromPhysic(req, res, next) {
-    res.tools.setJson(0, '科学体育推荐获取成功', hotArticles);
+    const responTips = Tool.mockData(3, hotPhysics, 'articlename');
+    res.tools.setJson(0, '热门体育推荐获取成功', responTips);
   }
 
   getLiveUpdateFromPhysic(req, res, next) {
@@ -90,7 +96,8 @@ class Classify {
   }
 
   getSportSense(req, res, next) {
-    res.tools.setJson(0, '获取体育常识成功', scienceTips);
+    const responTips = Tool.mockData(12, sportSense, 'description');
+    res.tools.setJson(0, '获取体育常识成功',  responTips);
   }
 
 }

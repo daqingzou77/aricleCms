@@ -29,8 +29,6 @@ class History extends React.Component {
     loading: false,
     dataSource: [],
     hotArticles: [],
-    // dailyUpdate: [],
-    // avatarColor: [],
     hitoricalStorys: []
   }
 
