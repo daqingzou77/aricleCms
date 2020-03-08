@@ -53,7 +53,7 @@ class Tables extends React.Component {
       const { choose1Index, choose2Index, choose3Index, choose4Index } = that.state;
       return (
         <>
-          <CheckableTag color="#2db7f5" checked={choose1Index.includes(index)} onChange={() => that.handleArticle(articlename, 1, index)}>点赞</CheckableTag>
+          <CheckableTag color="#f50" checked={choose1Index.includes(index)} onChange={() => that.handleArticle(articlename, 1, index)}>点赞</CheckableTag>
           <CheckableTag color="#000" checked={choose2Index.includes(index)} onChange={() => that.handleArticle(articlename, 2, index)}>拉黑</CheckableTag>
           <CheckableTag color="#87d068" checked={choose3Index.includes(index)} onChange={() => that.handleArticle(articlename, 3, index)}>收藏</CheckableTag>
           <CheckableTag color="#f50" checked={choose4Index.includes(index)} onChange={() => that.handleArticle(articlename, 4, index)}>评论</CheckableTag>
@@ -106,6 +106,7 @@ class Tables extends React.Component {
       } else {
         message.success('点赞成功');
         choose1Index.push(index);
+        if (choose2Index.indexOf(index) !== -1)
         choose2Index.splice(choose2Index.indexOf(index), 1);
       }
       this.setState({
@@ -119,6 +120,7 @@ class Tables extends React.Component {
       } else {
         message.success('拉黑成功');
         choose2Index.push(index);
+        if (choose1Index.indexOf(index) !== -1)
         choose1Index.splice(choose1Index.indexOf(index), 1);
       }
       this.setState({
@@ -188,11 +190,13 @@ class Tables extends React.Component {
 
   render() {
     const { loading, dataSource, form } = this.props;
-    const { editorState, visible, commentModalVisible, commentIndex, commentArticlename } = this.state;
+    const { editorState, visible, commentModalVisible, commentArticlename } = this.state;
     const dataSources = [{
       articlename: '水浒'
     }, {
       articlename: '三国'
+    }, {
+      articlename: '西游'
     }]
     const formElementProps = {
       form,
