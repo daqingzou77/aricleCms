@@ -26,7 +26,7 @@ class Tools {
    * @param {*Array} dataSource 
    */
   
-  mockData(number, dataSource, type) {
+  mockData(number, dataSource) {
     const responData = []
     const len = dataSource.length;
     for (let i = 0; i < number; i++) {
@@ -37,7 +37,7 @@ class Tools {
      let result = false;
      for(let i = 0; i < arr.length; i++) {
        for(let j = i+1; j< arr.length; j++) {
-         if (arr[i][type] === arr[j][type]) {
+         if (arr[i]['key'] === arr[j]['key']) {
            return { index: i };
          }
        }

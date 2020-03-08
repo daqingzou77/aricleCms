@@ -14,7 +14,9 @@ class History extends React.Component {
   state = {
     loading: false,
     dataSource: [],
+    hotArticles: []
   }
+
 
   handleReset = () => {
     const { form } = this.props;
@@ -52,7 +54,7 @@ class History extends React.Component {
 
   render() {
     const { form } = this.props;
-    const { loading, dataSource } = this.state;
+    const { loading, dataSource, hotArticles } = this.state;
     return (
       <div>
         <Row gutter={24}>
@@ -82,10 +84,10 @@ class History extends React.Component {
             <Recommend keys="history" />
           </Col>
           <Col span={8} style={{ paddingRight: 0 }}>
-            {/* <LiveUpdate keys="history" /> */}
+            <LiveUpdate keys="history" />
           </Col>
           <Col span={8}>
-            {/* <Supplement keys="history" /> */}
+            <Supplement keys="history" />
           </Col>
         </Row>
       </div>

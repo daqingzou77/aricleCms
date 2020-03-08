@@ -1,78 +1,19 @@
 import React from 'react';
-import { Form, Card, Row, Col, Icon, List, Typography, Avatar } from 'antd';
-import InfiniteScroll from 'react-infinite-scroller';
-import moment from 'moment';
+import { Form, Card, Row, Col, Icon, Typography } from 'antd';
 import LittearteurSearch from './components/LitterateurSearch';
 import Table from '../component/Table';
-import styles from './style.less';
 import Recommend from '../component/Recommend';
 import LiveUpdate from '../component/LiveUpdate';
 import Supplement from '../component/Supplement';
-import {
-  getHotRecommandFromLitterateur,
-  getLiveUpdateFromLitterateur,
-  getExcerpts
-} from '@/services/classifyService';
 
-const { Text } = Typography;
-
-
-class Science extends React.Component {
+class Litterateur extends React.Component {
   id = 0;
 
   state = {
     dataSource: [],
     clearTags: false,
     loading: false,
-    hotArticles: [],
-    excerpts: []
   }
-  
-  componentDidMount() {
-    this.getHotRecommandFromLitterateur();
-    this.getExcerpts();
-  }
-
-  getHotRecommandFromLitterateur = () => {
-    getHotRecommandFromLitterateur({}, ({ data }) => {
-      this.setState({
-        hotArticles: data
-      })
-    },
-    e => console.log('getHotRecommandFromLitterateur-error', e.toString())
-    )
-  }
-
-  getExcerpts = () => {
-    getExcerpts({}, ({ data }) => {
-      this.setState({
-        excerpts: data
-      })
-    },
-    e => console.log('getExcerpts-error', e.toString())
-    )
-  }
-
-  handleOnRemove = () => {
-    const { form } = this.props;
-    const keys = form.getFieldValue('keys');
-    if (keys.length === 0) {
-      return;
-    };
-    form.setFieldsValue({
-      keys: keys.slice(1),
-    });
-  };
-
-  handleOnAdd = () => {
-    const { form } = this.props;
-    const keys = form.getFieldValue('keys');
-    const nextKeys = keys.concat(this.id++);
-    form.setFieldsValue({
-      keys: nextKeys,
-    });
-  };
-
 
   handleOnSave = data => {
     this.setState({
@@ -100,13 +41,7 @@ class Science extends React.Component {
   }
 
   render() {
-    const { dataSource, loading, clearTags, excerpts, hotArticles } = this.state;
-    const IconText = ({ type, text }) => (
-      <span>
-        <Icon type={type} />{text}
-      </span>
-    );
-    
+    const { dataSource, loading, clearTags } = this.state;
     return (
       <div>
         <Row gutter={24}>
@@ -136,16 +71,16 @@ class Science extends React.Component {
           <Col span={8} style={{ paddingRight: 0 }}>
             <Recommend keys="litterateur" />
           </Col>
-          {/* <Col span={8} style={{ paddingRight: 0 }}>
-            <LiveUpdate />
+          <Col span={8} style={{ paddingRight: 0 }}>
+            <LiveUpdate keys="litterateur" />
           </Col>
           <Col span={8}>
-            <Supplement />
-          </Col> */}
+            <Supplement keys="litterateur" />
+          </Col>
         </Row>
       </div>
     )
   }
 }
 
-export default Form.create({ name: 'science' })(Science);
+export default Form.create({ name: 'litterateur' })(Litterateur);

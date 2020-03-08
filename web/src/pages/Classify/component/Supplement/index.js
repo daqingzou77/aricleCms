@@ -116,6 +116,7 @@ export default class Supplement extends React.Component {
   
   render() {
     const { scienTipsLoading, scienceTips, visible, answer, title  } = this.state;
+    const { keys } = this.props;
     return(
       <>
         <Card
@@ -136,9 +137,9 @@ export default class Supplement extends React.Component {
               dataSource={scienceTips}
               renderItem={item => (
                 <List.Item>
-                  <Text mark>Qu.</Text>
+                  <Text mark>[ITEM]</Text>
                   <span 
-                    style={{ cursor: 'pointer' }} 
+                    style={{ cursor: keys !== 'litterateur' ? 'pointer': null, marginLeft: 5 }} 
                     onClick={() => this.handleShowTips(item.detail)}
                   >
                     {item.description}
@@ -150,7 +151,7 @@ export default class Supplement extends React.Component {
         </Card>
         <Modal
           title="问题解答"
-          visible={visible}
+          visible={visible && keys !== 'litterateur'}
           width={300}
           onOk={() => this.setState({ visible: false, answer: '' })}
           onCancel={() => this.setState({ visible: false, answer: '' })}

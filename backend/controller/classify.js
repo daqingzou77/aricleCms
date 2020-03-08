@@ -1,8 +1,8 @@
-import scienceMock from '../initData/scienceMock';
 import articles from '../model/articles';
-import historMock from '../initData/historymock';
-import littrateurMock from '../initData/litterateur';
-import physicMock from '../initData/physic';
+import scienceMock from '../initData/scienceMock';
+import historMock from '../initData/historyMock';
+import littrateurMock from '../initData/litterateurMock';
+import physicMock from '../initData/physicMock';
 import Tools from '../utils/tools';
 
 
@@ -40,8 +40,8 @@ class Classify {
   }
 
   getHotRecommandFromScience(req, res, next) {
-    const responData = Tool.mockData(3, hotScience, 'articlename');
-    console.log(1);
+    console.log('getHotScience')
+    const responData = Tool.mockData(3, hotScience);
     res.tools.setJson(0, '科学热门推荐获取成功', responData);
   }
 
@@ -53,12 +53,12 @@ class Classify {
   }
 
   getScienceTips(req, res, next) {
-    const responTips = Tool.mockData(12, scienceTips, 'question');
+    const responTips = Tool.mockData(12, scienceTips);
     res.tools.setJson(0, '获取科学知识成功',  responTips);
   }
 
   getHotRecommandFromHistory(req, res, next) {
-    const responData = Tool.mockData(3, historicalArticles, 'articlename');
+    const responData = Tool.mockData(3, historicalArticles);
     res.tools.setJson(0, '获取热门历史文章成功', responData);
   }
 
@@ -70,35 +70,41 @@ class Classify {
   }
 
   getHistoricalStorys(req, res, next) {
-    const responTips = Tool.mockData(12, historicalStorys, 'description');
+    const responTips = Tool.mockData(12, historicalStorys);
     res.tools.setJson(0, '获取历史故事成功',  responTips);
   } 
 
   getHotRecommandFromLitterateur(req, res, next) {
-    const responData = Tool.mockData(3, hotLitterateurs, 'articlename');
-    res.tools.setJson(0, '获取热门历史文章成功', responData);
+    const responData = Tool.mockData(3, hotLitterateurs);
+    res.tools.setJson(0, '获取热门文学文章成功', responData);
   }
 
   getLiveUpdateFromLitterateur(req, res, next) {
-    res.tools.setJson(0, '实施更新文学列表成功', hotArticles);
+    this.articles.find({ passTime: {$lte: new Date}}).sort({_id: -1}).limit(3)
+    .then(doc => {
+      res.tools.setJson(0, '实时更新历史列表成功', doc)
+    })
   }
 
   getExcerpts(req, res, next) {
-    const excerpt = Tool.mockData(12, excerpts, 'description');
+    const excerpt = Tool.mockData(9, excerpts);
     res.tools.setJson(0, '获去优美句子成功',  excerpt);
   }
 
   getHotRecommandFromPhysic(req, res, next) {
-    const responTips = Tool.mockData(3, hotPhysics, 'articlename');
+    const responTips = Tool.mockData(3, hotPhysics);
     res.tools.setJson(0, '热门体育推荐获取成功', responTips);
   }
 
   getLiveUpdateFromPhysic(req, res, next) {
-    res.tools.setJson(0, '实时更新体育列表成功', hotArticles);
+    this.articles.find({ passTime: {$lte: new Date}}).sort({_id: -1}).limit(3)
+    .then(doc => {
+      res.tools.setJson(0, '实时更新历史列表成功', doc)
+    })
   }
 
   getSportSense(req, res, next) {
-    const responTips = Tool.mockData(12, sportSense, 'description');
+    const responTips = Tool.mockData(12, sportSense);
     res.tools.setJson(0, '获取体育常识成功',  responTips);
   }
 

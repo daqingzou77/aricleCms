@@ -14,7 +14,24 @@ class Science extends React.Component {
   state = {
     dataSource: [],
     loading: false,
+    hotArticles: []
   }
+
+  // componentDidMount() {
+  //   this.getHotRecommandFromScience();
+  // }
+
+  // getHotRecommandFromScience = () => {
+  //   getHotRecommandFromScience({}, ({ data }) => {
+  //     this.setState({
+  //       hotArticles: data
+  //     })
+  //   },
+  //   e => console.log('getHotRecommandFromScience-error', e.toString())
+  //   )
+  // }
+
+  
 
   handleOnQuery = () => {
     const { form } = this.props;
@@ -58,7 +75,7 @@ class Science extends React.Component {
   }
 
   render() {
-    const { dataSource, loading } = this.state;
+    const { dataSource, loading, hotArticles } = this.state;
     const { form } = this.props;
     return (
       <div style={{ width: '100%', height: '100%' }}>
@@ -86,9 +103,9 @@ class Science extends React.Component {
           <Col span={8} style={{ paddingRight: 0 }}>
             <LiveUpdate keys="science" />
           </Col>
-          {/* <Col span={8}>
+          <Col span={8}>
             <Supplement keys="science" />
-          </Col>  */}
+          </Col> 
         </Row>
       </div>
     )

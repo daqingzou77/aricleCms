@@ -12,7 +12,7 @@ import styles from './style.less';
 const { Text } = Typography;
 const IconText = ({ type, text }) => (
   <span>
-    <Icon type={type} />{text}
+    <Icon type={type} /> {text}
   </span>
 );
   
@@ -20,7 +20,7 @@ export default class Recommend extends React.Component {
 
     state = {
       hotLoading: false,
-      hotArticles: [],
+      hotArticles: []
     }
     
     componentDidMount() {
@@ -96,6 +96,7 @@ export default class Recommend extends React.Component {
            })
         }, 1000);
     }
+
 
     render() {
       const { hotLoading, hotArticles } = this.state;
