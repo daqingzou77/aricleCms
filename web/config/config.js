@@ -65,7 +65,7 @@ export default {
   define: {
     APP_TYPE: APP_TYPE || '',
     'process.env.ENV':'dev',
-    'process.env.apiBaseUrl': 'http://localhost:9007',
+    'process.env.apiBaseUrl': 'http://localhost:9999',
     'process.env.MAP_HOST':"www.jinlutech.cn",
     'process.env.MAP_PORT':"80"
   },

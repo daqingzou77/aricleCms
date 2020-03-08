@@ -13,7 +13,7 @@ import SystemFooter from '../components/SystemFooter';
 
 const customizeRenderEmpty = () => (
   <div style={{ textAlign: 'center', }}>
-    <FrownOutlined style={{ fontSize: 30, marginTop: '50%' }} />
+    <FrownOutlined style={{ fontSize: 30 }} />
     <p style={{ fontWeight: 'bold'}}>暂无数据</p>
   </div>
 );
