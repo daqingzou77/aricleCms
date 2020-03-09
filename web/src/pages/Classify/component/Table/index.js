@@ -130,7 +130,7 @@ class Tables extends React.Component {
   }
 
   handleArticle = (articlename, key, index) => {
-    const { choose1Index, choose2Index, choose3Index, choose4Index } = this.state;
+    const { choose1Index, choose2Index, choose3Index } = this.state;
     if (key === 1) {
       if (choose1Index.includes(index)) {
         choose1Index.splice(choose1Index.indexOf(index), 1);

@@ -29,6 +29,11 @@ class Articles {
     // 多关键词检索
     this.app.post('/api/article/getArticleByMutiKeys', this.getArticleByMutiKeys.bind(this)); // 多关键字查询
 
+    // 文章点赞、拉黑、收藏、评论
+    this.app.post('/api/article/solveArticle', this.solveArticle.bind(this)); // 点赞、拉黑、收藏-文章
+    this.app.post('/api/article/solveComment', this.solveComment.bind(this)); // 点赞、拉黑评论
+    this.app.get('/api/article/getArticleComment', this.getArticleComment.bind(this)); // 获取文章评论
+    this.app.post('/api/article/commentArticle', this.commentArticle.bind(this)); // 评论文章
   }
 
   addArticle(req, res, next) {
@@ -242,5 +247,21 @@ class Articles {
       res.tools.setJson(0, '查询结果', respData);
     })
   }
+
+  solveArticle(req, res, next) {
+  }
+
+  solveComment(req, res, next) {
+
+  }
+
+  getArticleComment(req, res, next) {
+
+  }
+
+  commentArticle(req, res, next) {
+
+  }
+
 }
 export default Articles;
