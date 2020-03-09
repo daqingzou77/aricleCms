@@ -1,17 +1,18 @@
 /* eslint-disable no-nested-ternary */
 import React from 'react';
-import { Table, Spin, Empty, Tag, message, Form } from 'antd';
+import { Table, Spin, Empty, message, Form, Popover, List } from 'antd';
+import { LikeTwoTone, DislikeTwoTone, StarTwoTone, MessageTwoTone } from '@ant-design/icons'
 import htmlToDraft from 'html-to-draftjs';
 import { EditorState, ContentState } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
 import FormElement from '@/components/FormElement';
 import Modal from '@/common/components/Modal';
+import CommentList from '../CommentList';
 import {
   downloadAnnex
 } from '@/services/annexService';
 import styles from './style.less';
 
-const { CheckableTag } = Tag;
 
 class Tables extends React.Component {
 
@@ -53,11 +54,35 @@ class Tables extends React.Component {
       const { choose1Index, choose2Index, choose3Index, choose4Index } = that.state;
       return (
         <>
-          <CheckableTag color="#f50" checked={choose1Index.includes(index)} onChange={() => that.handleArticle(articlename, 1, index)}>点赞</CheckableTag>
-          <CheckableTag color="#000" checked={choose2Index.includes(index)} onChange={() => that.handleArticle(articlename, 2, index)}>拉黑</CheckableTag>
-          <CheckableTag color="#87d068" checked={choose3Index.includes(index)} onChange={() => that.handleArticle(articlename, 3, index)}>收藏</CheckableTag>
-          <CheckableTag color="#f50" checked={choose4Index.includes(index)} onChange={() => that.handleArticle(articlename, 4, index)}>评论</CheckableTag>
-        </>        
+          <LikeTwoTone 
+            twoToneColor={choose1Index.includes(index) ? '#FF0000': ''}  
+            onClick={() => that.handleArticle(articlename, 1, index)}
+          /> 100
+          <DislikeTwoTone
+            style={{ marginLeft: 8 }} 
+            twoToneColor={choose2Index.includes(index) ? '#303030': ''}
+            onClick={() => that.handleArticle(articlename, 2, index)}
+          /> 10
+          <StarTwoTone 
+            style={{ marginLeft: 8 }} 
+            twoToneColor={choose3Index.includes(index) ? '#FFCC00': ''}
+            onClick={() => that.handleArticle(articlename, 3, index)}
+          /> 20
+          <Popover
+            content={
+              <>
+                <a onClick={() => that.showHistoryComment(articlename)}>历史评论</a>
+                <a onClick={() => that.handleArticle(articlename, 4, index)} style={{ float: 'right' }}>评论本文</a>
+              </>
+            }
+            title="操作详情"
+          >
+            <MessageTwoTone 
+              style={{ marginLeft: 8 }} 
+              twoToneColor={choose4Index.includes(index) ? '#CC6600': ''}
+            /> 12
+          </Popover>
+        </>
       )
     }
   }, {
@@ -74,6 +99,7 @@ class Tables extends React.Component {
   state = {
     visible: false,
     commentModalVisible: false,
+    historyModal: false,
     editorState: '',
     choose1Index: [],
     choose2Index: [],
@@ -97,17 +123,23 @@ class Tables extends React.Component {
     }
   }
 
+  showHistoryComment = () => {
+    this.setState({
+      historyModal: true
+    })
+  }
+
   handleArticle = (articlename, key, index) => {
     const { choose1Index, choose2Index, choose3Index, choose4Index } = this.state;
     if (key === 1) {
       if (choose1Index.includes(index)) {
         choose1Index.splice(choose1Index.indexOf(index), 1);
-        message.success('取消点赞成功');
+        message.success('取消点赞');
       } else {
         message.success('点赞成功');
         choose1Index.push(index);
         if (choose2Index.indexOf(index) !== -1)
-        choose2Index.splice(choose2Index.indexOf(index), 1);
+          choose2Index.splice(choose2Index.indexOf(index), 1);
       }
       this.setState({
         choose1Index,
@@ -116,12 +148,12 @@ class Tables extends React.Component {
     } else if (key === 2) {
       if (choose2Index.includes(index)) {
         choose2Index.splice(choose2Index.indexOf(index), 1);
-        message.success('取消拉黑成功');
+        message.success('取消拉黑');
       } else {
         message.success('拉黑成功');
         choose2Index.push(index);
         if (choose1Index.indexOf(index) !== -1)
-        choose1Index.splice(choose1Index.indexOf(index), 1);
+          choose1Index.splice(choose1Index.indexOf(index), 1);
       }
       this.setState({
         choose2Index,
@@ -130,7 +162,7 @@ class Tables extends React.Component {
     } else if (key === 3) {
       if (choose3Index.includes(index)) {
         choose3Index.splice(choose3Index.indexOf(index), 1);
-        message.success('取消收藏成功');
+        message.success('取消收藏');
       } else {
         message.success('收藏成功');
         choose3Index.push(index);
@@ -139,22 +171,10 @@ class Tables extends React.Component {
         choose3Index
       })
     } else if (key === 4) {
-      if (choose4Index.includes(index)) {
-        choose4Index.splice(choose4Index.indexOf(index), 1);
-        message.success('取消评论成功')
-        this.setState({
-          commentModalVisible: false
-        })
-      } else {
-        choose4Index.push(index);
-        this.setState({
-          commentModalVisible: true,
-          commentIndex: index,
-          commentArticlename: articlename
-        })
-      }
       this.setState({
-        choose4Index
+        commentModalVisible: true,
+        commentIndex: index,
+        commentArticlename: articlename
       })
     }
   }
@@ -172,25 +192,38 @@ class Tables extends React.Component {
   }
 
   handleCommentOk = () => {
+    const { choose4Index, commentIndex } = this.state;
+    if (!choose4Index.includes(commentIndex)) {
+      choose4Index.push(commentIndex);
+    }
     this.setState({
-      commentModalVisible: false
+      commentModalVisible: false,
+      choose4Index
     })
     message.success('评论成功')
   }
 
   handleCommentCancel = () => {
-    const { commentIndex, choose4Index } = this.state;
-    choose4Index.splice(choose4Index.indexOf(commentIndex), 1);
     this.setState({
       commentModalVisible: false,
-      choose4Index
     })
-    message.success('评论取消失败')
+  }
+
+  handleHistoryOk = () => {
+    this.setState({
+      historyModal: true
+    })
+  }
+
+  handleHistoryCancel = () => {
+    this.setState({
+      historyModal: false
+    })
   }
 
   render() {
     const { loading, dataSource, form } = this.props;
-    const { editorState, visible, commentModalVisible, commentArticlename } = this.state;
+    const { editorState, visible, commentModalVisible, commentArticlename, historyModal } = this.state;
     const dataSources = [{
       articlename: '水浒'
     }, {
@@ -200,11 +233,11 @@ class Tables extends React.Component {
     }]
     const formElementProps = {
       form,
-      width: 300
+      width: 300,
     }
     return (
       <>
-        {
+        {/* {
           loading ? (
             <Spin spinning={loading} style={{ marginLeft: '50%' }} />
           ) :
@@ -217,7 +250,11 @@ class Tables extends React.Component {
             ) : (
               <Empty description={<span className={styles.matchFontStyle}>无匹配结果</span>} />
               )
-        }
+        } */}
+        <Table
+          dataSource={dataSources}
+          columns={this.columns}
+        />
         <Modal
           visible={visible}
           title="内容详情"
@@ -235,23 +272,31 @@ class Tables extends React.Component {
           onCancel={this.handleCommentCancel}
           showOk={true}
           showCancel={true}
-          okText="确认"
-          cancelText="取消"
+          // footer={footer}
         >
           <Form style={{ padding: 10 }}>
-            <FormElement 
+            <FormElement
               {...formElementProps}
               field="comment"
               label=""
               type="textarea"
               placeholder="请输入评论内容..."
-              rows={5}
+              rows={7}
             />
           </Form>
+        </Modal>
+        <Modal
+          visible={historyModal}
+          title={`评论详情-${commentArticlename}`}
+          onOk={this.handleHistoryOk}
+          onCancel={this.handleHistoryCancel}
+          footer={null}
+        >
+          <CommentList />
         </Modal>
       </>
     )
   }
 }
 
-export default Form.create({ name: 'Tables'})(Tables);
+export default Form.create({ name: 'Tables' })(Tables);
