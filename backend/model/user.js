@@ -7,7 +7,7 @@ import mongoose from 'mongoose';
  * 头像 avatar
  * 用户类型 userType  0 用户 1 作者 2 管理员
  * 密码 password
- * 手机号  telphoneNumber
+ * 手机号  telephoneNumber
  * 邮箱 email
  * 描述 decription
  * 创建时间 creatTime
@@ -18,19 +18,28 @@ import mongoose from 'mongoose';
        回复内容 replyMessage
        回复时间 replyTime
     }]
+    好友列表 friendsList: []
+    关注列表 attentionList: []
+    拉黑列表 blacklist: []
  * 
  */
-const user = mongoose.Schema({
+const userSchema = mongoose.Schema({
     username: String,
     nickname: String,
     avatar: String,
+    userType: Number, // 0 用户 1 作者 2 管理员
     password: String,
-    telphoneNumber: String,
+    telephoneNumber: String,
     email: String,
-    createTime: Date,
     decription: String,
-    userType: Boolean,
-    messageList: Array
+    createTime: {type: Date, default: new Date()},
+    messageList: Array,
+    friendsList: Array,
+    attentionList: Array,
+    blacklist: Array,
 });
 
-export default mongoose.model('user', user);
+userSchema.index({ id: 1 });
+
+
+export default mongoose.model('user', userSchema);

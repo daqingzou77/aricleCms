@@ -1,6 +1,4 @@
 import user from '../model/user';
-import moment from 'moment';
-import { getRandomNumbers } from '../utils/index';
 class users{
   constructor(app) {
     Object.assign(this, {
@@ -11,14 +9,17 @@ class users{
   };
   
   init() {
-    this.app.get('/api/user/getUserList', this.getUserList.bind(this));
-    this.app.post('/api/user/addUserParam', this.addUserParam.bind(this));
-    this.app.delete('/api/user/deleteOneUser', this.deleteOneUser.bind(this));
-    this.app.put('/api/user/updateUser', this.updateUser.bind(this));
-    this.app.get('/api/user/findUserByItem', this.findUserByItem.bind(this));
-    this.app.post('/api/user/toLogin', this.toLogin.bind(this));
-    this.app.get('/api/user/logOut', this.logOut.bind(this));
-    this.app.get('/api/user/getCaptch', this.getCaptch.bind(this));
+    this.app.get('/api/user/getUserList', this.getUserList.bind(this)); // 获取用户列表
+    this.app.post('/api/user/getUserByOptions', this.getUserByOptions.bind(this)); // 条件查询用户
+    this.app.post('/api/user/addUserParam', this.addUserParam.bind(this)); // 添加用户
+    this.app.delete('/api/user/deleteUserItem', this.deleteUserItem.bind(this)); // 删除单个用户
+    this.app.delete('/api/user/deleteBatchUsers', this.deleteBatchUsers.bind(this)); // 批量删除用户
+    this.app.get('/api/user/queryUserItem', this.queryUserItem.bind(this)); // 查询单个用户
+    this.app.put('/api/user/editUserItem', this.editUserItem.bind(this)); // 编辑单个用户
+
+    // this.app.post('/api/user/toLogin', this.toLogin.bind(this));
+    // this.app.get('/api/user/logOut', this.logOut.bind(this));
+    // this.app.get('/api/user/getCaptch', this.getCaptch.bind(this));
   };
 
   getUserList(req, res, next) {
@@ -29,48 +30,76 @@ class users{
     .catch(err => next(err));
   };
 
+  getUserByOptions(req, res, next) {
+    const { userType, name } = req.body;
+    this.user.find({
+      $or: [{ username: name }, { nickname: name }],
+      userType: !userType ? { $regex: '' } : userType,
+    })
+    .then((doc) => {
+      res.tools.setJson(0, '条件查询成功', doc);
+    })
+    .catch(err => next(err));
+  } 
+
   addUserParam(req, res, next) {
     const addParam = req.body;
-    console.log(addParam);
-    addParam.createTime = moment(new Date).format('YYYY-MM-DD hh:mm:ss') 
     this.user.create(addParam)
     .then(doc => {
       res.tools.setJson(0, '添加成功', doc);
     })
     .catch(err => next(err));
   };
-  
-  deleteOneUser(req, res, next) {
-    const { userName } = req.body;
+
+  deleteUserItem(req, res, next) {
+    const { username } = req.body;
     this.user.remove({
-      userName,
+      username,
     })
     .then(doc => {
-      res.tools.setJson(0, '删除成功', doc);
+      if (doc.deletedCount > 0) {
+        res.tools.setJson(0, '删除成功', { status: true })
+      } else {
+        res.tools.setJson(0, '删除失败', { status: false });
+      }
     })
     .catch(err => next(err));
   };
 
-  updateUser(req, res, next) {
-    const { userName, password, note, userType } = req.body;
-    const createTime = new Date()
-    this.user.update({ userName },{
-      password,
-      note,
-      createTime,
-      userType,
-    }) 
+  deleteBatchUsers(req, res, next) {
+    const { deleteArrays } = req.body;
+    this.user.remove({ 
+      username :{ $in: deleteArrays }
+    })
     .then(doc => {
-      res.tools.setJson(0, '修改成功', doc);
+      if (doc.deletedCount > 0) {
+        res.tools.setJson(0, '删除成功', { status: true })
+      } else {
+        res.tools.setJson(0, '删除失败', { status: false });
+      }
     })
     .catch(err => next(err));
-  };
+  }
 
-  findUserByItem(req, res, next) {
-    const userName = req.query.userName;
-    this.user.findOne({ userName })
+  queryUserItem(req, res, next) {
+    const username = req.query.username;
+    this.user.findOne({ username })
     .then(doc => {
       res.tools.setJson(0, '查询成功', doc);
+    })
+    .catch(err => next(err));
+  }
+
+  editUserItem(req, res, next) {
+    const addParam = req.body;
+    const { username } = addParam;
+    this.user.update({ username }, { $set: addParam }) 
+    .then(doc => {
+      if (doc.deletedCount > 0) {
+        res.tools.setJson(0, '查询成功', { status: true })
+      } else {
+        res.tools.setJson(0, '查询失败', { status: false });
+      }
     })
     .catch(err => next(err));
   }

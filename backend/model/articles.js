@@ -74,6 +74,6 @@ const articleSchema = mongoose.Schema({
     }]
 });
 
-articleSchema.index({ _id: 1 });
+articleSchema.index({ id: 1 });
 
 export default mongoose.model('article', articleSchema)
