@@ -99,7 +99,6 @@ class Audit extends React.Component {
   }
 
   handleOnChange = value => {
-    console.log('value', value);
     const { param, startTime, endTime } = this.state;
     this.setState({
       selectOption: value
@@ -230,7 +229,6 @@ class Audit extends React.Component {
             placeholder="请输入查询的文章名"
             style={{ width: 250 }}
             onChange={this.handleInputChange}
-
           />
           <Button
             type="primary"

@@ -4,29 +4,21 @@ import FormElement from '@/components/FormElement';
 
 class ManageDetail extends React.Component {
   render() {
-    const { form } = this.props;
+    const { form, currentUser } = this.props;
     const formElementProps = {
       form,
       width: 300,
     };
     const options = [{
-      label: '管理员',
-      value: '管理员'
+      label: '用户',
+      value: 0
     }, {
       label: '作者',
-      value: '作者'
+      value: 1
     }, {
-      label: '用户',
-      value: '用户'
+      label: '管理员',
+      value: 2
     }]
-    const currentUser = {
-        username: 'daqing',
-        nickname: 'zz',
-        userType: '管理员',
-        telphoneNumber: '12323232',
-        email: '2295957879',
-        decription: '23434'
-    }
     return (
       <div style={{ padding: 20 }}>
         <Form>
@@ -53,9 +45,9 @@ class ManageDetail extends React.Component {
           <FormElement 
             {...formElementProps}
             label="用户号码"
-            field="telphoneNumber"
+            field="telephoneNumber"
             type="mobile"
-            initialValue={currentUser.telphoneNumber}
+            initialValue={currentUser.telephoneNumber}
           /> 
           <FormElement 
             {...formElementProps}
@@ -63,7 +55,6 @@ class ManageDetail extends React.Component {
             field="email"
             type="email"       
             initialValue={currentUser.email}
-            
           /> 
           <FormElement 
             {...formElementProps}

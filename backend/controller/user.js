@@ -33,8 +33,8 @@ class users{
   getUserByOptions(req, res, next) {
     const { userType, name } = req.body;
     this.user.find({
-      $or: [{ username: name }, { nickname: name }],
-      userType: !userType ? { $regex: '' } : userType,
+      $or: [{ username: !name ? { $regex: '' } : name }, { nickname: !name ? { $regex: '' } : name }],
+      userType: userType === 3 ? { $gte: 0 } : userType,
     })
     .then((doc) => {
       res.tools.setJson(0, '条件查询成功', doc);
@@ -44,9 +44,16 @@ class users{
 
   addUserParam(req, res, next) {
     const addParam = req.body;
-    this.user.create(addParam)
+    const { username } = addParam;
+    this.user.findOne({
+      username
+    })
     .then(doc => {
-      res.tools.setJson(0, '添加成功', doc);
+      if (doc) return res.tools.setJson(0 ,'用户已存在，添加失败', { status: false });
+      this.user.create(addParam)
+      .then(data => {
+        res.tools.setJson(0, '添加成功', { status: true });
+      })
     })
     .catch(err => next(err));
   };

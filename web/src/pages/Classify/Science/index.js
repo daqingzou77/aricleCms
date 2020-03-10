@@ -17,22 +17,6 @@ class Science extends React.Component {
     hotArticles: []
   }
 
-  // componentDidMount() {
-  //   this.getHotRecommandFromScience();
-  // }
-
-  // getHotRecommandFromScience = () => {
-  //   getHotRecommandFromScience({}, ({ data }) => {
-  //     this.setState({
-  //       hotArticles: data
-  //     })
-  //   },
-  //   e => console.log('getHotRecommandFromScience-error', e.toString())
-  //   )
-  // }
-
-  
-
   handleOnQuery = () => {
     const { form } = this.props;
     form.validateFields((err, values) => {
