@@ -249,7 +249,7 @@ class Articles {
   }
 
   solveArticle(req, res, next) {
-    const { key, articlename } = req.body;
+    const { key, articlename, currenUser } = req.body;
     this.articles.findOne({ articlename })
     .then(doc => {
       if(!doc) return res.tools.setJson(0, '无记录', doc);
@@ -282,6 +282,9 @@ class Articles {
       if (!doc) return res.tools.setJson(0, '无此记录', doc);
       const commentTime = new Date();
       this.articles.updateOne({articlename}, {
+        $inc: {
+          comments: 1
+        },
         $push: {
           commentList: {
             $each: [{ commenter, commentContent, commentTime, }]
@@ -318,7 +321,8 @@ class Articles {
             "commentList.$.likes": key === 1 ? 1 : 0,
             "commentList.$.dislikes": key === 2 ? 1 : 0,
           } 
-        })
+        }
+      )
       .then(data => {
         if (data.nModified > 0) {
           res.tools.setJson(0 ,'评论成功', { status: true });

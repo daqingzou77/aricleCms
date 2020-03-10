@@ -65,3 +65,24 @@ console.log('相似度', EncryptTools.getEndSmi(I1, Q1, θ))
 
 // const finalSmi = EncryptTools.getFinalSmi(G, E);
 // console.log('最终相似度', finalSmi.toString())
+
+// function include(arr, index) {
+//     let result = false;
+//     result = arr.map(item => {
+//       if (item.index === index)
+//       return 1
+//     })
+//     return result;
+//   }
+
+  function include(arr, index) {
+    const result = false;
+    arr.map(item => {
+      if (item.index === index)
+      return 2
+    })
+    return result;
+  }
+
+
+ console.log(include([{index: 1}],1))

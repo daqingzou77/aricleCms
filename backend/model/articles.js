@@ -54,6 +54,12 @@ const articleSchema = mongoose.Schema({
     dislikes: {type: Number, default: 0},
     comments: {type: Number, default: 0},
     favorites: {type: Number, default: 0},
+    // AbleList: [
+    //   { likeAble: {type: Boolean, default: false} },
+    //   { dislikeAble: {type: Boolean, default: false} },
+    //   { favoriteAble: {type: Boolean, default: false} },
+    //   {commentAble: {type: Boolean, default: false} },
+    // ],
     keywords: {type: Array, default: []},
     cipherTextIndex: Object,
     preSmi: Number,
@@ -62,10 +68,12 @@ const articleSchema = mongoose.Schema({
       commentContent: String,
       commentTime: Date,
       likes: {type: Number, default: 0},
-      dislikes: {type: Number, default: 0}
+      dislikes: {type: Number, default: 0},
+      // likeAble: {type: Boolean, default: false},
+      // dislikeAble: {type: Boolean, default: false}
     }]
 });
 
-articleSchema.index({id: 1});
+articleSchema.index({ _id: 1 });
 
 export default mongoose.model('article', articleSchema)

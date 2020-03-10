@@ -10,16 +10,42 @@ import {
   solveComment
 } from '@/services/articleSevice'
 
+function include(arr, index) {
+  const result = false;
+    if (!arr) {
+      return false;
+    }
+    if (arr[0].indexArray.includes(index)) {
+      return !result;
+    }
+    return result;
+  }
+
 class CommentList extends React.Component {
 
   state = {
     replyModal: false,
     currentCommenter: '',
-    choose1Index: [],
-    choose2Index: [],
+    choose1Index: [{ indexArray: [] }],
+    choose2Index: [{ indexArray: [] }],
   }
 
-  solveComment = (_id, articlename, commentTime, key) => {
+  componentWillReceiveProps(nextProps) {
+    const { choose1Index, choose2Index } = this.state;
+    const { comments: { commentList } } = nextProps;
+    commentList.map(item => {
+      const { likes, dislikes } = item;
+      choose1Index.push({ likes });
+      choose2Index.push({ dislikes });
+    })
+    this.setState({
+      choose1Index,
+      choose2Index
+    })
+  }
+
+  solveComment = (_id, articlename, commentTime, key, index) => {
+    const { choose1Index, choose2Index } = this.state;
     solveComment({
       _id,
       articlename,
@@ -29,8 +55,16 @@ class CommentList extends React.Component {
       if (data.status) {
         if (key === 1) {
           message.success('评论点赞成功');
+          choose1Index[index+1].likes += 1;
+          this.setState({
+            choose1Index,
+          })
         } else if (key ===2) {
           message.success('评论拉黑成功');
+          choose2Index[index+1].dislikes += 1;
+          this.setState({
+            choose2Index,
+          })
         }
       }
     },
@@ -41,29 +75,29 @@ class CommentList extends React.Component {
   handleArticle = (_id, articlename, commentTime, key, index) => {
     const { choose1Index, choose2Index } = this.state;
     if (key === 1) {
-      if (choose1Index.includes(index)){
+      if (include(choose1Index, index)){
          message.warning('评论已赞');
          return;
       }
-      if (choose2Index.includes(index)) {
+      if (include(choose2Index, index)) {
         message.warning('评论已拉黑，不能点赞');
       } else {
-        choose1Index.push(index);
-        this.solveComment(_id, articlename, commentTime, 1);
+        choose1Index[0].indexArray.push(index);
+        this.solveComment(_id, articlename, commentTime, 1, index);
       }
       this.setState({
         choose1Index
       })
     } else if (key === 2) {
-      if (choose2Index.includes(index)){
+      if (include(choose2Index, index)){
         message.warning('评论已拉黑');
         return;
       }
-      if (choose1Index.includes(index)) {
+      if (include(choose1Index, index)) {
         message.warning('评论已赞，不能拉黑');
       } else {
-        this.solveComment(_id, articlename, commentTime, 2);
-        choose2Index.push(index);
+        choose2Index[0].indexArray.push(index);
+        this.solveComment(_id, articlename, commentTime, 2, index);
       }
       this.setState({
         choose2Index,
@@ -125,14 +159,14 @@ class CommentList extends React.Component {
                 actions={[
                   <IconText 
                     icon={LikeTwoTone} 
-                    text={item.likes} 
-                    twoToneColor={choose1Index.includes(index) ? '#FF0000': ''}  
+                    text={!choose1Index[index+1] ? item.likes : choose1Index[index+1].likes} 
+                    twoToneColor={include(choose1Index, index) ? '#FF0000': ''}  
                     onClick={() => this.handleArticle(item._id, commentArticlename, item.commentTime, 1, index)}
                   />,
                   <IconText 
                     icon={DislikeTwoTone} 
-                    text={item.dislikes} 
-                    twoToneColor={choose2Index.includes(index) ? '#303030': ''}
+                    text={!choose2Index[index+1] ? item.dislikes : choose2Index[index+1].dislikes} 
+                    twoToneColor={include(choose2Index, index) ? '#303030': ''}
                     onClick={() => this.handleArticle(item._id, commentArticlename, item.commentTime, 2, index)}
                   />,
                   <span>
