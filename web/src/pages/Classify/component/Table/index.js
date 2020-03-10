@@ -142,7 +142,7 @@ class Tables extends React.Component {
     const { commentArticlename } = this.state;
     const commenter = 'daqing'; // 模拟当前用户
     commentArticle({
-      commentArticlename,
+      articlename: commentArticlename,
       commentContent,
       commenter
     }, ({ data }) => {
@@ -185,7 +185,8 @@ class Tables extends React.Component {
   showHistoryComment = articlename => {
     this.getArticleComment(articlename);
     this.setState({
-      historyModal: true
+      historyModal: true,
+      commentArticlename: articlename
     })
   }
 
@@ -223,9 +224,9 @@ class Tables extends React.Component {
     } else if (key === 3) {
       if (choose3Index.includes(index)) {
         choose3Index.splice(choose3Index.indexOf(index), 1);
-        this.solveArticle(articlename, 3);
-      } else {
         this.solveArticle(articlename, 4);
+      } else {
+        this.solveArticle(articlename, 3);
         choose3Index.push(index);
       }
       this.setState({
@@ -285,37 +286,30 @@ class Tables extends React.Component {
   render() {
     const { loading, dataSource, form } = this.props;
     const { editorState, visible, commentModalVisible, commentArticlename, historyModal, comments } = this.state;
-    const dataSources = [{
-      articlename: '水浒'
-    }, {
-      articlename: '三国'
-    }, {
-      articlename: '西游'
-    }]
     const formElementProps = {
       form,
       width: 300,
     }
     return (
       <>
-        {/* {
+        {
           loading ? (
             <Spin spinning={loading} style={{ marginLeft: '50%' }} />
           ) :
             dataSource.length > 0 ? (
               <Table
-                dataSource={dataSources}
+                dataSource={dataSource}
                 loading={loading}
                 columns={this.columns}
               />
             ) : (
               <Empty description={<span className={styles.matchFontStyle}>无匹配结果</span>} />
               )
-        } */}
-        <Table
+        }
+        {/* <Table
           dataSource={dataSources}
           columns={this.columns}
-        />
+        /> */}
         <Modal
           visible={visible}
           title="内容详情"
@@ -352,7 +346,7 @@ class Tables extends React.Component {
           onCancel={this.handleHistoryCancel}
           footer={null}
         >
-          <CommentList comments={comments} />
+          <CommentList comments={comments} commentArticlename={commentArticlename} />
         </Modal>
       </>
     )

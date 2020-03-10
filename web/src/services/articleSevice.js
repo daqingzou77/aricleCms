@@ -44,7 +44,7 @@ export const commentArticle = (data, successCb, failCb) => {
 
 // 获取文章评论
 export const getArticleComment = (data, successCb, failCb) => {
-  post(`${scheduleBaseUrl}/api/article/getArticleComment`, data, successCb, failCb);
+  get(`${scheduleBaseUrl}/api/article/getArticleComment`, data, successCb, failCb);
 };
 
 // 点赞、拉黑评论

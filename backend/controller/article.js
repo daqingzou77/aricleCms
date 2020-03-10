@@ -288,7 +288,7 @@ class Articles {
           }
         }
       }).then(data => {
-        if (doc.nModified > 0) {
+        if (data.nModified > 0) {
           res.tools.setJson(0 ,'评论成功', { status: true });
         } else {
           res.tools.setJson(0, '评论失败', { status: false });
@@ -300,39 +300,32 @@ class Articles {
 
   getArticleComment(req, res, next) {
     const articlename = req.query.articlename;
-    this.articles.find({ articlename }, { commentList: 1 })
+    this.articles.findOne({ articlename }, { commentList: 1 })
     .then(doc => {
       res.tools.setJson(0, '获取文章评论', doc);
     })
   }
 
   solveComment(req, res, next) {
-    const { articlename, commenter, commentTime, key} = req.body;
-    console.log(commenter);
-    this.articles.findOne({ "commentList.commenter": commenter }, { "commentList.commentTime": commentTime })
-    .then(doc => {
-      if(!doc) return res.tools.setJson(0, '无评论记录', doc);
-      let { likes, dislikes } = doc;
-      if (key === 1) {
-        likes += 1;
-      } else if (key ===2){
-        dislikes += 1;
-      }
-      this.articles.updateOne(
-        { "commentList.commenter": commenter, 
-          "commentList.commentTime": commentTime
-        },
-        {
-          $set: {"commentList.$.likes": likes, "commentList.$.dislikes": dislikes}
-        }
-      ).then(data => {
+    const {articlename, _id, commentTime, key } = req.body;
+      this.articles.updateOne({
+        articlename, 
+        "commentList._id": _id,
+        "commentList.commentTime": new Date(commentTime)
+      },
+        { 
+          $inc:{ 
+            "commentList.$.likes": key === 1 ? 1 : 0,
+            "commentList.$.dislikes": key === 2 ? 1 : 0,
+          } 
+        })
+      .then(data => {
         if (data.nModified > 0) {
           res.tools.setJson(0 ,'评论成功', { status: true });
         } else {
           res.tools.setJson(0 ,'评论失败', { status: false });
         }
       })
-    })
     .catch(err => next(err))
   }
 }

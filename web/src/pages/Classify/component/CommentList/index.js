@@ -14,46 +14,68 @@ class CommentList extends React.Component {
 
   state = {
     replyModal: false,
+    currentCommenter: '',
     choose1Index: [],
     choose2Index: [],
   }
 
-  solveComment = () => {
-
+  solveComment = (_id, articlename, commentTime, key) => {
+    solveComment({
+      _id,
+      articlename,
+      commentTime,
+      key
+    }, ({ data }) => {
+      if (data.status) {
+        if (key === 1) {
+          message.success('评论点赞成功');
+        } else if (key ===2) {
+          message.success('评论拉黑成功');
+        }
+      }
+    },
+    e => console.log('solveComment-error', e.toString())
+    )
   }
-  
-  handleArticle = (name, key, index) => {
+
+  handleArticle = (_id, articlename, commentTime, key, index) => {
     const { choose1Index, choose2Index } = this.state;
     if (key === 1) {
-      if (choose1Index.includes(index)) {
-        choose1Index.splice(choose1Index.indexOf(index), 1);
-        message.success('取消点赞');
-      } else {
-        message.success('点赞成功');
-        choose1Index.push(index);
-        if (choose2Index.indexOf(index) !== -1)
-          choose2Index.splice(choose2Index.indexOf(index), 1);
+      if (choose1Index.includes(index)){
+         message.warning('评论已赞');
+         return;
       }
-    } else if (key === 2) {
       if (choose2Index.includes(index)) {
-        choose2Index.splice(choose2Index.indexOf(index), 1);
-        message.success('取消拉黑');
+        message.warning('评论已拉黑，不能点赞');
       } else {
-        message.success('拉黑成功');
-        choose2Index.push(index);
-        if (choose1Index.indexOf(index) !== -1)
-          choose1Index.splice(choose1Index.indexOf(index), 1);
+        choose1Index.push(index);
+        this.solveComment(_id, articlename, commentTime, 1);
       }
+      this.setState({
+        choose1Index
+      })
+    } else if (key === 2) {
+      if (choose2Index.includes(index)){
+        message.warning('评论已拉黑');
+        return;
+      }
+      if (choose1Index.includes(index)) {
+        message.warning('评论已赞，不能拉黑');
+      } else {
+        this.solveComment(_id, articlename, commentTime, 2);
+        choose2Index.push(index);
+      }
+      this.setState({
+        choose2Index,
+        choose1Index
+      })
     }
-    this.setState({
-      choose2Index,
-      choose1Index
-    }); 
   }
 
-  handleOnReply = () => {
+  handleOnReply = name => {
     this.setState({
-      replyModal: true
+      replyModal: true,
+      currentCommenter: name
     })
   }
 
@@ -70,9 +92,12 @@ class CommentList extends React.Component {
   }
 
   render() {
-    const { replyModal, choose1Index, choose2Index, choose3Index, choose4Index } = this.state;
-    const { form, comments } = this.props;
-    console.log('comments', comments);
+    const { replyModal, choose1Index, choose2Index, currentCommenter } = this.state;
+    const { form, comments: { commentList }, commentArticlename } = this.props;
+    let dataSource = [];
+    if (commentList) {
+      dataSource = commentList
+    }
     const formElementProps = {
       form,
       width: 300
@@ -86,54 +111,40 @@ class CommentList extends React.Component {
     const footer = (
       <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 10 }}>
         <Button onClick={this.handleReplys} style={{ marginRight: 10 }}>取消</Button>
-        <Button onClick={this.handleReplyCancel} type="primary">回复</Button>
+        <Button onClick={this.handleReplyCancel} type="primary">私信</Button>
       </div>
     )
-    const data = [
-        {
-          title: 'Ant Design Title 1',
-        },
-        {
-          title: 'Ant Design Title 2',
-        },
-        {
-          title: 'Ant Design Title 3',
-        },
-        {
-          title: 'Ant Design Title 4',
-        },
-      ];
     return (
       <div className={styles.comment}>
         <InfiniteScroller className={styles.commentScroller}>
           <List
             itemLayout="vertical"
-            dataSource={data}
+            dataSource={dataSource}
             renderItem={(item, index) => (
               <List.Item
                 actions={[
                   <IconText 
                     icon={LikeTwoTone} 
-                    text={11} 
+                    text={item.likes} 
                     twoToneColor={choose1Index.includes(index) ? '#FF0000': ''}  
-                    onClick={() => this.handleArticle('', 1, index)}
+                    onClick={() => this.handleArticle(item._id, commentArticlename, item.commentTime, 1, index)}
                   />,
                   <IconText 
                     icon={DislikeTwoTone} 
-                    text={12} 
+                    text={item.dislikes} 
                     twoToneColor={choose2Index.includes(index) ? '#303030': ''}
-                    onClick={() => this.handleArticle('', 2, index)}
+                    onClick={() => this.handleArticle(item._id, commentArticlename, item.commentTime, 2, index)}
                   />,
                   <span>
-                    评论时间：{moment(new Date()).format('YYYY-MM-DD hh:mm:ss')}
+                    评论时间：{moment(item.commentTime).format('YYYY-MM-DD hh:mm:ss')}
                   </span>
                 ]}
-                extra={<a onClick={() => this.handleOnReply()}>回复</a>}
+                extra={<a onClick={() => this.handleOnReply(item.commenter)}>回复</a>}
               >
                 <List.Item.Meta
                   avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
-                  title={<a href="https://ant.design">{item.title}</a>}
-                  description="Ant Design, a design language for background applications, is refined by Ant UED Team"
+                  title={<a href="https://ant.design">{item.commenter}</a>}
+                  description={item.commentContent}
                 />
               </List.Item>
           )}
@@ -141,7 +152,7 @@ class CommentList extends React.Component {
         </InfiniteScroller>
         <Modal
           visible={replyModal}
-          title={`回复-作者`}
+          title={`回复作者--${currentCommenter}`}
           footer={footer}
           onCancel={() => this.setState({ replyModal: false })}
         >
