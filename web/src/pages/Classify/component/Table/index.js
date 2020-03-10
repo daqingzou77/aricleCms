@@ -11,6 +11,11 @@ import CommentList from '../CommentList';
 import {
   downloadAnnex
 } from '@/services/annexService';
+import {
+  solveArticle,
+  commentArticle,
+  getArticleComment
+} from '@/services/articleSevice';
 import styles from './style.less';
 
 
@@ -107,6 +112,60 @@ class Tables extends React.Component {
     choose4Index: [],
     commentArticlename: '',
     commentIndex: -1,
+    comments: []
+  }
+
+  solveArticle = (articlename, key) => {
+   solveArticle({
+     articlename,
+     key
+   }, ( { data} ) => {
+     if (data.status) {
+       if (key === 1) {
+        message.success('文章点赞')
+       } else if (key === 2) {
+        message.success('文章拉黑')
+       } else if (key === 3 ) {
+        message.success('文章收藏')
+       } else if (key === 4) {
+        message.success('取消收藏')
+       }
+     }
+   },
+   e => console.log('solveArticle-error', e.toString())
+   )
+  }
+
+  commentArticle = () => {
+    const { form } = this.props;
+    const commentContent = form.getFieldValue('comment');
+    const { commentArticlename } = this.state;
+    const commenter = 'daqing'; // 模拟当前用户
+    commentArticle({
+      commentArticlename,
+      commentContent,
+      commenter
+    }, ({ data }) => {
+      if (data.status) {
+        message.success('文章评论成功')
+      } else {
+        message.error('文章评论失败')
+      }
+    },
+    e => console.log('commentArticle-error', e.toString())
+    )
+  }
+
+  getArticleComment = articlename => {
+    getArticleComment({
+      articlename
+    }, ({ data }) => {
+      this.setState({
+        comments: data
+      })
+    },
+    e => console.log('comments-error', e.toString())
+    )
   }
 
   handleClick = (name, articleForm, articleContent) => {
@@ -123,7 +182,8 @@ class Tables extends React.Component {
     }
   }
 
-  showHistoryComment = () => {
+  showHistoryComment = articlename => {
+    this.getArticleComment(articlename);
     this.setState({
       historyModal: true
     })
@@ -132,28 +192,29 @@ class Tables extends React.Component {
   handleArticle = (articlename, key, index) => {
     const { choose1Index, choose2Index, choose3Index } = this.state;
     if (key === 1) {
-      if (choose1Index.includes(index)) {
-        choose1Index.splice(choose1Index.indexOf(index), 1);
-        message.success('取消点赞');
+      if (choose1Index.includes(index)){
+         message.warning('文章已赞');
+         return;
+      }
+      if (choose2Index.includes(index)) {
+        message.warning('该文章已拉黑，不能点赞');
       } else {
-        message.success('点赞成功');
         choose1Index.push(index);
-        if (choose2Index.indexOf(index) !== -1)
-          choose2Index.splice(choose2Index.indexOf(index), 1);
+        this.solveArticle(articlename, 1);
       }
       this.setState({
-        choose1Index,
-        choose2Index
+        choose1Index
       })
     } else if (key === 2) {
-      if (choose2Index.includes(index)) {
-        choose2Index.splice(choose2Index.indexOf(index), 1);
-        message.success('取消拉黑');
+      if (choose2Index.includes(index)){
+        message.warning('文章已拉黑');
+        return;
+      }
+      if (choose1Index.includes(index)) {
+        message.warning('该文章已赞，不能拉黑');
       } else {
-        message.success('拉黑成功');
+        this.solveArticle(articlename, 2);
         choose2Index.push(index);
-        if (choose1Index.indexOf(index) !== -1)
-          choose1Index.splice(choose1Index.indexOf(index), 1);
       }
       this.setState({
         choose2Index,
@@ -162,9 +223,9 @@ class Tables extends React.Component {
     } else if (key === 3) {
       if (choose3Index.includes(index)) {
         choose3Index.splice(choose3Index.indexOf(index), 1);
-        message.success('取消收藏');
+        this.solveArticle(articlename, 3);
       } else {
-        message.success('收藏成功');
+        this.solveArticle(articlename, 4);
         choose3Index.push(index);
       }
       this.setState({
@@ -200,7 +261,7 @@ class Tables extends React.Component {
       commentModalVisible: false,
       choose4Index
     })
-    message.success('评论成功')
+    this.commentArticle();
   }
 
   handleCommentCancel = () => {
@@ -223,7 +284,7 @@ class Tables extends React.Component {
 
   render() {
     const { loading, dataSource, form } = this.props;
-    const { editorState, visible, commentModalVisible, commentArticlename, historyModal } = this.state;
+    const { editorState, visible, commentModalVisible, commentArticlename, historyModal, comments } = this.state;
     const dataSources = [{
       articlename: '水浒'
     }, {
@@ -267,12 +328,11 @@ class Tables extends React.Component {
         </Modal>
         <Modal
           visible={commentModalVisible}
-          title={`评论文章-${commentArticlename}`}
+          title={`评论文章-《${commentArticlename}》`}
           onOk={this.handleCommentOk}
           onCancel={this.handleCommentCancel}
           showOk={true}
           showCancel={true}
-          // footer={footer}
         >
           <Form style={{ padding: 10 }}>
             <FormElement
@@ -292,7 +352,7 @@ class Tables extends React.Component {
           onCancel={this.handleHistoryCancel}
           footer={null}
         >
-          <CommentList />
+          <CommentList comments={comments} />
         </Modal>
       </>
     )

@@ -31,3 +31,23 @@ export const findArticleStatus = (data, successCb, failCb) => {
 export const solveArticleItem = (data, successCb, failCb) => {
   post(`${scheduleBaseUrl}/api/article/solveArticleItem`, data, successCb, failCb);
 };
+
+// 点赞、拉黑、收藏-文章
+export const solveArticle = (data, successCb, failCb) => {
+  post(`${scheduleBaseUrl}/api/article/solveArticle`, data, successCb, failCb);
+};
+
+// 评论文章
+export const commentArticle = (data, successCb, failCb) => {
+  post(`${scheduleBaseUrl}/api/article/commentArticle`, data, successCb, failCb);
+};
+
+// 获取文章评论
+export const getArticleComment = (data, successCb, failCb) => {
+  post(`${scheduleBaseUrl}/api/article/getArticleComment`, data, successCb, failCb);
+};
+
+// 点赞、拉黑评论
+export const solveComment = (data, successCb, failCb) => {
+  post(`${scheduleBaseUrl}/api/article/solveComment`, data, successCb, failCb);
+};

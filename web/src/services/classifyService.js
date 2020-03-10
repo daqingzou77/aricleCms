@@ -78,24 +78,4 @@ export const getLiveUpdateFromPhysic = (data, successCb, failCb) => {
 // 科学小知识
 export const getSportSense = (data, successCb, failCb) => {
   get(`${scheduleBaseUrl}/api/classify/getSportSense`, data, successCb, failCb);
-} 
-
-// 点赞、拉黑、收藏 - 文章
-export const solveArticle = (data, successCb, failCb) => {
-  post(`${scheduleBaseUrl}/api/classify/solveArticle`, data, successCb, failCb);
-}
-
-// 点赞、拉黑 - 评论
-export const solveComment = (data, successCb, failCb) => {
-  post(`${scheduleBaseUrl}/api/classify/solveArticle`, data, successCb, failCb);
-}
-
-// 评论文章
-export const commentArticle = (data, successCb, failCb) => {
-  post(`${scheduleBaseUrl}/api/classify/commentArticle`, data, successCb, failCb);
-}
-
-// 获取文章评论
-export const watchArticleComment = (data, successCb, failCb) => {
-  post(`${scheduleBaseUrl}/api/classify/watchArticleComment`, data, successCb, failCb);
 }

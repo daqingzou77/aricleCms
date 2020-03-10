@@ -31,9 +31,9 @@ class Articles {
 
     // 文章点赞、拉黑、收藏、评论
     this.app.post('/api/article/solveArticle', this.solveArticle.bind(this)); // 点赞、拉黑、收藏-文章
-    this.app.post('/api/article/solveComment', this.solveComment.bind(this)); // 点赞、拉黑评论
-    this.app.get('/api/article/getArticleComment', this.getArticleComment.bind(this)); // 获取文章评论
     this.app.post('/api/article/commentArticle', this.commentArticle.bind(this)); // 评论文章
+    this.app.get('/api/article/getArticleComment', this.getArticleComment.bind(this)); // 获取文章评论
+    this.app.post('/api/article/solveComment', this.solveComment.bind(this)); // 点赞、拉黑评论
   }
 
   addArticle(req, res, next) {
@@ -249,19 +249,92 @@ class Articles {
   }
 
   solveArticle(req, res, next) {
-  }
-
-  solveComment(req, res, next) {
-
-  }
-
-  getArticleComment(req, res, next) {
-
+    const { key, articlename } = req.body;
+    this.articles.findOne({ articlename })
+    .then(doc => {
+      if(!doc) return res.tools.setJson(0, '无记录', doc);
+      let { likes, dislikes, favorites } = doc;
+      if( key === 1) {
+        likes += 1;
+      } else if(key === 2) {
+        dislikes += 1;
+      } else if(key === 3) {
+        favorites += 1;
+      } else if (key === 4) {
+        favorites -= 1;
+      }
+      this.articles.updateOne({ articlename }, {$set: { likes, dislikes, favorites }})
+      .then(data => {
+        if(data.nModified > 0) {
+          res.tools.setJson(0, '处理成功', { status: true });
+        } else {
+          res.tools.setJson(0, '处理失败', { status: false });
+        }
+      })
+    })
+    .catch(err => next(err));
   }
 
   commentArticle(req, res, next) {
-
+    const { articlename, commentContent, commenter } = req.body;
+    this.articles.find({ articlename })
+    .then(doc => {
+      if (!doc) return res.tools.setJson(0, '无此记录', doc);
+      const commentTime = new Date();
+      this.articles.updateOne({articlename}, {
+        $push: {
+          commentList: {
+            $each: [{ commenter, commentContent, commentTime, }]
+          }
+        }
+      }).then(data => {
+        if (doc.nModified > 0) {
+          res.tools.setJson(0 ,'评论成功', { status: true });
+        } else {
+          res.tools.setJson(0, '评论失败', { status: false });
+        }
+      })
+    })
+    .catch(err => next(err));
   }
 
+  getArticleComment(req, res, next) {
+    const articlename = req.query.articlename;
+    this.articles.find({ articlename }, { commentList: 1 })
+    .then(doc => {
+      res.tools.setJson(0, '获取文章评论', doc);
+    })
+  }
+
+  solveComment(req, res, next) {
+    const { articlename, commenter, commentTime, key} = req.body;
+    console.log(commenter);
+    this.articles.findOne({ "commentList.commenter": commenter }, { "commentList.commentTime": commentTime })
+    .then(doc => {
+      if(!doc) return res.tools.setJson(0, '无评论记录', doc);
+      let { likes, dislikes } = doc;
+      if (key === 1) {
+        likes += 1;
+      } else if (key ===2){
+        dislikes += 1;
+      }
+      this.articles.updateOne(
+        { "commentList.commenter": commenter, 
+          "commentList.commentTime": commentTime
+        },
+        {
+          $set: {"commentList.$.likes": likes, "commentList.$.dislikes": dislikes}
+        }
+      ).then(data => {
+        if (data.nModified > 0) {
+          res.tools.setJson(0 ,'评论成功', { status: true });
+        } else {
+          res.tools.setJson(0 ,'评论失败', { status: false });
+        }
+      })
+    })
+    .catch(err => next(err))
+  }
 }
+
 export default Articles;

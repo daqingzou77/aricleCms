@@ -1,11 +1,14 @@
 import React from 'react';
 import { List, Avatar, Form, message, Button, Popover } from 'antd';
-import { LikeTwoTone, DislikeTwoTone, StarTwoTone, MessageTwoTone } from '@ant-design/icons'
+import { LikeTwoTone, DislikeTwoTone, StarTwoTone, MessageTwoTone } from '@ant-design/icons';
+import moment from 'moment';
 import InfiniteScroller from 'react-infinite-scroller';
 import FormElement from '@/components/FormElement';
 import Modal from '@/common/components/Modal';
 import styles from './style.less';
-import moment from 'moment';
+import { 
+  solveComment
+} from '@/services/articleSevice'
 
 class CommentList extends React.Component {
 
@@ -15,6 +18,10 @@ class CommentList extends React.Component {
     choose2Index: [],
   }
 
+  solveComment = () => {
+
+  }
+  
   handleArticle = (name, key, index) => {
     const { choose1Index, choose2Index } = this.state;
     if (key === 1) {
@@ -64,7 +71,8 @@ class CommentList extends React.Component {
 
   render() {
     const { replyModal, choose1Index, choose2Index, choose3Index, choose4Index } = this.state;
-    const { form } = this.props;
+    const { form, comments } = this.props;
+    console.log('comments', comments);
     const formElementProps = {
       form,
       width: 300
