@@ -122,31 +122,59 @@ class users{
 
   addUserRequest(req, res, next) {
     const { requester, targetUser } = req.query;
-    this.user.updateOne({ username: targetUser }, {
-      $push: {
-        requestList: { requester },
+    this.user.findOne({ username: targetUser, "requestList.requester": requester})
+    .then(doc => {
+      if(doc) {
+        return res.tools.setJson(0, '请求已发送，不能再次发送', { status: 1 })
       }
-    }).then(data => {
-      if (data.nModified > 0) {
-        res.tools.setJson(0, '请求发送成功', { status: true });
-      } else {
-        res.tools.setJson(0, '请求发送失败', { status: false })
-      }
+      this.user.updateOne({ username: targetUser }, {
+        $push: {
+          requestList: { requester },
+        }
+      }).then(data => {
+        if (data.nModified > 0) {
+          res.tools.setJson(0, '请求发送成功', { status: 2 });
+        } else {
+          res.tools.setJson(0, '请求发送失败', { status: 3 })
+        }
+      })
     })
     .catch(err => next(err));
   }
 
   agreeRequest(req, res, next) {
-    const { requester, targetUser } = req.query;
-    this.user.updateOne({ username: targetUser }, {
-      $push: {
-        friendsList: { requester },
+    const { requester, targetUser, key } = req.query;
+    this.user.findOne({ username: targetUser, 'friendsList.requester': requester }).then(doc =>{
+      if (doc) {
+        res.tools.setJson(0, '好友已存在', { status: 0 });
+        return;
       }
-    }).then(data => {
-      if (data.nModified > 0) {
-        res.tools.setJson(0, '同意好友', { status: true });
+      // 同意好友请求
+      if (key == 1) {
+        this.user.updateOne({ username: targetUser }, {
+          $push: {
+            friendsList: { requester },
+          }
+        }).then(data => {
+          if (data.nModified > 0) {
+            this.user.updateOne({
+              username: targetUser
+            }, {
+              $pull: { requestList: { requester } }
+            })
+            .then(doc => {
+              if (doc.nModified > 0) {
+                res.tools.setJson(0, '同意好友成功', { status: 1 });
+              } else {
+                res.tools.setJson(0, '同意好友失败', { status: 3 });
+              }
+            })
+          } else {
+            res.tools.setJson(0, '同意好友失败', { status: 3 });
+          }
+        })
       } else {
-        res.tools.setJson(0, '拒绝好友', { status: false })
+        res.tools.setJson(0, '拒绝好友', { status: 2 })
       }
     })
     .catch(err => next(err));
@@ -154,14 +182,16 @@ class users{
 
   getClassifiedList(req, res, next) {
     const { username, key } = req.query;
-    const option = { }
+    const option = {};
     switch (key) {
-      case 1: option.friendsList = 1;break;
-      case 2: option.friendsList = 1;break;
-      case 3: option.friendsList = 1;break;
+      case '0': option.friendsList = 1;break; // 获取好友列表 
+      case '1': option.attentionList = 1;break; // 获取关注列表
+      case '2': option.blacklist = 1;break; // 获取黑名单列表
     }
-    this.user.find({username}, option)
+    console.log('option', option);
+    this.user.findOne({ username }, option)
     .then(data => {
+      console.log('data', data);
       res.tools.setJson(0, '获取信息成功', data);
     })
     .catch(err => next(err));
@@ -189,7 +219,6 @@ class users{
 
   addUserParam(req, res, next) {
     const addParam = req.body;
-    const { username } = addParam;
     this.user.findOne({
       username
     })

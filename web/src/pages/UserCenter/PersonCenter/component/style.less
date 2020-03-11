@@ -56,3 +56,106 @@
     }
   }
 }
+
+// PersonalCards
+.avatarHolder {
+  margin-bottom: 24px;
+  text-align: center;
+
+  & > img {
+    width: 104px;
+    height: 104px;
+    margin-bottom: 20px;
+  }
+
+  .name {
+    margin-bottom: 4px;
+    color: @heading-color;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 28px;
+  }
+}
+
+.detail {
+  p {
+    position: relative;
+    text-align: center;
+    i {
+      position: absolute;
+      top: 4px;
+      left: 0;
+      width: 14px;
+      height: 14px;
+  
+      &.title {
+        background-position: 0 0;
+      }
+  
+      &.group {
+        background-position: 0 -22px;
+      }
+  
+      &.address {
+        background-position: 0 -44px;
+      }
+    }
+  }
+}
+
+// findFriends
+.findFriend {
+  .search {
+    margin-top: 10px;
+    padding: 0 10px;
+  }
+  .listStyle {
+    width: 100%;
+    background: #fff;
+    margin-top: 10px;
+  }
+  :global {
+    .ant-card-body {
+      padding: 0;
+    }
+  }
+}
+
+.friendsScroll {
+  padding: 5px 0px 5px 6px;
+  margin: 10px;
+  overflow: auto;
+  border: 1px solid #e8e8e8;
+  height: 200px;
+}
+
+.friendArrayStyle {
+  display: flex;
+  flex-direction: row;
+  .avatarStyle {
+    color: red;
+  }
+  .rightList {
+    display: flex;
+    flex-direction: column;
+    margin: 0px 9px;
+  }
+}
+
+// friendsList
+.listScrolls {
+  border: 1px solid #e8e8e8;
+  border-radius: 4px;
+  overflow: auto;
+  padding: 8px 24px;
+  height: 200px;
+  margin-top: 10px;
+}
+
+.friendlist {
+  width: 100%;
+  background: #fff;
+  margin-top: 10px;
+  padding: 10px;
+  flex-grow: 1;
+}

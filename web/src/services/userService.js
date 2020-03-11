@@ -4,11 +4,6 @@ const scheduleBaseUrl = process.env.apiBaseUrl;
 
 // **** 用户中心 ****
 
-// 上传用户头像
-export const UploadUserAvatar = (data, successCb, failCb) => {
-  post(`${scheduleBaseUrl}/api/user/UploadUserAvatar`, data, successCb, failCb);
-}
-
 // 更新用户信息
 export const updateUserDetail = (data, successCb, failCb) => {
   put(`${scheduleBaseUrl}/api/user/updateUserDetail`, data, successCb, failCb);

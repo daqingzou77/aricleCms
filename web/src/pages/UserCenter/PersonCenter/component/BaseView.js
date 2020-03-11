@@ -23,7 +23,7 @@ class BaseView extends React.Component {
   }
 
   handlerSubmit = () => {
-    const { form } = this.props;
+    const { form, getCurrentUserDetail } = this.props;
     const { imagName } = this.state;
     form.validateFields((err, values) => {
       if (!err) {
@@ -32,6 +32,7 @@ class BaseView extends React.Component {
         updateUserDetail(updateParam, ({ data }) => {
           if (data.status) {
             message.success('更新成功');
+            getCurrentUserDetail();
           } else {
             message.error('更新失败');
           }
