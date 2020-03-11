@@ -8,12 +8,14 @@ import { currentUser } from '../mock';
 class BaseView extends React.Component {
 
   state = {
-    imagUrl: 'https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png'
+    imagUrl: 'https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png',
+    imagName: ''
   }
 
-  saveImg = imagUrl => {
+  saveImg = (imagUrl, name) => {
     this.setState({
       imagUrl,
+      imagName: name
     })
   }
 
@@ -25,24 +27,6 @@ class BaseView extends React.Component {
       width: 400
     };
     // 头像组件 方便以后独立，增加裁剪之类的功能
-    const AvatarView = () => (
-      <Fragment>
-        <div className={styles.avatar_title}>
-          头像
-        </div>
-        <div className={styles.avatar}>
-          <img src={imagUrl} alt="avatar" />
-        </div>
-        <UploadImg saveImg={this.saveImg} />
-        {/* <Upload>
-      <div className={styles.button_view}>
-        <Button icon="upload" type="ghost">
-          更换头像
-        </Button>
-      </div>
-    </Upload> */}
-      </Fragment>
-    );
     return (
       <div className={styles.baseView} ref={this.getViewDom}>
         <div className={styles.left}>
@@ -117,7 +101,15 @@ class BaseView extends React.Component {
           </Form>
         </div>
         <div className={styles.right}>
-          <AvatarView avatar='https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png' />
+          <Fragment>
+            <div className={styles.avatar_title}>
+              头像
+            </div>
+            <div className={styles.avatar}>
+              <img src={imagUrl} alt="用户头像" height={140} style={{ borderRadius: '50%' }} />
+            </div>
+            <UploadImg saveImg={this.saveImg} />
+          </Fragment>
         </div>
       </div>
     )

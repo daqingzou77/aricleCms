@@ -1,5 +1,7 @@
 import user from '../model/user';
 import multer from 'multer';
+import path from 'path';
+import fs from 'fs';
 import config from '../config/app.config';
 
 
@@ -9,7 +11,7 @@ var storage = multer.diskStorage({
     cb(null, config.uploadImgDir);
   },
   filename: function(req, file, cb) {
-    cb(null, `${Date.now()}-${file.originalname}`)
+    cb(null, `${file.originalname}`)
   }
 });
 
@@ -46,11 +48,18 @@ class users{
   
   UploadUserAvatar(req, res, next) {
     const files = req.files;
+    const uploadImgName = files[0].originalname;
   // 设置返回结果
     try {
       if (!files[0]) {
         res.tools.setJson(0, '头像上传失败', { status: false })
       } else {
+        const fileList = fs.readdirSync(config.uploadImgDir);
+        if (fileList.includes(uploadImgName)){
+          res.tools.setJson(0, '文件已存在', { status: false });
+          return;
+        }
+        console.log('url', path.resolve(__dirname, files[0].path));
         res.tools.setJson(0, '头像上传成功', { url: files[0].path })
       }
     } catch (err) {
