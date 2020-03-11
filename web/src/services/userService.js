@@ -2,6 +2,19 @@ import { get, post, deletes, put } from '../common/http';
 
 const scheduleBaseUrl = process.env.apiBaseUrl;
 
+// **** 用户中心 ****
+export const UploadUserAvatar = (data, successCb, failCb) => {
+  post(`${scheduleBaseUrl}/api/user/UploadUserAvatar`, data, successCb, failCb);
+}
+
+
+
+
+
+
+
+// **** 用户管理 ****
+
 // 获取用户列表
 export const getUserList = (data, successCb, failCb) => {
   get(`${scheduleBaseUrl}/api/user/getUserList`, data, successCb, failCb);
@@ -36,3 +49,5 @@ export const queryUserItem = (data, successCb, failCb) => {
 export const editUserItem = (data, successCb, failCb) => {
   put(`${scheduleBaseUrl}/api/user/editUserItem`, data, successCb, failCb);
 };
+
+

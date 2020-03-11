@@ -5,4 +5,5 @@ export default {
     sessionUrl: 'mongodb://127.0.0.1/session',
   },
   uploadDir: '../backend/upload/',
+  uploadImgDir: '../backend/upload/imgStore'
 }

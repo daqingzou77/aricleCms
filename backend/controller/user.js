@@ -1,4 +1,21 @@
 import user from '../model/user';
+import multer from 'multer';
+import config from '../config/app.config';
+
+
+// 设置图片存储路径
+var storage = multer.diskStorage({
+  destination: function(req, file, cb) {
+    cb(null, config.uploadImgDir);
+  },
+  filename: function(req, file, cb) {
+    cb(null, `${Date.now()}-${file.originalname}`)
+  }
+});
+
+
+var upload = multer({ storage: storage });
+
 class users{
   constructor(app) {
     Object.assign(this, {
@@ -9,6 +26,11 @@ class users{
   };
   
   init() {
+    // **** 用户中心 ****
+    this.app.post('/api/user/UploadUserAvatar', upload.array('avatar', 1), this.UploadUserAvatar.bind(this)); // 用户头像上传
+
+
+    // **** 用户管理 ****
     this.app.get('/api/user/getUserList', this.getUserList.bind(this)); // 获取用户列表
     this.app.post('/api/user/getUserByOptions', this.getUserByOptions.bind(this)); // 条件查询用户
     this.app.post('/api/user/addUserParam', this.addUserParam.bind(this)); // 添加用户
@@ -21,6 +43,20 @@ class users{
     // this.app.get('/api/user/logOut', this.logOut.bind(this));
     // this.app.get('/api/user/getCaptch', this.getCaptch.bind(this));
   };
+  
+  UploadUserAvatar(req, res, next) {
+    const files = req.files;
+  // 设置返回结果
+    try {
+      if (!files[0]) {
+        res.tools.setJson(0, '头像上传失败', { status: false })
+      } else {
+        res.tools.setJson(0, '头像上传成功', { url: files[0].path })
+      }
+    } catch (err) {
+      next(err)
+    }
+  }
 
   getUserList(req, res, next) {
     this.user.find({})

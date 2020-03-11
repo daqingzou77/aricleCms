@@ -26,6 +26,7 @@ class ManageDetail extends React.Component {
             {...formElementProps}
             label="用户名称"
             field="username"
+            disabled={currentUser.username ? true : false}
             initialValue={currentUser.username}
           />
           <FormElement 
@@ -62,7 +63,7 @@ class ManageDetail extends React.Component {
             field="decription"
             type="textarea"
             initialValue={currentUser.decription}
-            rows={5}
+            rows={3}
           /> 
         </Form>
       </div>

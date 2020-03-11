@@ -11,7 +11,7 @@ import {
   deleteBatchUsers,
   queryUserItem,
   editUserItem
-} from '@/services/userManage'
+} from '@/services/userService';
 
 
 const { Option } = Select;
@@ -56,7 +56,7 @@ class UserManage extends React.Component {
             编辑
           </a>
           <Divider type="vertical" />
-          <Popconfirm placement="top" title="是否确认删除嘛?" onConfirm={() => that.confirm(record.username)} okText="Yes" cancelText="No">
+          <Popconfirm placement="top" title="是否确认删除嘛?" onConfirm={() => that.confirm(record.username)} okText="确认" cancelText="取消">
             <a href="" style={{ color: 'red' }}>删除</a>
           </Popconfirm>
         </>
@@ -67,6 +67,7 @@ class UserManage extends React.Component {
   state = {
     deleteArrays: [],
     selectedRowKeys: [],
+    required: true,
     visible: false,
     loading: false,
     dataSource: [],
@@ -88,7 +89,7 @@ class UserManage extends React.Component {
       e => console.log('getUserList-error', e.toString())
     )
   }
-   
+
   addUserParam = () => {
     const { form } = this.props;
     form.validateFields((err, values) => {
@@ -102,15 +103,15 @@ class UserManage extends React.Component {
           email,
           decription
         },
-        ({ data }) => {
-          if (data.status) {
-            message.success('添加成功');
-          } else {
-            message.error('添加失败，用户已存在');
-          }
-          this.getUserList();
-        },
-        e => console.log('addUserParam-error', e.toString())
+          ({ data }) => {
+            if (data.status) {
+              message.success('添加成功');
+            } else {
+              message.error('添加失败，用户已存在');
+            }
+            this.getUserList();
+          },
+          e => console.log('addUserParam-error', e.toString())
         )
       }
     })
@@ -121,15 +122,15 @@ class UserManage extends React.Component {
     form.validateFields((err, values) => {
       if (!err) {
         editUserItem(values,
-        ({ data }) => {
-          if (data.status) {
-            message.success('修改成功！');
-          } else {
-            message.error('修改失败！');
-          }
-          this.getUserList();
-        },
-        e => console.log('edit-error', e.toString())
+          ({ data }) => {
+            if (data.status) {
+              message.success('修改成功！');
+            } else {
+              message.error('修改失败！');
+            }
+            this.getUserList();
+          },
+          e => console.log('edit-error', e.toString())
         )
       }
     })
@@ -140,12 +141,12 @@ class UserManage extends React.Component {
       name,
       userType
     },
-    ({ data }) => {
-      this.setState({
-        dataSource: data
-      })
-    },
-    e => console.log('getUserByOptions-error', e.toString())
+      ({ data }) => {
+        this.setState({
+          dataSource: data
+        })
+      },
+      e => console.log('getUserByOptions-error', e.toString())
     )
   }
 
@@ -158,7 +159,7 @@ class UserManage extends React.Component {
       }
       this.getUserList();
     },
-    e => console.log('deleteUserItem', e.toString())
+      e => console.log('deleteUserItem', e.toString())
     )
   }
 
@@ -182,23 +183,23 @@ class UserManage extends React.Component {
   handleOnChange = (selectedRowKeys, selectedRows) => {
     const { deleteArrays } = this.state;
     selectedRows.map(item => {
-      deleteArrays.push(item.username)   
+      deleteArrays.push(item.username)
     })
-    this.setState({ 
+    this.setState({
       deleteArrays,
-      selectedRowKeys    
+      selectedRowKeys
     });
   }
 
   handleEdit = username => {
     queryUserItem({
       username
-    }, ( { data }) => {
+    }, ({ data }) => {
       this.setState({
         currentUser: data
       })
     },
-    e => console.log('queryUseItem-error', e.toString())
+      e => console.log('queryUseItem-error', e.toString())
     )
     this.setState({
       visible: true
@@ -222,7 +223,7 @@ class UserManage extends React.Component {
         message.success("删除失败");
       }
     },
-    e => console.log('deleteBatchUsers-error', e.toString())
+      e => console.log('deleteBatchUsers-error', e.toString())
     );
   }
 
@@ -255,18 +256,18 @@ class UserManage extends React.Component {
     this.setState({
       loading: true
     });
-    setTimeout(()=>{
-     this.getUserList();
-     this.setState({
-      loading: false,
-      userType: 3,
-     });
+    setTimeout(() => {
+      this.getUserList();
+      this.setState({
+        loading: false,
+        userType: 3,
+      });
 
     }, 1000)
   }
 
   render() {
-    const { selectedRowKeys, visible, dataSource, loading, userType, currentUser } = this.state;
+    const { selectedRowKeys, visible, dataSource, loading, userType, currentUser, required } = this.state;
     const { form } = this.props;
     const rowSelection = {
       selectedRowKeys,
@@ -291,26 +292,26 @@ class UserManage extends React.Component {
             style={{ width: 250 }}
             onChange={this.handleInputChange}
           />
-          <Button 
-            type="primary" 
-            style={{ marginLeft: 10 }} 
-            icon="search" 
+          <Button
+            type="primary"
+            style={{ marginLeft: 10 }}
+            icon="search"
             onClick={this.handleSearch}
           >
             查询
           </Button>
-          <Button 
-            type="danger" 
-            style={{ marginLeft: 10 }} 
+          <Button
+            type="danger"
+            style={{ marginLeft: 10 }}
             icon="minus-circle"
             onClick={this.handleBatchDelete}
           >
             批量删除
           </Button>
-          <Button 
-            type="primary" 
-            style={{ marginLeft: 10 }} 
-            icon="plus-circle" 
+          <Button
+            type="primary"
+            style={{ marginLeft: 10 }}
+            icon="plus-circle"
             onClick={this.handleClick}
           >
             添加用户
@@ -337,12 +338,12 @@ class UserManage extends React.Component {
           />
         </Card>
         <Modal
-          title={Object.keys(currentUser).length !== 0 ? `编辑用户-${currentUser.username}`: '添加新用户'}
+          title={Object.keys(currentUser).length !== 0 ? `编辑用户-${currentUser.username}` : '添加新用户'}
           visible={visible}
           onOk={this.handleOk}
           onCancel={this.handleOnCancel}
-          showOk={true}
-          showCancel={true}
+          showOk={required}
+          showCancel={required}
           okText="确认"
           cancelText="取消"
         >

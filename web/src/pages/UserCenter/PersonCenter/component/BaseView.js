@@ -1,103 +1,104 @@
 import React, { Fragment } from 'react';
-import { Upload, Button, Form  } from 'antd';
+import { Upload, Button, Form } from 'antd';
 import FormElement from '@/components/FormElement';
+import UploadImg from './UploadImg';
 import styles from './style.less';
 import { currentUser } from '../mock';
 
-// 头像组件 方便以后独立，增加裁剪之类的功能
-const AvatarView = ({ avatar }) => (
-  <Fragment>
-    <div className={styles.avatar_title}>
-      头像
-    </div>
-    <div className={styles.avatar}>
-      <img src={avatar} alt="avatar" />
-    </div>
-    <Upload>
+class BaseView extends React.Component {
+
+  state = {
+    imagUrl: 'https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png'
+  }
+
+  saveImg = imagUrl => {
+    this.setState({
+      imagUrl,
+    })
+  }
+
+  render() {
+    const { form } = this.props;
+    const { imagUrl } = this.state;
+    const formElementProps = {
+      form,
+      width: 400
+    };
+    // 头像组件 方便以后独立，增加裁剪之类的功能
+    const AvatarView = () => (
+      <Fragment>
+        <div className={styles.avatar_title}>
+          头像
+        </div>
+        <div className={styles.avatar}>
+          <img src={imagUrl} alt="avatar" />
+        </div>
+        <UploadImg saveImg={this.saveImg} />
+        {/* <Upload>
       <div className={styles.button_view}>
         <Button icon="upload" type="ghost">
           更换头像
         </Button>
       </div>
-    </Upload>
-  </Fragment>
-);
-
-class BaseView extends React.Component {
-  
-  // getAvatarURL() {
-  //   const { currentUser } = this.props;
-  //   if (currentUser) {
-  //     if (currentUser.avatar) {
-  //       return currentUser.avatar;
-  //     }
-  //     const url = 'https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png';
-  //     return url;
-  //   }
-  //   return '';
-  // }
-
-  render() {
-    const { form } = this.props;
-    const formElementProps = {
-      form,
-      width: 400
-    };
+    </Upload> */}
+      </Fragment>
+    );
     return (
       <div className={styles.baseView} ref={this.getViewDom}>
         <div className={styles.left}>
           <Form autoComplete="off">
-            <FormElement 
+            <FormElement
               {...formElementProps}
               label="用户名称"
               field="username"
+              disabled
               initialValue={currentUser.username}
             />
-            <FormElement 
+            <FormElement
               {...formElementProps}
               label="用户昵称"
               field="nickname"
               initialValue={currentUser.ninckname}
             />
-            <FormElement 
+            <FormElement
               {...formElementProps}
               label="用户账号"
               field="account"
               disabled
               initialValue={currentUser.account}
             />
-            <FormElement 
+            <FormElement
               {...formElementProps}
               label="用户类型"
               disabled
               field="name"
               initialValue={currentUser.userType === 0 ? '管理员' : '用户'}
             />
-            <FormElement 
+            <FormElement
               {...formElementProps}
               label="用户密码"
               field="password"
               initialValue={currentUser.password}
             />
-            <FormElement 
+            <FormElement
               {...formElementProps}
               label="电话号码"
               field="telphoneNumber"
               initialValue={currentUser.telphoneNumber}
             />
-            <FormElement 
+            <FormElement
               {...formElementProps}
               label="个人邮箱"
               field="email"
               initialValue={currentUser.email}
             />
-            <FormElement 
+            <FormElement
               {...formElementProps}
               label="个人地址"
               field="address"
               initialValue={currentUser.address}
             />
-            <FormElement 
+            <FormElement
               {...formElementProps}
               label="信息描述"
               rows={4}
@@ -123,4 +124,4 @@ class BaseView extends React.Component {
   }
 }
 
-export default Form.create({ name: 'BaseView'})(BaseView); 
+export default Form.create({ name: 'BaseView' })(BaseView); 
