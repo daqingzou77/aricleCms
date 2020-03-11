@@ -31,7 +31,7 @@ export default class UploadImg extends React.Component {
     if (info.file.status === 'done') {
       message.success('头像上传成功');
       getBase64(info.file.originFileObj, imageUrl => {
-        saveImg(imageUrl, info.file.name);
+        saveImg(imageUrl);
       }
       );
     }

@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-
 /**
  * 系统用户
  * 用户名 username
@@ -30,7 +29,7 @@ const userSchema = mongoose.Schema({
     username: String,
     nickname: String,
     account: { type: String, default: ''},
-    avatar: { type: String, default: 'defaultAvatar'},
+    avatar: { type: String, default: "" },
     userType: Number, // 0 用户 1 作者 2 管理员
     password: String,
     telephoneNumber: { type: String, default: ''},

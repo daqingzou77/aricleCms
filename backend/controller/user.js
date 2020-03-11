@@ -61,7 +61,7 @@ class users{
       } else {
         const fileList = fs.readdirSync(config.uploadImgDir);
         if (fileList.includes(uploadImgName)){
-          res.tools.setJson(0, '文件已存在', { status: false });
+          res.tools.setJson(0, '头像已存在', { url: files[0].path })
           return;
         }
         res.tools.setJson(0, '头像上传成功', { url: files[0].path })
@@ -219,6 +219,7 @@ class users{
 
   addUserParam(req, res, next) {
     const addParam = req.body;
+    const { username } = addParam;
     this.user.findOne({
       username
     })

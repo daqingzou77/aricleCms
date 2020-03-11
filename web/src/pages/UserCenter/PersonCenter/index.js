@@ -13,7 +13,8 @@ import styles from './style.less';
 class Home extends React.Component {
 
   state = {
-    currentUser: {}
+    currentUser: {},
+    loading: true
   }
 
   componentDidMount() {
@@ -26,21 +27,31 @@ class Home extends React.Component {
      username
    }, ({ data }) => {
      this.setState({
-       currentUser: data
+       currentUser: data,
+       loading: false
      })
    },
    e => console.log('getCurrentUserDetail-error', e.toString())
    )
   }
 
+  fresh = () => {
+    this.setState({
+      loading: true,
+    })
+    setTimeout(() => {
+      this.getCurrentUserDetail();
+    }, 1000)
+  }
+
   render() {
-    const { currentUser } = this.state;
+    const { currentUser, loading } = this.state;
     return (
       <div>
         <Row gutter={24}>
           <Col lg={7} md={24} style={{ paddingRight: -12, height: 818, display: 'flex', flexDirection: 'column' }}>
             {/* 个人名片 */}
-            <PersonalCard currentUser={currentUser} />
+            <PersonalCard loading={loading} currentUser={currentUser} fresh={this.fresh} />
             {/* 查询好友 */}
             <FindFriends />
             {/* 列表信息 */}
@@ -57,7 +68,7 @@ class Home extends React.Component {
             >
               <div className={styles.right}>
                 <div className={styles.title}>个人信息详情</div>
-                <BaseView getCurrentUserDetail={this.getCurrentUserDetail} />
+                <BaseView currentUser={currentUser} getCurrentUserDetail={this.getCurrentUserDetail} />
               </div>
             </div>
           </Col>

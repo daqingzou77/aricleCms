@@ -95,6 +95,7 @@ class Manage extends React.Component {
 
   state = {
     visible: false,
+    loading: true,
     modal: '',
     dataSource: [],
     modalValue: {},
@@ -164,7 +165,8 @@ class Manage extends React.Component {
         item.createTime = `${moment(item.createTime).format('YYYY-MM-DD hh:mm:ss')}`
       })
       this.setState({
-        dataSource: data
+        dataSource: data,
+        loading: false
       })
     },
       e => console.log('getArticleList-error', e.toString())
@@ -248,8 +250,17 @@ class Manage extends React.Component {
     })
   }
 
+  refresh = () => {
+    this.setState({
+      loading: true
+    })
+    setTimeout(() => {
+      this.getArticleList();
+    }, 1000);
+  }
+
   render() {
-    const { visible, modal, dataSource, modalValue, selectOption } = this.state;
+    const { visible, modal, dataSource, modalValue, selectOption, loading } = this.state;
     return (
       <>
         <Card>
@@ -282,10 +293,17 @@ class Manage extends React.Component {
         <Card
           style={{ marginTop: 10 }}
           title={<span style={{ fontWeight: 'bold' }}>文章列表</span>}
-          extra={<div style={{ color: '#2884D8', cursor: 'pointer' }}><Icon type="reload" /> 刷新</div>}
+          extra={
+            <span 
+              onClick={this.refresh}
+              style={{ color: '#2884D8', cursor: 'pointer' }}
+            >
+              <Icon type="reload" /> 刷新
+            </span>}
         >
           <CustomizeEmpty>
             <Table
+              loading={loading}
               columns={this.columns}
               dataSource={dataSource}
               rowKey="id"

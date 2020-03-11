@@ -6,29 +6,27 @@ import {
   updateUserDetail
 } from '@/services/userService'
 import styles from './style.less';
-import { currentUser } from '../mock';
 
 class BaseView extends React.Component {
 
   state = {
-    imagUrl: 'https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png',
-    imagName: 'defaultAvatar'
+    imagUrl: '',
   }
 
-  saveImg = (imagUrl, name) => {
+  saveImg = imagUrl => {
     this.setState({
       imagUrl,
-      imagName: name
     })
   }
 
+
   handlerSubmit = () => {
     const { form, getCurrentUserDetail } = this.props;
-    const { imagName } = this.state;
+    const { imagUrl } = this.state;
     form.validateFields((err, values) => {
       if (!err) {
         const updateParam = Object.assign({}, values);
-        updateParam.avatar = imagName;
+        updateParam.avatar = imagUrl;
         updateUserDetail(updateParam, ({ data }) => {
           if (data.status) {
             message.success('更新成功');
@@ -49,8 +47,9 @@ class BaseView extends React.Component {
   }
 
   render() {
-    const { form } = this.props;
+    const { form, currentUser, } = this.props;
     const { imagUrl } = this.state;
+    const { avatar } = currentUser;
     const formElementProps = {
       form,
       width: 400
@@ -74,7 +73,7 @@ class BaseView extends React.Component {
               {...formElementProps}
               label="用户名称"
               field="username"
-              // disabled
+              disabled
               initialValue={currentUser.username}
             />
             <FormElement
@@ -87,13 +86,13 @@ class BaseView extends React.Component {
               {...formElementProps}
               label="用户账号"
               field="account"
-              // disabled
+              disabled
               initialValue={currentUser.account}
             />
             <FormElement
               {...formElementProps}
               label="用户类型"
-              // disabled
+              disabled
               type="select"
               field="userType"
               initialValue={currentUser.userType}
@@ -147,7 +146,7 @@ class BaseView extends React.Component {
               头像
             </div>
             <div className={styles.avatar}>
-              <img src={imagUrl} alt="用户头像" height={140} style={{ borderRadius: '50%' }} />
+              <img src={imagUrl ? imagUrl : avatar} alt="用户头像" height={140} style={{ borderRadius: '50%' }} />
             </div>
             <UploadImg saveImg={this.saveImg} />
           </Fragment>
