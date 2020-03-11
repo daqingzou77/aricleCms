@@ -1,7 +1,10 @@
 import React, { Fragment } from 'react';
-import { Upload, Button, Form } from 'antd';
+import { Button, Form, message } from 'antd';
 import FormElement from '@/components/FormElement';
 import UploadImg from './UploadImg';
+import {
+  updateUserDetail
+} from '@/services/userService'
 import styles from './style.less';
 import { currentUser } from '../mock';
 
@@ -9,7 +12,7 @@ class BaseView extends React.Component {
 
   state = {
     imagUrl: 'https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png',
-    imagName: ''
+    imagName: 'defaultAvatar'
   }
 
   saveImg = (imagUrl, name) => {
@@ -19,6 +22,31 @@ class BaseView extends React.Component {
     })
   }
 
+  handlerSubmit = () => {
+    const { form } = this.props;
+    const { imagName } = this.state;
+    form.validateFields((err, values) => {
+      if (!err) {
+        const updateParam = Object.assign({}, values);
+        updateParam.avatar = imagName;
+        updateUserDetail(updateParam, ({ data }) => {
+          if (data.status) {
+            message.success('更新成功');
+          } else {
+            message.error('更新失败');
+          }
+        },
+        e => console.log('updateUserDetail-error', e.toString())
+        )
+      }
+    })
+  }
+
+  refresh = () => {
+    const { form } = this.props;
+    form.resetFields();
+  }
+
   render() {
     const { form } = this.props;
     const { imagUrl } = this.state;
@@ -26,7 +54,17 @@ class BaseView extends React.Component {
       form,
       width: 400
     };
-    // 头像组件 方便以后独立，增加裁剪之类的功能
+    const options = [{
+      label: '用户',
+      value: 0
+    }, {
+      label: '作者',
+      value: 1
+    }, {
+      label: '管理员',
+      value: 2
+    }];
+    // const currentUser = {};
     return (
       <div className={styles.baseView} ref={this.getViewDom}>
         <div className={styles.left}>
@@ -35,7 +73,7 @@ class BaseView extends React.Component {
               {...formElementProps}
               label="用户名称"
               field="username"
-              disabled
+              // disabled
               initialValue={currentUser.username}
             />
             <FormElement
@@ -48,15 +86,17 @@ class BaseView extends React.Component {
               {...formElementProps}
               label="用户账号"
               field="account"
-              disabled
+              // disabled
               initialValue={currentUser.account}
             />
             <FormElement
               {...formElementProps}
               label="用户类型"
-              disabled
-              field="name"
-              initialValue={currentUser.userType === 0 ? '管理员' : '用户'}
+              // disabled
+              type="select"
+              field="userType"
+              initialValue={currentUser.userType}
+              options={options}
             />
             <FormElement
               {...formElementProps}
@@ -67,7 +107,7 @@ class BaseView extends React.Component {
             <FormElement
               {...formElementProps}
               label="电话号码"
-              field="telphoneNumber"
+              field="telephoneNumber"
               initialValue={currentUser.telphoneNumber}
             />
             <FormElement
@@ -94,7 +134,7 @@ class BaseView extends React.Component {
               <Button type="primary" onClick={this.handlerSubmit} style={{ marginRight: 20, width: 100 }}>
                 更新信息
               </Button>
-              <Button type="danger" style={{ width: 100 }}>
+              <Button type="danger" style={{ width: 100 }} onClick={this.refresh}>
                 重置信息
               </Button>
             </FormElement>

@@ -3,12 +3,14 @@ import mongoose from 'mongoose';
 /**
  * 系统用户
  * 用户名 username
+ * 账号 account
  * 昵称 nickname
  * 头像 avatar
  * 用户类型 userType  0 用户 1 作者 2 管理员
  * 密码 password
  * 手机号  telephoneNumber
  * 邮箱 email
+ * 地址 address
  * 描述 decription
  * 创建时间 creatTime
  * 消息中心 messagesList: [{
@@ -18,6 +20,7 @@ import mongoose from 'mongoose';
        回复内容 replyMessage
        回复时间 replyTime
     }]
+    好友请求列表 requestList: []
     好友列表 friendsList: []
     关注列表 attentionList: []
     拉黑列表 blacklist: []
@@ -26,14 +29,17 @@ import mongoose from 'mongoose';
 const userSchema = mongoose.Schema({
     username: String,
     nickname: String,
-    avatar: String,
+    account: { type: String, default: ''},
+    avatar: { type: String, default: 'defaultAvatar'},
     userType: Number, // 0 用户 1 作者 2 管理员
     password: String,
-    telephoneNumber: String,
-    email: String,
-    decription: String,
+    telephoneNumber: { type: String, default: ''},
+    email: { type: String, default: ''},
+    address: { type: String, default: ''}, 
+    decription: { type: String, default: ''},
     createTime: {type: Date, default: new Date()},
     messageList: Array,
+    requestList: Array,
     friendsList: Array,
     attentionList: Array,
     blacklist: Array,

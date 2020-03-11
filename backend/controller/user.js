@@ -29,8 +29,13 @@ class users{
   
   init() {
     // **** 用户中心 ****
-    this.app.post('/api/user/UploadUserAvatar', upload.array('avatar', 1), this.UploadUserAvatar.bind(this)); // 用户头像上传
-
+    this.app.post('/api/user/uploadUserAvatar', upload.array('avatar', 1), this.uploadUserAvatar.bind(this)); // 用户头像上传
+    this.app.put('/api/user/updateUserDetail', this.updateUserDetail.bind(this)); // 更新用户详细信息
+    this.app.get('/api/user/getCurrentUserDetail', this.getCurrentUserDetail.bind(this)); // 获取当前用户信息
+    this.app.get('/api/user/getFriendsDetail', this.getFriendsDetail.bind(this)); // 查询好友信息
+    this.app.get('/api/user/addUserRequest', this.addUserRequest.bind(this)); // 好友请求
+    this.app.get('/api/user/agreeRequest', this.agreeRequest.bind(this)); // 同意好友
+    this.app.get('/api/user/getClassifiedList', this.getClassifiedList.bind(this)); // 获取分类好友信息
 
     // **** 用户管理 ****
     this.app.get('/api/user/getUserList', this.getUserList.bind(this)); // 获取用户列表
@@ -46,7 +51,7 @@ class users{
     // this.app.get('/api/user/getCaptch', this.getCaptch.bind(this));
   };
   
-  UploadUserAvatar(req, res, next) {
+  uploadUserAvatar(req, res, next) {
     const files = req.files;
     const uploadImgName = files[0].originalname;
   // 设置返回结果
@@ -59,12 +64,107 @@ class users{
           res.tools.setJson(0, '文件已存在', { status: false });
           return;
         }
-        console.log('url', path.resolve(__dirname, files[0].path));
         res.tools.setJson(0, '头像上传成功', { url: files[0].path })
       }
     } catch (err) {
       next(err)
     }
+  }
+
+  updateUserDetail(req, res, err) {
+    const upateParam = req.body;
+    const { username } = upateParam; 
+    console.log('updateParam', upateParam);
+    this.user.findOne({
+      username
+    })
+    .then(data => {
+      if (!data) {
+        res.tools.setJson(0, '用户详细更新失败', { status: false });
+        return;
+      }
+      this.user.updateOne({ username }, { $set: upateParam })
+      .then(doc => {
+        console.log(doc);
+        if (doc.nModified > 0) {
+          res.tools.setJson(0, '更新成功', { status: true })
+        } else {
+          res.tools.setJson(0, '更新失败', { status: false })
+        }
+      }
+    )})
+    .catch(err => next(err))
+  } 
+
+  getCurrentUserDetail(req, res, next) {
+    const { username } = req.query;
+    this.user.findOne({ username })
+    .then(data => {
+      if (!data) return res.tools.setJson(0, '无此人信息', {});
+      res.tools.setJson(0, '获取信息成功', data);
+    })
+    .catch(err => next(err));
+  }
+
+  getFriendsDetail(req, res, next) {
+    const field = req.query.field;
+    this.user.find({
+      $or: [{
+        username: { $regex: field }
+      }, {
+        nickname: { $regex: field }
+      }]
+    }).then(data => {
+      res.tools.setJson(0, '查询成功', data);
+    })
+    .catch(err => next(err))
+  }
+
+  addUserRequest(req, res, next) {
+    const { requester, targetUser } = req.query;
+    this.user.updateOne({ username: targetUser }, {
+      $push: {
+        requestList: { requester },
+      }
+    }).then(data => {
+      if (data.nModified > 0) {
+        res.tools.setJson(0, '请求发送成功', { status: true });
+      } else {
+        res.tools.setJson(0, '请求发送失败', { status: false })
+      }
+    })
+    .catch(err => next(err));
+  }
+
+  agreeRequest(req, res, next) {
+    const { requester, targetUser } = req.query;
+    this.user.updateOne({ username: targetUser }, {
+      $push: {
+        friendsList: { requester },
+      }
+    }).then(data => {
+      if (data.nModified > 0) {
+        res.tools.setJson(0, '同意好友', { status: true });
+      } else {
+        res.tools.setJson(0, '拒绝好友', { status: false })
+      }
+    })
+    .catch(err => next(err));
+  }
+
+  getClassifiedList(req, res, next) {
+    const { username, key } = req.query;
+    const option = { }
+    switch (key) {
+      case 1: option.friendsList = 1;break;
+      case 2: option.friendsList = 1;break;
+      case 3: option.friendsList = 1;break;
+    }
+    this.user.find({username}, option)
+    .then(data => {
+      res.tools.setJson(0, '获取信息成功', data);
+    })
+    .catch(err => next(err));
   }
 
   getUserList(req, res, next) {
@@ -143,14 +243,14 @@ class users{
   }
 
   editUserItem(req, res, next) {
-    const addParam = req.body;
+    const editParam = req.body;
     const { username } = addParam;
-    this.user.update({ username }, { $set: addParam }) 
+    this.user.update({ username }, { $set: editParam }) 
     .then(doc => {
-      if (doc.deletedCount > 0) {
-        res.tools.setJson(0, '查询成功', { status: true })
+      if (doc.nModified > 0) {
+        res.tools.setJson(0, '修改成功', { status: true })
       } else {
-        res.tools.setJson(0, '查询失败', { status: false });
+        res.tools.setJson(0, '修改失败', { status: false });
       }
     })
     .catch(err => next(err));

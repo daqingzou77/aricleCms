@@ -42,7 +42,7 @@ export default class UploadImg extends React.Component {
       <Upload
         name="avatar"
         showUploadList={false}
-        action="http://localhost:9999/api/user/UploadUserAvatar"
+        action="http://localhost:9999/api/user/uploadUserAvatar"
         beforeUpload={beforeUpload}
         onChange={this.handleChange}
       >

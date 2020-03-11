@@ -3,9 +3,40 @@ import { get, post, deletes, put } from '../common/http';
 const scheduleBaseUrl = process.env.apiBaseUrl;
 
 // **** 用户中心 ****
+
+// 上传用户头像
 export const UploadUserAvatar = (data, successCb, failCb) => {
   post(`${scheduleBaseUrl}/api/user/UploadUserAvatar`, data, successCb, failCb);
 }
+
+// 更新用户信息
+export const updateUserDetail = (data, successCb, failCb) => {
+  put(`${scheduleBaseUrl}/api/user/updateUserDetail`, data, successCb, failCb);
+}
+
+// 获取当前用户详细信息
+export const getCurrentUserDetail = (data, successCb, failCb) => {
+  get(`${scheduleBaseUrl}/api/user/getCurrentUserDetail`, data, successCb, failCb);
+}
+
+// 查询好友
+export const getFriendsDetail = (data, successCb, failCb) => {
+  get(`${scheduleBaseUrl}/api/user/getFriendsDetail`, data, successCb, failCb);
+}
+
+// 发送好友请求
+export const addUserRequest = (data, successCb, failCb) => {
+  get(`${scheduleBaseUrl}/api/user/addUserRequest`, data, successCb, failCb);
+} 
+
+// 获取好友、关注、拉黑列表
+export const getClassifiedList = (data, successCb, failCb) => {
+  get(`${scheduleBaseUrl}/api/user/getClassifiedList`, data, successCb, failCb);
+}
+
+
+
+
 
 
 
