@@ -9,11 +9,13 @@ import Publish from '../controller/publish';
 import Annex from '../controller/annex';
 import Classify from '../controller/classify';
 import User from '../controller/user';
+import Socket from '../controller/socket';
 
-export default (app)=> {
+export default (app, io)=> {
   new Articles(app);
   new Publish(app);
   new Annex(app);
   new Classify(app);
   new User(app);
+  new Socket(io);
 }

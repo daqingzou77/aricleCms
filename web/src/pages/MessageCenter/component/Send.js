@@ -16,7 +16,9 @@ class Send extends React.Component {
     this.setState({
       html: evt.target.value
     });
+    this.props.handlePushMessage(evt.target.value);
   };
+
 
   render() {
     const { html } = this.state;

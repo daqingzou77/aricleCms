@@ -85,10 +85,20 @@ export default class FriendsList extends React.Component {
     })
   }
 
+  handlePushMessage = (socket, content) => {
+    if (socket) {
+      socket.emit('sendMessage', {
+        sender: '古天乐',
+        toFriend: '张家辉' ,
+        content
+      })
+    }
+  }
+
   render() {
     const { chooseKey, userList, dataVisible, messageVisible, currentUser } = this.state;
     const footer = (
-      <Button type="primary" size="small" style={{ float: "right", margin: 5}}>发送</Button>
+      <Button onClick={this.handlePushMessage} type="primary" size="small" style={{ float: "right", margin: 5}}>发送</Button>
     );
     return (
       <div className={styles.friendlist}>
@@ -163,7 +173,7 @@ export default class FriendsList extends React.Component {
           onCancel={() => this.setState({ messageVisible: false })}
           footer={footer}
         >
-          <Chat />
+          <Chat handlePushMessage={this.handlePushMessage} />
         </Modal>
       </div>
     )

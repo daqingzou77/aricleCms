@@ -74,7 +74,6 @@ class users{
   updateUserDetail(req, res, err) {
     const upateParam = req.body;
     const { username } = upateParam; 
-    console.log('updateParam', upateParam);
     this.user.findOne({
       username
     })
@@ -85,7 +84,6 @@ class users{
       }
       this.user.updateOne({ username }, { $set: upateParam })
       .then(doc => {
-        console.log(doc);
         if (doc.nModified > 0) {
           res.tools.setJson(0, '更新成功', { status: true })
         } else {
@@ -188,10 +186,8 @@ class users{
       case '1': option.attentionList = 1;break; // 获取关注列表
       case '2': option.blacklist = 1;break; // 获取黑名单列表
     }
-    console.log('option', option);
     this.user.findOne({ username }, option)
     .then(data => {
-      console.log('data', data);
       res.tools.setJson(0, '获取信息成功', data);
     })
     .catch(err => next(err));

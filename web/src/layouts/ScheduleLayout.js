@@ -3,7 +3,6 @@ import { formatMessage, getLocale, setLocale } from 'umi/locale';
 import { ConfigProvider } from 'antd';
 import { FrownOutlined } from '@ant-design/icons';
 import Cookies from 'universal-cookie';
-import SocketIo from 'socket.io-client';
 import moment from 'moment';
 import SystemHeader from '../components/SystemHeader';
 import SystemMenu from '../components/SystemMenu';
@@ -34,81 +33,6 @@ class ScheduleLayout extends React.Component {
     document.title = '文章管理系统'
   }
 
-
-  initSocketIo = userId => {
-    const { isRemind } = this.state;
-    const opts = {
-      query: 'loginUserNum=' + userId,
-    };
-    const hostPort = '18310';
-    let socketHostName = window.location.hostname;
-    // let socketHostName = 'http://192.168.1.3'
-    if (process.env.ENV === 'dev') {
-      socketHostName = process.env.apiBaseUrl.slice(0, process.env.apiBaseUrl.lastIndexOf(':'));
-    }
-    console.log('socketHostName', socketHostName);
-    this.socket = SocketIo(`${socketHostName}:${hostPort}`, opts);
-    this.socket.on('connect', () => {
-      console.log('socket connected');
-    });
-    this.socket.on('disconnect', () => {
-      console.log('socket disconnected');
-    });
-    this.socket.on('clock_out_remind', data => {
-      console.log('data', data);
-      if (data) {
-        warning({
-          title: formatMessage({id: 'guet.schedule.expiration_reminder'}),
-          content: formatMessage({id: 'guet.schedule.over_in_5minutes'}),
-          okText: formatMessage({id: 'guet.schedule.confirm'}),
-          onOk: () => console.log('确认')
-        })
-      }
-    });
-    this.socket.on('clock_out_remind', data => {
-      if (data) {
-        const { object } = data;
-        if (object) {
-          const { dutyInfo, user } = object;
-          if (dutyInfo && user) {
-            warning({
-              title: formatMessage({id : 'guet.schedule.duty_reminder'}),
-              content: (
-                <div>
-                  <p>{formatMessage({id : 'guet.schedule.duty_staff'})}: {user.userName}</p>
-                  <p>{formatMessage({id: 'guet.schedule.duty_period'})}：{moment(dutyInfo.startTime).format('HH:mm:ss')} ~ {moment(dutyInfo.endTime).format('HH:mm:ss')}</p>
-                </div>
-              ),
-              okText: formatMessage({ id: 'guet.schedule.confirm'}),
-              onOk: () => console.log('确认')
-            })
-          }
-        }
-      }
-    });
-    this.socket.on('backlog_remind', data => {
-      if (data && isRemind) {
-        const { object } = data;
-        error({
-          title: formatMessage({id: 'guet.schedule.upcoming_expiry'}),
-          content: (
-            object.map(item => {
-              return (
-                <div>
-                  <p>{formatMessage({id: 'guet.schedule.title'})}：{item.matterName}</p>
-                  <p>{formatMessage({id: 'guet.schedule.request_completion_time'})}：{moment(item.requireTime).format('DD/MM/YYYY HH:mm:ss')}</p>
-                </div>
-              )
-            })
-          ),
-          okText: formatMessage({ id: 'guet.schedule.confirm'}),
-          onOk: () => {
-            console.log('确认');
-          },
-        })
-      }
-    })
-  };
 
   checkLocale = () => {
     const cookies = new Cookies();
