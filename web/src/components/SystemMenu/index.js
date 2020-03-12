@@ -1,6 +1,6 @@
 import { formatMessage as _formatMessage } from 'umi/locale';
 import React from 'react';
-import { Icon, message, Col, Row, Button, Tag, Badge, } from 'antd';
+import { Icon, Col, Row, Tag, Badge, } from 'antd';
 import { Link, withRouter } from 'react-router-dom';
 // import Modal from '@/common/components/dialog/Modal';
 
@@ -17,17 +17,14 @@ import icPhoneCheckin from '@/assets/menuIcon/ic_phone_checkin.svg';
 import icPunchCard from '@/assets/menuIcon/ic_punch_card.svg';
 import icScheduling from '@/assets/menuIcon/ic_scheduling.svg';
 import icSituation from '@/assets/menuIcon/ic_situation.svg';
-import icTodolist from '@/assets/menuIcon/ic_todolist.svg';
 
 import Modal from '@/common/components/Modal';
 import styles from './index.less';
-import Card from '../../pages/Change/Card';
-import MessageCenter from '@/components/MessageCenter';
-import Notice from '../MessageCenter/component/Notice';
+import MessageCenter from '@/pages/MessageCenter/index';
+import Notice from '@/pages/MessageCenter/component/Notice';
 import {
   handoverPrompts,
 } from '../../services/scheduleService';
-import Chat from '../MessageCenter/component/Chat';
 
 const formatMessage = id => {
   return _formatMessage({ id });

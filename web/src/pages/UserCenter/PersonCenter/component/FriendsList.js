@@ -5,7 +5,7 @@ import { MailOutlined, PhoneOutlined } from '@ant-design/icons';
 import InfiniteScroll from 'react-infinite-scroller';
 import CustomizeEmpty from '@/components/CustomizeEmpty';
 import Modal from '@/common/components/Modal';
-import Chat from '@/components/MessageCenter/component/Chat';
+import Chat from '@/pages/MessageCenter/component/Chat';
 import {
   getClassifiedList,
   getCurrentUserDetail
