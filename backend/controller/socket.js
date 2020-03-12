@@ -17,28 +17,24 @@ class SocketIo {
       socket.on('login', data  => {
         const { username } = data;
         this.userList[username] = socket.id;
+        console.log('userList', this.userList);
         socket.emit('logined', { msg: `${username}已登录`})
       });
   
-      socket.on('sendMessage', data => {
-        const { sender, toFriend, content } = data;
-        console.log('data', data);
-        this.io.to(this.userList[toFriend]).emit('receiveMsg', {
-          message: '消息收到'
-        })
+    socket.on('sendMessage', data => {
+      const { sender, toFriend, time, content } = data;
+      console.log('data', data);
+      this.io.to(this.userList[toFriend]).emit('receiveMsg', {
+        sender,
+        toFriend,
+        time,
+        content
+      })
 
-          // Idtoid.findOne({
-          //     username: data.to_user
-          // }).then((rs) => {
-          // //根据用户名在映射表中找到对应的socketId
-          //     io.to(rs.socketid).emit('receiveMsg',{
-          //         from_user:data.from_user,
-          //         message:data.message,
-          //         time:data.time,
-          //         avater:data.avater,
-          //         _id:data._id
-          //     })
-          // })
+    socket.on('getMessage', data => {
+      // 数据库获取数据，并返回
+      socket.emit('pushMessage', data);
+    })
       })
     })
   }

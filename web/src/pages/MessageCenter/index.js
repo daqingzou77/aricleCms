@@ -1,6 +1,8 @@
 import React from 'react';
 import { Row, Col, Badge, Avatar, List, Collapse,Button } from 'antd';
 import InfiniteScroll from 'react-infinite-scroller';
+import SocketIo from 'socket.io-client';
+
 import moment from 'moment';
 import Modal from '@/common/components/Modal';
 import Chat from './component/Chat';
@@ -11,8 +13,30 @@ class MessageCenter extends React.Component {
 
   state = {
     commentVisible: false,
-    messageVisible: false
+    messageVisible: false,
+    content: ''
   }
+
+  componentDidMount() {
+    this.initSocket()
+  }
+
+  initSocket = () => {
+    this.socket = SocketIo.connect('http://localhost:80');
+    this.socket.on('connect', () => {
+      console.log('socket connected');
+    });
+    this.socket.on('disconnect', () => {
+      console.log('socket disconnected');
+    });
+  }
+
+  setContent = content => {
+    this.setState({
+      content
+    })
+  }
+
 
   // 评论
   handleCommentClick = () => {
@@ -52,10 +76,20 @@ class MessageCenter extends React.Component {
     })
   }
 
+  handlePushMessage = () => {
+    const { content } = this.state;
+      this.socket.emit('sendMessage', {
+        sender: '张家辉',
+        toFriend: '古天乐' ,
+        time: new Date(),
+        content
+      })
+  }
+
   render() {
     const { commentVisible, messageVisible } = this.state;
     const footer = (
-      <Button type="primary" size="small" style={{ float: "right", margin: 5}}>发送</Button>
+      <Button onClick={this.handlePushMessage} type="primary" size="small" style={{ float: "right", margin: 5}}>发送</Button>
     );
     const dataSource = [
       'user1',
@@ -256,7 +290,7 @@ class MessageCenter extends React.Component {
           onCancel={this.handlePrivateCancel}
           footer={footer}
         >
-          <Chat />
+          <Chat setContent={this.setContent} username="张家辉" socket={this.socket} />
         </Modal>
 
       </div>

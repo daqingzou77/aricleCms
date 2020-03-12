@@ -4,17 +4,63 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>WebSocket</title>
+    <script src="https://cdn.bootcss.com/socket.io/2.3.0/socket.io.dev.js"></script>
 </head>
 <body>
-    <form class="upload" action="http://localhost:9999/api/annex/annexUpload" enctype="multipart/form-data" method="post">
-        <p>
-            请上传一个头像
-            <input type="file" name="wenjian">
-        </p>
-        <p>
-            <input type="submit" value="提交">
-        </p>
-    </form>
+    <h1>Chat Room</h1>
+    <input id="sendTxt" type="text"/>
+    <button id="sendBtn">发送</button>
+    <div id="recv"></div>
+    <script type="text/javascript">
+       
+       var socket = io("http://localhost:80");
+        const crruentUser = '张家辉';
+          // 第一个enter代表是进入事件，第二个enter为了显示需要
+      
+        socket.emit('login', {
+           username: crruentUser
+        })
+
+        //把接收的数据显示到界面
+        function showMessage(str,type){
+            var div = document.createElement('div');
+            div.innerHTML = str;
+            // if(type == "login"){
+            //     div.style.color = 'blue';
+            // }else if(type == "leave"){
+            //     div.style.color = "red"
+            // }
+            document.body.appendChild(div)
+        }
+ 
+        // socket.emit('sendMessage', txt);
+        // 点击之后发送
+        document.getElementById("sendBtn").onclick = function(){
+            var txt = document.getElementById("sendTxt").value;
+            if(txt){        // 文本不为空发送
+            console.log('txt', txt);
+
+            console.log('socket', socket);
+
+                io.emit('sendMessage', txt);
+            }
+        }
+        
+        // 第一个enter代表是进入事件，第二个enter为了显示需要
+        socket.on('login',function(data){
+            showMessage(data.msg,'login')
+        })
+
+        socket.on('receiveMsg',function(data){
+            showMessage(data.content,'receiveMsg')
+        })
+ 
+        socket.on('leave',function(data){
+            showMessage(data,'leave')
+        })
+ 
+ 
+    </script>
 </body>
 </html>

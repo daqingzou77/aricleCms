@@ -1,6 +1,7 @@
 /* eslint-disable no-nested-ternary */
 import React from 'react';
-import { Radio, List, Avatar, Button } from 'antd'; 
+import { Radio, List, Avatar, Button } from 'antd';
+import SocketIo from 'socket.io-client';
 import { MailOutlined, PhoneOutlined } from '@ant-design/icons';
 import InfiniteScroll from 'react-infinite-scroller';
 import CustomizeEmpty from '@/components/CustomizeEmpty';
@@ -19,11 +20,23 @@ export default class FriendsList extends React.Component {
     userList: [],
     dataVisible: false,
     messageVisible: false,
-    currentUser: {}
+    currentUser: {},
+    content: ''
   }
 
   componentDidMount() {
     this.getClassifiedList(0);
+    this.initSocket();
+  }
+
+  initSocket = () => {
+    this.socket = SocketIo.connect('http://localhost:80');
+    this.socket.on('connect', () => {
+      console.log('socket connected');
+    });
+    this.socket.on('disconnect', () => {
+      console.log('socket disconnected');
+    });
   }
 
   handleOnChange = e => {
@@ -85,14 +98,20 @@ export default class FriendsList extends React.Component {
     })
   }
 
-  handlePushMessage = (socket, content) => {
-    if (socket) {
-      socket.emit('sendMessage', {
+  setContent = content => {
+    this.setState({
+      content
+    })
+  }
+
+  handlePushMessage = () => {
+    const { content } = this.state;
+      this.socket.emit('sendMessage', {
         sender: '古天乐',
         toFriend: '张家辉' ,
+        time: new Date(),
         content
       })
-    }
   }
 
   render() {
@@ -173,7 +192,7 @@ export default class FriendsList extends React.Component {
           onCancel={() => this.setState({ messageVisible: false })}
           footer={footer}
         >
-          <Chat handlePushMessage={this.handlePushMessage} />
+          <Chat setContent={this.setContent} socket={this.socket} username='古天乐' />
         </Modal>
       </div>
     )
