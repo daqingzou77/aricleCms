@@ -1,5 +1,7 @@
 import express from 'express';
 import mongoDb from './db/mongo';
+const server = require('http').Server(app);
+const io = require('socket.io')(server);
 import log4js from 'log4js';
 import logger from './utils/logger';
 import bodyParse from 'body-parser';
@@ -51,6 +53,18 @@ app.use(/\/api/, express.static('public'));
 //     res.tools.setJson(503, '无访问权限', []);
 //   }
 // });
+
+// socketio 处理
+io.on('connection', (socket) => {
+  // 当前用户登录
+  socket.on('login', (data) => {
+
+  });
+  // 发送消息
+  socket.on('sendMesage', (data) => {
+    socket.to(data.id).emit('receiveMsg', data) // 接收消息
+  })
+})
 
 routes(app);
 
