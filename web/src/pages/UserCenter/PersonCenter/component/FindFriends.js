@@ -17,6 +17,10 @@ export default class FindFriends extends React.Component {
   }
 
   handleSearch = value => {
+    if (!value) {
+      message.warning('请输入查询条件');
+      return;
+    }
     getFriendsDetail({
       field: value
     }, ({ data }) => {
@@ -60,7 +64,7 @@ export default class FindFriends extends React.Component {
                 <Avatar src={item.avatar} style={{ backgroundColor: '#87d068' }} icon="user" size={40} />
                 <div className={styles.rightList}>
                   {item.username}
-                  {item.username === currentUser ? <Tag color="#87d068">本用户</Tag> : (
+                  {item.username === currentUser ? <Tag color="#f50">本用户</Tag> : (
                     <Popconfirm placement="top" title={text} onConfirm={() => this.handleAddFriend(item.username)} okText="确认" cancelText="取消">
                       <Button type="primary" size="small">加好友</Button>
                     </Popconfirm>

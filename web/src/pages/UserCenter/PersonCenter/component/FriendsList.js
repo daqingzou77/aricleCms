@@ -1,12 +1,14 @@
 /* eslint-disable no-nested-ternary */
 import React from 'react';
-import { Radio, List, Avatar } from 'antd'; 
+import { Radio, List, Avatar, Button } from 'antd'; 
 import { MailOutlined, PhoneOutlined } from '@ant-design/icons';
 import InfiniteScroll from 'react-infinite-scroller';
 import CustomizeEmpty from '@/components/CustomizeEmpty';
 import Modal from '@/common/components/Modal';
+import Chat from '@/components/MessageCenter/component/Chat';
 import {
-  getClassifiedList
+  getClassifiedList,
+  getCurrentUserDetail
 } from '@/services/userService';
 import styles from './style.less';
 
@@ -16,7 +18,8 @@ export default class FriendsList extends React.Component {
     chooseKey: 0,
     userList: [],
     dataVisible: false,
-    messageVisible: false
+    messageVisible: false,
+    currentUser: {}
   }
 
   componentDidMount() {
@@ -56,7 +59,21 @@ export default class FriendsList extends React.Component {
     )
   }
 
+  getCurrentUserDetail = username => {
+    console.log('usename', username);
+    getCurrentUserDetail({
+      username
+    }, ({ data }) => {
+      this.setState({
+        currentUser: data,
+      })
+    },
+    e => console.log('getCurrentUserDetail-error', e.toString())
+    )
+   }
+
   watchData = name => {
+    this.getCurrentUserDetail(name);
     this.setState({
       dataVisible: true
     })
@@ -69,8 +86,10 @@ export default class FriendsList extends React.Component {
   }
 
   render() {
-    const { chooseKey, userList, dataVisible, messageVisible } = this.state;
-    const currentUser = {};
+    const { chooseKey, userList, dataVisible, messageVisible, currentUser } = this.state;
+    const footer = (
+      <Button type="primary" size="small" style={{ float: "right", margin: 5}}>发送</Button>
+    );
     return (
       <div className={styles.friendlist}>
         <Radio.Group
@@ -91,8 +110,8 @@ export default class FriendsList extends React.Component {
               renderItem={item => (
                 <List.Item
                   actions={[
-                    <a key="list-watch" onClick={() => this.watchData(item.username)}>查看名片</a>, 
-                    <a key="list-message" onClick={() => this.handleMessage(item.username)}>私信</a>
+                    <a key="list-watch" onClick={() => this.watchData(item.requester)}>查看名片</a>, 
+                    <a key="list-message" onClick={() => this.handleMessage(item.requester)}>私信</a>
                   ]}
                 >
                   {chooseKey === 0 ? (
@@ -118,13 +137,14 @@ export default class FriendsList extends React.Component {
         </CustomizeEmpty>
         <Modal
           title="个人名片"
+          width={300}
           visible={dataVisible}
           onOk={() => this.setState({ dataVisible: false })}
           onCancel={() => this.setState({ dataVisible: false })}
         >
           <>
             <div className={styles.avatarHolder}>
-              <img alt="用户头像" src={currentUser.avatar} height={140} style={{ borderRadius: '50%' }} />
+              <Avatar src={currentUser.avatar} className={styles.friendDetail} icon="user" size={60} />
               <div className={styles.name}>{currentUser.username}</div>
               <div>{currentUser.decription}</div>
             </div>
@@ -136,6 +156,15 @@ export default class FriendsList extends React.Component {
             </div>
           </>
         </Modal> 
+        <Modal
+          title='私信'
+          visible={messageVisible}
+          onOk={this.handlePrivateOk}
+          onCancel={() => this.setState({ messageVisible: false })}
+          footer={footer}
+        >
+          <Chat />
+        </Modal>
       </div>
     )
    }
