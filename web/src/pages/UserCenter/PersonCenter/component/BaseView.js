@@ -10,7 +10,7 @@ import styles from './style.less';
 class BaseView extends React.Component {
 
   state = {
-    imagUrl: '',
+    imagUrl: 'https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png',
   }
 
   saveImg = imagUrl => {
@@ -18,7 +18,6 @@ class BaseView extends React.Component {
       imagUrl,
     })
   }
-
 
   handlerSubmit = () => {
     const { form, getCurrentUserDetail } = this.props;
@@ -50,6 +49,8 @@ class BaseView extends React.Component {
     const { form, currentUser, } = this.props;
     const { imagUrl } = this.state;
     const { avatar } = currentUser;
+    // 匹配初始条件
+    const defaultUrl = 'https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png';
     const formElementProps = {
       form,
       width: 400
@@ -64,7 +65,6 @@ class BaseView extends React.Component {
       label: '管理员',
       value: 2
     }];
-    // const currentUser = {};
     return (
       <div className={styles.baseView} ref={this.getViewDom}>
         <div className={styles.left}>
@@ -80,7 +80,7 @@ class BaseView extends React.Component {
               {...formElementProps}
               label="用户昵称"
               field="nickname"
-              initialValue={currentUser.ninckname}
+              initialValue={currentUser.nickname}
             />
             <FormElement
               {...formElementProps}
@@ -108,7 +108,7 @@ class BaseView extends React.Component {
               {...formElementProps}
               label="电话号码"
               field="telephoneNumber"
-              initialValue={currentUser.telphoneNumber}
+              initialValue={currentUser.telephoneNumber}
             />
             <FormElement
               {...formElementProps}
@@ -146,7 +146,7 @@ class BaseView extends React.Component {
               头像
             </div>
             <div className={styles.avatar}>
-              <img src={imagUrl ? imagUrl : avatar} alt="用户头像" height={140} style={{ borderRadius: '50%' }} />
+              <img src={imagUrl.search(defaultUrl) === -1 ? imagUrl : avatar ? avatar : defaultUrl} alt="用户头像" height={140} style={{ borderRadius: '50%' }} />
             </div>
             <UploadImg saveImg={this.saveImg} />
           </Fragment>

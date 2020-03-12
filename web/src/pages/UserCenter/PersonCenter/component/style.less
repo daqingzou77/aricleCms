@@ -126,15 +126,12 @@
   margin: 10px;
   overflow: auto;
   border: 1px solid #e8e8e8;
-  height: 200px;
+  height: 150px;
 }
 
 .friendArrayStyle {
   display: flex;
   flex-direction: row;
-  .avatarStyle {
-    color: red;
-  }
   .rightList {
     display: flex;
     flex-direction: column;
@@ -150,6 +147,12 @@
   padding: 8px 24px;
   height: 200px;
   margin-top: 10px;
+  :global {
+    .ant-list-item-action {
+      position: absolute;
+      left: 50%;
+    }
+  }
 }
 
 .friendlist {

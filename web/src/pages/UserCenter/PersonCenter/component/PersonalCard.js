@@ -5,6 +5,10 @@ import styles from './style.less';
 
 export default class PersonalCard extends React.Component {
 
+  state = {
+   avatar: 'https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png'
+  }
+
   refresh = () => {
     const { fresh } = this.props;
     fresh();
@@ -12,6 +16,7 @@ export default class PersonalCard extends React.Component {
 
   render() {
     const { currentUser, loading } = this.props;
+    const { avatar } = this.state;
     return (
       <div>
         <Card
@@ -31,7 +36,7 @@ export default class PersonalCard extends React.Component {
           ) : (
             <>
               <div className={styles.avatarHolder}>
-                <img alt="用户头像" src={currentUser.avatar} height={140} style={{ borderRadius: '50%' }} />
+                <img alt="用户头像" src={currentUser.avatar ? currentUser.avatar : avatar} height={140} style={{ borderRadius: '50%' }} />
                 <div className={styles.name}>{currentUser.username}</div>
                 <div>{currentUser.decription}</div>
               </div>
