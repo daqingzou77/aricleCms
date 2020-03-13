@@ -16,7 +16,6 @@ import config from './config/app.config';
 // const fileStores = fileStore(sessionMongoose);
 const mongDB = new mongoDb();
 const app = express();
-// const server = import('http').Server(app)
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 
@@ -39,7 +38,7 @@ app.use(cors());  // 响应带cookie的跨域请求
 
 // 设置session
 app.use(session({
-  //store: fileStores, // 存储的实例，可用mongodb和redis实现
+  // store: fileStores, // 存储的实例，可用mongodb和redis实现
   cookie: {
     maxAge: 10*60*1000 // session的有效时间
   },
@@ -48,18 +47,16 @@ app.use(session({
   secret: config.secret // 注册session id到cookie中，相当于一个密钥
 }))
 
-
 app.use(/\/api/, tools);
 app.use(/\/api/, express.static('public'));
 
-// app.use(/\/api/, (req, res, next) => {
-//   console.log(req.session.userName);
-//   if (req.session.userName || req.path.indexOf('/user/toLogin') !== -1 || req.path.indexOf('/user/getCaptch') !== -1 ) {
-//     next();
-//   } else {
-//     res.tools.setJson(503, '无访问权限', []);
-//   }
-// });
+app.use(/\/api/, (req, res, next) => {
+  if (req.session.username || req.path.indexOf('/user/toLogin') !== -1 || req.path.indexOf('/user/getCaptch') !== -1 ) {
+    next();
+  } else {
+    res.tools.setJson(503, '无访问权限', []);
+  }
+});
 
 routes(app, io);
 

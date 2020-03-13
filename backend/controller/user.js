@@ -3,7 +3,7 @@ import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
 import config from '../config/app.config';
-
+import { getRandomNumbers } from '../utils/index';
 
 // 设置图片存储路径
 var storage = multer.diskStorage({
@@ -46,9 +46,11 @@ class users{
     this.app.get('/api/user/queryUserItem', this.queryUserItem.bind(this)); // 查询单个用户
     this.app.put('/api/user/editUserItem', this.editUserItem.bind(this)); // 编辑单个用户
 
-    // this.app.post('/api/user/toLogin', this.toLogin.bind(this));
-    // this.app.get('/api/user/logOut', this.logOut.bind(this));
-    // this.app.get('/api/user/getCaptch', this.getCaptch.bind(this));
+    // 登录、注册、获取验证码
+    this.app.post('/api/user/register', this.registerUser.bind(this));
+    this.app.post('/api/user/toLogin', this.toLogin.bind(this));
+    this.app.get('/api/user/logOut', this.logOut.bind(this));
+    this.app.get('/api/user/getCaptch', this.getCaptch.bind(this));
   };
   
   uploadUserAvatar(req, res, next) {
@@ -282,30 +284,43 @@ class users{
     .catch(err => next(err));
   }
 
+  registerUser(req, res, next) {
+    const addParam = req.body;
+    const { username } = addParam;
+    this.user.findOne({ username })
+    .then(doc => {
+      if (doc) return res.tools.setJson(0, '当前注册用户已存在', { status: false });
+      this.user.create(addParam)
+      .then(data => {
+        res.tools.setJson(0, '注册成功', data);
+      })   
+    })
+    .catch(err => next(err));
+  }
+
   // 1：无此人记录 2： 账号密码错误 3：验证码错误 0：登录成功
   toLogin(req, res, next) {
-    const { userName, password, captcha } = req.body;
+    const { username, password, captcha } = req.body;
     const currentCaptch = req.session.captch;
     console.log('captcha', captcha);
     console.log('currentCaptch', currentCaptch);
-    this.user.findOne({ userName })
+    this.user.findOne({ username })
     .then(doc => {
       if(doc !== null) {
-        const { password: passwd } = doc;
-        if (passwd !== password) {
-          res.tools.setJson(1, '账户密码错误', 2);
+        if (doc.password !== password) {
+          res.tools.setJson(0, '账户密码错误', { status: 2 });
           return;
         } else {
           if (currentCaptch !== captcha) {
-            res.tools.setJson(1, '验证码输入错误', 3);
+            res.tools.setJson(0, '验证码输入错误', { status: 3});
             return;
           } else {
-            req.session.userName = userName;
-            res.tools.setJson(0, '登录成功', 4);
+            req.session.username = username;
+            res.tools.setJson(0, '登录成功', { status: 4 });
           }
         }
       }else{
-        res.tools.setJson(1, '当前用户不存在', 1);
+        res.tools.setJson(0, '当前用户不存在', { status: 1 });
       }
     })
     .catch(err => next(err));
@@ -314,11 +329,12 @@ class users{
   getCaptch(req, res, next) {
     const randomCaptch = getRandomNumbers();
     req.session.captch = randomCaptch;
+    console.log('randomCaptch', randomCaptch)
     res.tools.setJson(0, '获取验证码成功', randomCaptch);
   }
 
   logOut(req, res, next) {
-    req.session.userName = null;
+    req.session.username = null;
     req.session.captch = null;
     res.tools.setJson(0, '退出成功', 1);
   }

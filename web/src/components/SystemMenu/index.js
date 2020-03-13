@@ -22,9 +22,7 @@ import Modal from '@/common/components/Modal';
 import styles from './index.less';
 import MessageCenter from '@/pages/MessageCenter/index';
 import Notice from '@/pages/MessageCenter/component/Notice';
-import {
-  handoverPrompts,
-} from '../../services/scheduleService';
+import router from 'umi/router';
 
 const formatMessage = id => {
   return _formatMessage({ id });
@@ -184,7 +182,8 @@ class SystemMenu extends React.Component {
   handleCardOk = () => {
     this.setState({
       visibleCard: false
-    })
+    });
+    router.push('/user/login')
   }
 
   handleCardCancel = () => {

@@ -1,168 +1,231 @@
 import React, { Component } from 'react';
-import { connect } from 'dva';
-import { formatMessage, FormattedMessage } from 'umi/locale';
-import Link from 'umi/link';
-import { Checkbox, Alert, Icon } from 'antd';
+import { Checkbox, Alert, Icon, Form, Button, Input, message, notification } from 'antd';
 import Login from '@/components/Login';
+import FormElement from '@/components/FormElement';
+import {
+  getCaptch,
+  toLogin,
+  userRegister
+} from '@/services/loginRegisterService';
 import styles from './Login.less';
 
-const { Tab, UserName, Password, Mobile, Captcha, Submit } = Login;
+const { Tab } = Login;
 
-@connect(({ login, loading }) => ({
-  login,
-  submitting: loading.effects['login/login'],
-}))
 class LoginPage extends Component {
   state = {
     type: 'account',
-    autoLogin: true,
+    renderMessage: '',
+    error: false,
+    count: 0,
+    captcha: ''
   };
 
   onTabChange = type => {
     this.setState({ type });
   };
 
-  onGetCaptcha = () =>
-    new Promise((resolve, reject) => {
-      this.loginForm.validateFields(['mobile'], {}, (err, values) => {
-        if (err) {
-          reject(err);
-        } else {
-          const { dispatch } = this.props;
-          dispatch({
-            type: 'login/getCaptcha',
-            payload: values.mobile,
-          })
-            .then(resolve)
-            .catch(reject);
-        }
-      });
-    });
+  getCaptch = () => {
+    getCaptch({}, ({ data }) => {
+      message.success(data);
+      clearInterval(this.interval);
+      this.setState({
+        count: 0,
+        captcha: data
+      })
+    },
+    e => console.log('getCaptch-error', e.toString())
+    )
+  }
 
-  handleSubmit = (err, values) => {
-    const { type } = this.state;
-    if (!err) {
-      const { dispatch } = this.props;
-      dispatch({
-        type: 'login/login',
-        payload: {
-          ...values,
-          type,
-        },
-      });
+  toLogin = (username, password, captcha) => {
+    toLogin({
+      username,
+      password,
+      captcha
+    },({ data }) => {
+      const { status } = data;
+      if (status === 1) {
+        this.setState({
+          renderMessage: '当前用户不存在',
+          error: true
+        })
+      } else if (status === 2) {
+        this.setState({
+          renderMessage: '账户密码错误',
+          error: true
+        })
+      } else if (status === 3) {
+        this.setState({
+          renderMessage: '验证码输入错误',
+          error: true
+        })
+      } else if (status === 4) {
+        message.success('登录成功')
+      }
+    },
+    e => console.log('toLogin-error', e.toString())
+    )
+  }
+
+  userRegister = () => {
+    userRegister({
+
+    },({ data }) => {
+
+    },
+    e => console.log('userRegister-error', e.toString())
+    )
+  }
+
+
+  getCaptcha = () => {
+    let count = 59;
+    this.setState({ 
+      count,
+      captcha: '' 
+    });
+    this.interval = setInterval(() => {
+      count -= 1;
+      this.setState({ count });
+      this.getCaptch()
+      if (count === 0) {
+        clearInterval(this.interval);
+      }
+    }, 1000);
+  }
+
+  handleLogin = () => {
+    const { form } = this.props;
+    const { captcha } = this.state;
+    if (!captcha) {
+      message.warning('请获取验证码');
+      return;
     }
-  };
+    form.validateFields((err, values) => {
+      if (!err) {
+        const { username, password } = values;
+        this.toLogin(username, password, captcha);
+      }
+    })
+  }
 
-  changeAutoLogin = e => {
-    this.setState({
-      autoLogin: e.target.checked,
-    });
-  };
+  handleRegister = () => {
+
+  }
 
   renderMessage = content => (
     <Alert style={{ marginBottom: 24 }} message={content} type="error" showIcon />
   );
 
   render() {
-    const { login, submitting } = this.props;
-    const { type, autoLogin } = this.state;
+    const { form } = this.props;
+    const { type, count, captcha, renderMessage, error } = this.state;
+    const formElementProps = {
+      form,
+      width: 384
+    }
+    const options = [{
+      label: '普通用户',
+      value: 0,
+    }, {
+      label: '作者',
+      value: 1,
+    }, {
+      label: '管理员',
+      value: 2,
+    }]
     return (
       <div className={styles.main}>
         <Login
           defaultActiveKey={type}
           onTabChange={this.onTabChange}
-          onSubmit={this.handleSubmit}
           ref={form => {
             this.loginForm = form;
           }}
         >
-          {/* <Tab key="account" tab="用户登录"> */}
-            {login.status === 'error' &&
-              login.type === 'account' &&
-              !submitting &&
-              this.renderMessage(formatMessage({ id: 'app.login.message-invalid-credentials' }))}
-            <UserName
-              name="userName"
-              placeholder="输入用户名"
-              rules={[
-                {
-                  required: true,
-                  message: "",
-                },
-              ]}
-            />
-            <Password
-              name="password"
-              placeholder="输入密码"
-              rules={[
-                {
-                  required: true,
-                  message: ""
-                },
-              ]}
-              onPressEnter={e => {
-                e.preventDefault();
-                this.loginForm.validateFields(this.handleSubmit);
-              }}
-            />
-            <Captcha
-              name="captcha"
-              placeholder="获取验证码"
-              countDown={120}
-              onGetCaptcha={this.onGetCaptcha}
-              getCaptchaButtonText="获取"
-              getCaptchaSecondText="发送"
-              rules={[
-                {
-                  required: true,
-                  message: formatMessage({ id: 'validation.verification-code.required' }),
-                },
-              ]}
-            />
-          {/* </Tab> */}
-          {/* <Tab key="mobile" tab={formatMessage({ id: 'app.login.tab-login-mobile' })}>
-            {login.status === 'error' &&
-              login.type === 'mobile' &&
-              !submitting &&
-              this.renderMessage(
-                formatMessage({ id: 'app.login.message-invalid-verification-code' })
-              )}
-            <Mobile
-              name="mobile"
-              placeholder={formatMessage({ id: 'form.phone-number.placeholder' })}
-              rules={[
-                {
-                  required: true,
-                  message: formatMessage({ id: 'validation.phone-number.required' }),
-                },
-                {
-                  pattern: /^1\d{10}$/,
-                  message: formatMessage({ id: 'validation.phone-number.wrong-format' }),
-                },
-              ]}
-            />
-            <Captcha
-              name="captcha"
-              placeholder={formatMessage({ id: 'form.verification-code.placeholder' })}
-              countDown={120}
-              onGetCaptcha={this.onGetCaptcha}
-              getCaptchaButtonText={formatMessage({ id: 'form.get-captcha' })}
-              getCaptchaSecondText={formatMessage({ id: 'form.captcha.second' })}
-              rules={[
-                {
-                  required: true,
-                  message: formatMessage({ id: 'validation.verification-code.required' }),
-                },
-              ]}
-            />
-          </Tab> */}
-          <Submit loading={submitting}>
-            用户登录
-          </Submit>
+          <Tab key="account" tab="用户登录">
+            {error ? this.renderMessage(renderMessage) : null}
+            <Form>
+              <FormElement
+                {...formElementProps}
+                field="username"
+                label=""
+                placeholder="输入用户名"
+              />
+              <FormElement
+                {...formElementProps}
+                field="password"
+                label=""
+                placeholder="输入用户密码"
+              />
+              <FormElement>
+                <div style={{ display: 'flex', flexDirection: 'row' }}>
+                  <Button
+                    disabled={count}
+                    onClick={this.getCaptcha}
+                  >
+                    {count
+                      ? `${count} s`
+                      : '获取验证码'
+                    }
+                  </Button>
+                  <Input style={{ marginLeft: 10 }} value={captcha} />
+                </div>
+              </FormElement>
+            </Form>
+            <Form>
+              <Button
+                type="primary"
+                style={{ width: 384 }}
+                onClick={this.handleLogin}
+              >
+                用户登录
+              </Button>
+            </Form>
+          </Tab>
+          <Tab key="register" tab="用户注册">
+            <Form>
+              <FormElement
+                {...formElementProps}
+                field="username"
+                label=""
+                placeholder="输入用户名"
+              />
+              <FormElement
+                {...formElementProps}
+                field="password"
+                label=""
+                placeholder="输入用户密码"
+              />
+              <FormElement
+                {...formElementProps}
+                field="repassword"
+                label=""
+                placeholder="输入确认密码"
+              />
+              <FormElement
+                {...formElementProps}
+                field="userType"
+                type="select"
+                label=""
+                options={options}
+                placeholder="请选择用户类型"
+              />
+            </Form>
+            <FormElement>
+              <Button
+                type="primary"
+                style={{ width: 384 }}
+                onClick={this.handleRegister}
+              >
+                用户注册
+              </Button>
+            </FormElement>
+          </Tab>
         </Login>
       </div>
     );
   }
 }
 
-export default LoginPage;
+export default Form.create({ name: 'LoginPage' })(LoginPage);
