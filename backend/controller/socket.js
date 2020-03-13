@@ -21,20 +21,28 @@ class SocketIo {
         socket.emit('logined', { msg: `${username}已登录`})
       });
   
-    socket.on('sendMessage', data => {
-      const { sender, toFriend, time, content } = data;
-      console.log('data', data);
-      this.io.to(this.userList[toFriend]).emit('receiveMsg', {
-        sender,
-        toFriend,
-        time,
-        content
+      socket.on('sendMessage', data => {
+        const { sender, toFriend, time, content } = data;
+        console.log('data', data);
+        this.io.to(this.userList[toFriend]).emit('receiveMsg', {
+          sender,
+          toFriend,
+          time,
+          content
+        })
       })
 
-    socket.on('getMessage', data => {
-      // 数据库获取数据，并返回
-      socket.emit('pushMessage', data);
-    })
+      socket.on('getMessage', data => {
+        // 数据库获取数据，并返回
+        socket.emit('pushMessage', data);
+      })
+
+      socket.on('logout', data => {
+        const { username } = data;
+        // 清空数据
+        this.userList[username] = null;
+        console.log('userList', this.userList);
+        socket.emit('userOut',{ msg: `${username}已退出` })
       })
     })
   }

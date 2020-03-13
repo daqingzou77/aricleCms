@@ -7,28 +7,22 @@ class Send extends React.Component {
   constructor() {
     super()
     this.contentEditable = React.createRef();
-    this.state = {
-      html: ""
-    };
   };
 
   handleChange = evt => {
     const { setContent } = this.props;
-    this.setState({
-      html: evt.target.value
-    });
     setContent(evt.target.value);
   };
 
 
   render() {
-    const { html } = this.state;
+    const { content } = this.props;
     return (
       <div className={styles.send}>
         <ContentEditable
           className={styles.edit}
           innerRef={this.contentEditable}
-          html={html}
+          html={content}
           disabled={false}
           onChange={this.handleChange}
           tagName='article'

@@ -1,12 +1,16 @@
 import React from 'react';
+import { message } from 'antd';
 import Message from './Message';
 import Send from './Send';
 import styles from './style.less'
-import { message } from 'antd';
 
 class Chat extends React.Component {
 
-  componentDidMount() {
+  state = {
+    dialogTips: []
+  }
+
+  componentWillMount() {
     this.initSocket();
   }
 
@@ -14,10 +18,10 @@ class Chat extends React.Component {
     const { socket, username } = this.props;
     socket.emit('login', { username });
     socket.on('logined', data => {
-      message.success(data.msg);
+      console.log('logined', data.msg);
     })
-    socket.on('receiveMsg', data => {
-      message.success(data.content);
+    socket.on('userOut', data => {
+      console.log('userOut', data.msg);
     })
   };
 
@@ -27,10 +31,12 @@ class Chat extends React.Component {
   }
 
   render() {
+    const { content } = this.props;
+    const { dialogTips } = this.state;
     return (
       <div className={styles.chatmain}>
-        <Message />
-        <Send setContent={this.setContent} />
+        <Message dialogTips={dialogTips} />
+        <Send setContent={this.setContent} content={content} />
       </div>
     )
   }

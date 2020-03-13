@@ -1,7 +1,8 @@
 /* eslint-disable no-nested-ternary */
 import React from 'react';
-import { Radio, List, Avatar, Button } from 'antd';
+import { Radio, List, Avatar, Button, message } from 'antd';
 import SocketIo from 'socket.io-client';
+import moment from 'moment';
 import { MailOutlined, PhoneOutlined } from '@ant-design/icons';
 import InfiniteScroll from 'react-infinite-scroller';
 import CustomizeEmpty from '@/components/CustomizeEmpty';
@@ -21,22 +22,40 @@ export default class FriendsList extends React.Component {
     dataVisible: false,
     messageVisible: false,
     currentUser: {},
-    content: ''
+    content: '',
+    html: '',
+    dialogTips: []
   }
+
+  
+  componentWillMount () {
+    this.initSocket()
+   }
 
   componentDidMount() {
     this.getClassifiedList(0);
-    this.initSocket();
   }
 
   initSocket = () => {
+    const { dialogTips } = this.state;
     this.socket = SocketIo.connect('http://localhost:80');
     this.socket.on('connect', () => {
       console.log('socket connected');
     });
+    this.socket.on('receiveMsg', data => {
+      dialogTips.push({
+        senderContent: data.content,
+        toFriendContent: '',
+        logtime: moment(new Date())
+      })
+      this.setState({
+        dialogTips
+      })
+    })
     this.socket.on('disconnect', () => {
       console.log('socket disconnected');
     });
+    
   }
 
   handleOnChange = e => {
@@ -100,22 +119,46 @@ export default class FriendsList extends React.Component {
 
   setContent = content => {
     this.setState({
-      content
+      content,
     })
   }
 
   handlePushMessage = () => {
-    const { content } = this.state;
-      this.socket.emit('sendMessage', {
-        sender: '古天乐',
-        toFriend: '张家辉' ,
-        time: new Date(),
-        content
-      })
+    const { content, dialogTips } = this.state;
+    if (!content) {
+      message.warning('请输入内容');
+      return;
+    }
+    dialogTips.push({
+      senderContent: '',
+      toFriendContent: content,
+      logtime: moment(new Date())
+    })
+    this.socket.emit('sendMessage', {
+      sender: '古天乐',
+      toFriend: '张家辉' ,
+      time: new Date(),
+      content
+    })
+    this.setState({
+      dialogTips,
+      content: ''
+    });
+  }
+
+  handleClosetPrivate = () => {
+    const username = '古天乐';
+    this.socket.emit('logout', {
+      username
+    })
+    this.setState({
+      messageVisible: false,
+      dialogTips: []
+    })
   }
 
   render() {
-    const { chooseKey, userList, dataVisible, messageVisible, currentUser } = this.state;
+    const { chooseKey, userList, dataVisible, messageVisible, currentUser, dialogTips, content } = this.state;
     const footer = (
       <Button onClick={this.handlePushMessage} type="primary" size="small" style={{ float: "right", margin: 5}}>发送</Button>
     );
@@ -189,10 +232,16 @@ export default class FriendsList extends React.Component {
           title='私信'
           visible={messageVisible}
           onOk={this.handlePrivateOk}
-          onCancel={() => this.setState({ messageVisible: false })}
+          onCancel={this.handleClosetPrivate}
           footer={footer}
         >
-          <Chat setContent={this.setContent} socket={this.socket} username='古天乐' />
+          <Chat 
+            setContent={this.setContent} 
+            socket={this.socket} 
+            username='古天乐' 
+            dialogTips={dialogTips}
+            content={content}
+          />
         </Modal>
       </div>
     )
