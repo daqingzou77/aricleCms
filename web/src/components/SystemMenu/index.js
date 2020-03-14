@@ -183,6 +183,7 @@ class SystemMenu extends React.Component {
     this.setState({
       visibleCard: false
     });
+    localStorage.removeItem('currentUser');
     router.push('/user/login')
   }
 

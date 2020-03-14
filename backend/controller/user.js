@@ -292,7 +292,7 @@ class users{
       if (doc) return res.tools.setJson(0, '当前注册用户已存在', { status: false });
       this.user.create(addParam)
       .then(data => {
-        res.tools.setJson(0, '注册成功', data);
+        res.tools.setJson(0, '注册成功', { status: true });
       })   
     })
     .catch(err => next(err));
@@ -306,6 +306,7 @@ class users{
     console.log('currentCaptch', currentCaptch);
     this.user.findOne({ username })
     .then(doc => {
+      const { userType } = doc;
       if(doc !== null) {
         if (doc.password !== password) {
           res.tools.setJson(0, '账户密码错误', { status: 2 });
@@ -316,7 +317,7 @@ class users{
             return;
           } else {
             req.session.username = username;
-            res.tools.setJson(0, '登录成功', { status: 4 });
+            res.tools.setJson(0, '登录成功', { status: 4, username, userType });
           }
         }
       }else{

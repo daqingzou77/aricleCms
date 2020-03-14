@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "presite": "cd functions && npm install",
-    "start": "cross-env APP_TYPE=site UMI_ENV=dev umi dev --port=9006",
+    "start": "cross-env APP_TYPE=site UMI_ENV=dev umi dev --port=9007",
     "start:no-mock": "cross-env MOCK=none umi dev",
     "build": "cross-env UMI_ENV=prod umi build",
     "site": "npm run presite && cross-env APP_TYPE=site npm run build && firebase deploy && npm run docker:push",

@@ -26,14 +26,12 @@ server.listen(80, () => {
 
 // const sessionStore = sessionMongoose(connect);
 // const store = new sessionStore({url: config.mongo.sessionUrl});
-
-
 // app.use(log4js.connectLogger(logger('normal'), {level:'auto', format: ':method :url :status'}));  //日志
 
 app.use(bodyParse.json()); // 解析url信息中的参数
 app.use(bodyParse.urlencoded({ extended: false }));
 app.use(cookieParse(config.secret)); //解析签名cookie
-app.use(cors());  // 响应带cookie的跨域请求
+app.use(cors({'credentials': true, origin: 'http://localhost:9007'}));
 
 
 // 设置session
@@ -42,7 +40,7 @@ app.use(session({
   cookie: {
     maxAge: 10*60*1000 // session的有效时间
   },
-  resave: false, // 是否允许session重新设置，为true时保证session有操作
+  resave: true, // 是否允许session重新设置，为true时保证session有操作
   saveUninitialized: false, // 是否保存未初始化的会话
   secret: config.secret // 注册session id到cookie中，相当于一个密钥
 }))
@@ -50,13 +48,13 @@ app.use(session({
 app.use(/\/api/, tools);
 app.use(/\/api/, express.static('public'));
 
-app.use(/\/api/, (req, res, next) => {
-  if (req.session.username || req.path.indexOf('/user/toLogin') !== -1 || req.path.indexOf('/user/getCaptch') !== -1 ) {
-    next();
-  } else {
-    res.tools.setJson(503, '无访问权限', []);
-  }
-});
+// app.use(/\/api/, (req, res, next) => {
+//   if (req.session.username || req.path.indexOf('/user/toLogin') !== -1 || req.path.indexOf('/user/getCaptch') !== -1 ) {
+//     next();
+//   } else {
+//     res.tools.setJson(503, '无访问权限', []);
+//   }
+// });
 
 routes(app, io);
 

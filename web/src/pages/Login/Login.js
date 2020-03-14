@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
+
 import { Checkbox, Alert, Icon, Form, Button, Input, message, notification } from 'antd';
+import { UserOutlined, LockOutlined } from '@ant-design/icons';
+import router from 'umi/router';
 import Login from '@/components/Login';
 import FormElement from '@/components/FormElement';
 import {
@@ -26,7 +29,11 @@ class LoginPage extends Component {
 
   getCaptch = () => {
     getCaptch({}, ({ data }) => {
-      message.success(data);
+      notification.success({
+        message: '验证码提醒',
+        description: data,
+        duration: 1,
+      })
       clearInterval(this.interval);
       this.setState({
         count: 0,
@@ -60,18 +67,27 @@ class LoginPage extends Component {
           error: true
         })
       } else if (status === 4) {
-        message.success('登录成功')
+        message.success('登录成功', 1);
+        localStorage.setItem('currentUser', data.username);
+        localStorage.setItem('userType', data.userType);
+        router.push('/')
       }
     },
     e => console.log('toLogin-error', e.toString())
     )
   }
 
-  userRegister = () => {
+  userRegister = (username, password, userType) => {
     userRegister({
-
+      username,
+      password,
+      userType
     },({ data }) => {
-
+      if(!data.status) {
+        message.error('注册失败，当前用户已存在！');
+      } else {
+        message.success('注册成功');
+      }
     },
     e => console.log('userRegister-error', e.toString())
     )
@@ -110,8 +126,32 @@ class LoginPage extends Component {
   }
 
   handleRegister = () => {
-
+    const { form } = this.props;
+    form.validateFields((err, values) => {
+      if (!err) {
+        const { reUsername, repassword, userType } = values;
+        this.userRegister(reUsername, repassword, userType);
+        form.resetFields()
+      }
+    })
   }
+
+  compareToFirstPassword = (rule, value, callback) => {
+    const { form } = this.props;
+    if (value && value !== form.getFieldValue('repassword')) {
+      callback('两次密码输入不一致!');
+    } else {
+      callback();
+    }
+  };
+
+  validateToNextPassword = (rule, value, callback) => {
+    const { form } = this.props;
+    if (value) {
+      form.validateFields(['confirmpassword'], { force: true });
+    }
+    callback();
+  };
 
   renderMessage = content => (
     <Alert style={{ marginBottom: 24 }} message={content} type="error" showIcon />
@@ -151,12 +191,15 @@ class LoginPage extends Component {
                 field="username"
                 label=""
                 placeholder="输入用户名"
+                prefix={<UserOutlined />}
               />
               <FormElement
                 {...formElementProps}
                 field="password"
                 label=""
+                type="password"
                 placeholder="输入用户密码"
+                prefix={<LockOutlined />}
               />
               <FormElement>
                 <div style={{ display: 'flex', flexDirection: 'row' }}>
@@ -187,29 +230,46 @@ class LoginPage extends Component {
             <Form>
               <FormElement
                 {...formElementProps}
-                field="username"
+                field="reUsername"
                 label=""
+                prefix={<UserOutlined />}
                 placeholder="输入用户名"
-              />
-              <FormElement
-                {...formElementProps}
-                field="password"
-                label=""
-                placeholder="输入用户密码"
               />
               <FormElement
                 {...formElementProps}
                 field="repassword"
                 label=""
+                type="password"
+                placeholder="请输入密码"
+                prefix={<LockOutlined />}
+                hasFeedback
+                rules={[
+                  {
+                    validator: this.validateToNextPassword,
+                  }
+                ]}
+              />
+              <FormElement
+                {...formElementProps}
+                field="confirmpassword"
+                label=""
+                type="password"
                 placeholder="输入确认密码"
+                prefix={<LockOutlined />}
+                hasFeedback
+                rules={[
+                  {
+                    validator: this.compareToFirstPassword,
+                  }
+                ]}
               />
               <FormElement
                 {...formElementProps}
                 field="userType"
                 type="select"
+                placeholder="请选择用户类型"
                 label=""
                 options={options}
-                placeholder="请选择用户类型"
               />
             </Form>
             <FormElement>

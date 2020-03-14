@@ -34,11 +34,12 @@ export default class SystemHeader extends React.PureComponent {
 
   render() {
     const { userInfo } = this.state;
+    const username = localStorage.getItem('currentUser');
     return (
       <div className={styles.header}>
         {/* 头部标题 */}
         <span className={styles.title}>文章信息管理系统</span>
-        <span className={styles.adminUser}>{userInfo}</span>
+        <span className={styles.adminUser}>{username}</span>
         {/* <SelectLang className={styles.selectLang} /> */}
       </div>
     );

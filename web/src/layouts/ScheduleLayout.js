@@ -8,6 +8,7 @@ import SystemHeader from '../components/SystemHeader';
 import SystemMenu from '../components/SystemMenu';
 import styles from './Schedule.less';
 import SystemFooter from '../components/SystemFooter';
+import router from 'umi/router';
 // import { getUopUser, getBacklogRemind } from '@/services/scheduleService';
 
 const customizeRenderEmpty = () => (
@@ -25,12 +26,12 @@ class ScheduleLayout extends React.Component {
     };
   }
 
-  componentWillMount() {
-    // this.checkLocale();
-  }
-
   componentDidMount() {
     document.title = '文章管理系统'
+    const currentUser = localStorage.getItem('currentUser');
+    if (!currentUser) {
+      router.push('/user/login')
+    }
   }
 
 
