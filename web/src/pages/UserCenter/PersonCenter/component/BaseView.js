@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react';
 import { Button, Form, message } from 'antd';
+import moment from 'moment';
 import FormElement from '@/components/FormElement';
 import UploadImg from './UploadImg';
 import {
@@ -84,10 +85,10 @@ class BaseView extends React.Component {
             />
             <FormElement
               {...formElementProps}
-              label="用户账号"
-              field="account"
+              label="创建时间"
+              field="createTime"
               disabled
-              initialValue={currentUser.account}
+              initialValue={moment(currentUser.createTime).format('YYYY-MM-DD hh:mm:ss')}
             />
             <FormElement
               {...formElementProps}

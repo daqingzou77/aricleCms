@@ -2,6 +2,7 @@ import user from '../model/user';
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
+import async from '../utils/async';
 import config from '../config/app.config';
 import { getRandomNumbers } from '../utils/index';
 
@@ -151,27 +152,34 @@ class users{
       }
       // 同意好友请求
       if (key == 1) {
-        this.user.updateOne({ username: targetUser }, {
+        this.user.updateOne({ username: requester}, {
           $push: {
-            friendsList: { requester },
+            friendsList: { requester: targetUser }
           }
-        }).then(data => {
-          if (data.nModified > 0) {
-            this.user.updateOne({
-              username: targetUser
-            }, {
-              $pull: { requestList: { requester } }
-            })
-            .then(doc => {
-              if (doc.nModified > 0) {
-                res.tools.setJson(0, '同意好友成功', { status: 1 });
-              } else {
-                res.tools.setJson(0, '同意好友失败', { status: 3 });
-              }
-            })
-          } else {
-            res.tools.setJson(0, '同意好友失败', { status: 3 });
-          }
+        }).then(next => {
+          if (next.nModified === 0) return  res.tools.setJson(0, '同意好友失败', { status: 3 });
+          this.user.updateOne({ username: targetUser }, {
+            $push: {
+              friendsList: { requester },
+            }
+          }).then(data => {
+            if (data.nModified > 0) {
+              this.user.updateOne({
+                username: targetUser
+              }, {
+                $pull: { requestList: { requester } }
+              })
+              .then(doc => {
+                if (doc.nModified > 0) {
+                  res.tools.setJson(0, '同意好友成功', { status: 1 });
+                } else {
+                  res.tools.setJson(0, '同意好友失败', { status: 3 });
+                }
+              })
+            } else {
+              res.tools.setJson(0, '同意好友失败', { status: 3 });
+            }
+          })
         })
       } else {
         res.tools.setJson(0, '拒绝好友', { status: 2 })
@@ -190,7 +198,18 @@ class users{
     }
     this.user.findOne({ username }, option)
     .then(data => {
-      res.tools.setJson(0, '获取信息成功', data);
+      let respJson = {};
+      async.map(data.friendsList, (item, callback) => {
+        this.user.findOne({ username: item.requester}, (err, doc) => {
+          if (err) return res.tools.setJson(0, '信息获取失败', err)
+          respJson['friend'] = item.requester;
+          respJson['avatar'] = doc.avatar;
+          callback(null, respJson);
+        })
+      }, (err, result) => {
+        if (err) return res.tools.setJson(0, '信息获取失败', err)
+        res.tools.setJson(0, '好友列表获取成功', result)
+      })
     })
     .catch(err => next(err));
   }

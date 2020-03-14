@@ -31,8 +31,8 @@ class Chat extends React.Component {
   }
 
   render() {
-    const { content } = this.props;
-    const { dialogTips } = this.state;
+    const { content, dialogTips } = this.props;
+    // const { dialogTips } = this.state;
     return (
       <div className={styles.chatmain}>
         <Message dialogTips={dialogTips} />

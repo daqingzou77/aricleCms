@@ -1,12 +1,6 @@
-import { formatMessage as _formatMessage } from 'umi/locale';
 import React from 'react';
+import { Badge } from 'antd';
 import styles from './index.less';
-import { 
-  getUopLoginUserInfo
-} from '@/services/scheduleService';
-// import SelectLang from '../SelectLang';
-
-const formatMessage = (id)=>{return _formatMessage({id})}
 
 export default class SystemHeader extends React.PureComponent {
   constructor(props) {
@@ -20,26 +14,18 @@ export default class SystemHeader extends React.PureComponent {
     // this.getUopLoginUserInfo()
   }
 
-  getUopLoginUserInfo = () => {
-    getUopLoginUserInfo({},({ data }) => {
-      if (data) {
-        this.setState({
-          userInfo: data.name
-        })
-      }
-    },
-    e => console.log('getUopLoginUserInfo-error', e.toString())
-    ) 
-  }
 
   render() {
-    const { userInfo } = this.state;
     const username = localStorage.getItem('currentUser');
+    const userType = localStorage.getItem('userType');
     return (
       <div className={styles.header}>
         {/* 头部标题 */}
         <span className={styles.title}>文章信息管理系统</span>
-        <span className={styles.adminUser}>{username}</span>
+        <span className={styles.adminUser}>
+          <Badge status="success" /> 当前登录：
+          {username}({userType == 0 ? "普通用户" : userType == 1 ? '作者': userType == 2 ? '管理员' : null })
+        </span>
         {/* <SelectLang className={styles.selectLang} /> */}
       </div>
     );

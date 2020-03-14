@@ -184,6 +184,7 @@ class SystemMenu extends React.Component {
       visibleCard: false
     });
     localStorage.removeItem('currentUser');
+    localStorage.removeItem('userType');
     router.push('/user/login')
   }
 

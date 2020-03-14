@@ -22,7 +22,7 @@ class Home extends React.Component {
   }
 
   getCurrentUserDetail = () => {
-   const username = '古天乐';
+   const username = localStorage.getItem('currentUser');
    getCurrentUserDetail({
      username
    }, ({ data }) => {

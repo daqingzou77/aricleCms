@@ -23,13 +23,17 @@ export default class FriendsList extends React.Component {
     messageVisible: false,
     currentUser: {},
     content: '',
-    html: '',
+    chatWith: '',
     dialogTips: []
   }
 
   
   componentWillMount () {
-    this.initSocket()
+    this.initSocket();
+    const currentUser = localStorage.getItem('currentUser');
+    this.setState({
+      currentUser
+    })
    }
 
   componentDidMount() {
@@ -67,15 +71,14 @@ export default class FriendsList extends React.Component {
   }
 
   getClassifiedList = key => {
-    const username = '古天乐';
+    const { currentUser } = this.state;
     getClassifiedList({
-      username,
+      username: currentUser,
       key
     }, ({ data }) => {
-      // const { friendsList } = data;
       if (key === 0) {
         this.setState({
-          userList: data.friendsList
+          userList: data
         })
       } else if (key === 1) {
         this.setState({
@@ -92,7 +95,6 @@ export default class FriendsList extends React.Component {
   }
 
   getCurrentUserDetail = username => {
-    console.log('usename', username);
     getCurrentUserDetail({
       username
     }, ({ data }) => {
@@ -113,7 +115,8 @@ export default class FriendsList extends React.Component {
 
   handleMessage = name => {
     this.setState({
-      messageVisible: true
+      messageVisible: true,
+      chatWith: name
     })
   }
 
@@ -124,7 +127,7 @@ export default class FriendsList extends React.Component {
   }
 
   handlePushMessage = () => {
-    const { content, dialogTips } = this.state;
+    const { content, dialogTips, currentUser, chatWith } = this.state;
     if (!content) {
       message.warning('请输入内容');
       return;
@@ -135,8 +138,8 @@ export default class FriendsList extends React.Component {
       logtime: moment(new Date())
     })
     this.socket.emit('sendMessage', {
-      sender: '古天乐',
-      toFriend: '张家辉' ,
+      sender: currentUser,
+      toFriend: chatWith,
       time: new Date(),
       content
     })
@@ -147,9 +150,9 @@ export default class FriendsList extends React.Component {
   }
 
   handleClosetPrivate = () => {
-    const username = '古天乐';
+    const { currentUser } = this.state;
     this.socket.emit('logout', {
-      username
+      username: currentUser
     })
     this.setState({
       messageVisible: false,
@@ -158,7 +161,7 @@ export default class FriendsList extends React.Component {
   }
 
   render() {
-    const { chooseKey, userList, dataVisible, messageVisible, currentUser, dialogTips, content } = this.state;
+    const { chooseKey, userList, dataVisible, messageVisible, currentUser, dialogTips, content, chatWith } = this.state;
     const footer = (
       <Button onClick={this.handlePushMessage} type="primary" size="small" style={{ float: "right", margin: 5}}>发送</Button>
     );
@@ -182,14 +185,14 @@ export default class FriendsList extends React.Component {
               renderItem={item => (
                 <List.Item
                   actions={[
-                    <a key="list-watch" onClick={() => this.watchData(item.requester)}>查看名片</a>, 
-                    <a key="list-message" onClick={() => this.handleMessage(item.requester)}>私信</a>
+                    <a key="list-watch" onClick={() => this.watchData(item.friend)}>查看名片</a>, 
+                    <a key="list-message" onClick={() => this.handleMessage(item.friend)}>私信</a>
                   ]}
                 >
                   {chooseKey === 0 ? (
                     <div>
-                      <Avatar shape="circle" icon="user" style={{ background: '#f56a00', marginRight: 5 }} />
-                      {item.requester}
+                      <Avatar src={item.avatar} shape="circle" icon="user" style={{ background: '#f56a00', marginRight: 5 }} />
+                      {item.friend}
                     </div>
                   ) : chooseKey === 1 ? (
                     <div>
@@ -229,7 +232,7 @@ export default class FriendsList extends React.Component {
           </>
         </Modal> 
         <Modal
-          title='私信'
+          title={chatWith}
           visible={messageVisible}
           onOk={this.handlePrivateOk}
           onCancel={this.handleClosetPrivate}
@@ -238,7 +241,7 @@ export default class FriendsList extends React.Component {
           <Chat 
             setContent={this.setContent} 
             socket={this.socket} 
-            username='古天乐' 
+            username={currentUser} 
             dialogTips={dialogTips}
             content={content}
           />

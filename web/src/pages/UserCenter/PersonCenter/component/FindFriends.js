@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card, Input, Row, Col, Avatar, Popconfirm, Button, List, message, Tag } from 'antd';
 import InfiniteScroll from 'react-infinite-scroller';
+import { ReloadOutlined, DownloadOutlined } from '@ant-design/icons';
 import CustomizeEmpty from '@/components/CustomizeEmpty';
 import styles from './style.less'
 import {
@@ -13,7 +14,15 @@ const { Search } = Input;
 export default class FindFriends extends React.Component {
 
   state = {
-    friends: []
+    friends: [],
+    defaultValue: '',
+  }
+
+  handleFresh = () => {
+    this.setState({
+      friends: [],
+      defaultValue: ''
+    })
   }
 
   handleSearch = value => {
@@ -25,36 +34,37 @@ export default class FindFriends extends React.Component {
       field: value
     }, ({ data }) => {
       this.setState({
-        friends: data
+        friends: data,
+        defaultValue: value
       })
     },
-    e => console.log('getFriendsDetail-error', e.toString())
+      e => console.log('getFriendsDetail-error', e.toString())
     )
   }
 
   handleAddFriend = username => {
-    const requester = "古天乐";
+    const requester = localStorage.getItem('currentUser');
     addUserRequest({
       requester,
       targetUser: username
     }, ({ data }) => {
-       const { status } = data;
-       if (status === 1) {
-         message.warning('好友请求已发送');
-       } else if (status === 2){
-         message.success('好友请求发送成功');
-       } else if (status === 3) {
+      const { status } = data;
+      if (status === 1) {
+        message.warning('好友请求已发送');
+      } else if (status === 2) {
+        message.success('好友请求发送成功');
+      } else if (status === 3) {
         message.error('请求发送失败');
-       }
+      }
     },
-    e => console.log('handleAddFriend-error', e.toString())
+      e => console.log('handleAddFriend-error', e.toString())
     )
   }
 
   render() {
     const text = '确认添加好友？';
-    const { friends } = this.state;
-    const currentUser = '古天乐'; // 模拟获取当前用户
+    const { friends, defaultValue } = this.state;
+    const currentUser = localStorage.getItem('currentUser'); // 模拟获取当前用户
     const friendsList = (
       <Row type="flex" justify="start">
         {friends.map((item, index) =>
@@ -81,8 +91,16 @@ export default class FindFriends extends React.Component {
           <Search
             placeholder="请输入查询好友用户名/昵称"
             enterButton="查询"
-            className={styles.search}
             onSearch={this.handleSearch}
+            className={styles.search}
+            onChange={e => {this.setState({ defaultValue: e.target.value})}}
+            value={defaultValue}
+          />
+          <Button 
+            type="primary" 
+            icon='reload' 
+            style={{ marginTop: 10 }} 
+            onClick={this.handleFresh}
           />
           <div className={styles.listStyle}>
             <InfiniteScroll className={styles.friendsScroll}>
@@ -98,5 +116,5 @@ export default class FindFriends extends React.Component {
         </Card>
       </div>
     )
-   }
+  }
 }
