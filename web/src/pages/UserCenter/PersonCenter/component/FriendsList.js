@@ -22,6 +22,7 @@ export default class FriendsList extends React.Component {
     dataVisible: false,
     messageVisible: false,
     currentUser: {},
+    currentUsername: '',
     content: '',
     chatWith: '',
     dialogTips: []
@@ -29,23 +30,59 @@ export default class FriendsList extends React.Component {
 
   
   componentWillMount () {
-    this.initSocket();
-    const currentUser = localStorage.getItem('currentUser');
+    const username = localStorage.getItem('currentUser');
     this.setState({
-      currentUser
+      currentUsername: username
     })
    }
 
   componentDidMount() {
+    this.initSocket();
     this.getClassifiedList(0);
   }
 
   initSocket = () => {
-    const { dialogTips } = this.state;
+    const { dialogTips, currentUsername } = this.state;
     this.socket = SocketIo.connect('http://localhost:80');
+    // socket连接
     this.socket.on('connect', () => {
-      console.log('socket connected');
+      console.log('socket conneted')
     });
+    // 用户登入
+    this.socket.on('logined', data => {
+      console.log('logined', data.msg);
+    })
+   
+    // 接收历史信息
+    this.socket.on('pushHistoryMessage', data => {
+      data.map(item => {
+        console.log('data', data);
+        const { sender, content, time } = item;
+        if (sender === currentUsername) {
+          dialogTips.push({
+            senderContent: '',
+            toFriendContent: content,
+            logtime: moment(time)
+          })
+        } else {
+          dialogTips.push({
+            senderContent: content,
+            toFriendContent: '',
+            logtime: moment(time)
+          })
+        }
+      })
+      this.setState({
+        dialogTips
+      })
+    });
+
+    // 用户退出，清除聊天记录
+    this.socket.on('userOut', data => {
+      message.success(data.msg)
+    })
+
+    // 接收消息
     this.socket.on('receiveMsg', data => {
       dialogTips.push({
         senderContent: data.content,
@@ -56,6 +93,7 @@ export default class FriendsList extends React.Component {
         dialogTips
       })
     })
+    // socket断开
     this.socket.on('disconnect', () => {
       console.log('socket disconnected');
     });
@@ -71,9 +109,9 @@ export default class FriendsList extends React.Component {
   }
 
   getClassifiedList = key => {
-    const { currentUser } = this.state;
+    const { currentUsername } = this.state;
     getClassifiedList({
-      username: currentUser,
+      username: currentUsername,
       key
     }, ({ data }) => {
       if (key === 0) {
@@ -114,6 +152,13 @@ export default class FriendsList extends React.Component {
   }
 
   handleMessage = name => {
+    const { currentUsername, dialogTips } = this.state;
+    if (dialogTips.length === 0) {
+      // 获取历史记录
+      this.socket.emit('getHistoryMessage', { sender: currentUsername, toFriend: name });
+    }
+    // 用户登入
+    this.socket.emit('login', { username: currentUsername});
     this.setState({
       messageVisible: true,
       chatWith: name
@@ -127,7 +172,7 @@ export default class FriendsList extends React.Component {
   }
 
   handlePushMessage = () => {
-    const { content, dialogTips, currentUser, chatWith } = this.state;
+    const { content, dialogTips, currentUsername, chatWith } = this.state;
     if (!content) {
       message.warning('请输入内容');
       return;
@@ -137,8 +182,9 @@ export default class FriendsList extends React.Component {
       toFriendContent: content,
       logtime: moment(new Date())
     })
+    // 发送消息
     this.socket.emit('sendMessage', {
-      sender: currentUser,
+      sender: currentUsername,
       toFriend: chatWith,
       time: new Date(),
       content
@@ -150,18 +196,19 @@ export default class FriendsList extends React.Component {
   }
 
   handleClosetPrivate = () => {
-    const { currentUser } = this.state;
-    this.socket.emit('logout', {
-      username: currentUser
-    })
+    const { currentUsername } = this.state;
     this.setState({
       messageVisible: false,
       dialogTips: []
     })
+    // 用户退出
+    this.socket.emit('logout', {
+      username: currentUsername
+    })
   }
 
   render() {
-    const { chooseKey, userList, dataVisible, messageVisible, currentUser, dialogTips, content, chatWith } = this.state;
+    const { chooseKey, userList, dataVisible, messageVisible, currentUser, dialogTips, content, chatWith, currentUsername } = this.state;
     const footer = (
       <Button onClick={this.handlePushMessage} type="primary" size="small" style={{ float: "right", margin: 5}}>发送</Button>
     );
@@ -240,8 +287,6 @@ export default class FriendsList extends React.Component {
         >
           <Chat 
             setContent={this.setContent} 
-            socket={this.socket} 
-            username={currentUser} 
             dialogTips={dialogTips}
             content={content}
           />

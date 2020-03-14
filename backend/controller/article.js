@@ -71,7 +71,6 @@ class Articles {
     this.articles.find({})
       .then(doc => {
         res.tools.setJson(0, '查询成功', doc)
-        console.log('doc', doc);
       })
       .catch(err => next(err));
   }
@@ -231,7 +230,6 @@ class Articles {
 
   getArticleByMutiKeys(req, res) {
     const { queryKeywords } = req.body;
-    console.log(queryKeywords);
     const respData = [];
     this.articles.find({}).then(doc => {
      doc.map(item => {

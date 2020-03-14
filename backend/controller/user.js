@@ -1,4 +1,5 @@
 import user from '../model/user';
+import chat from '../model/chat';
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
@@ -24,6 +25,7 @@ class users{
     Object.assign(this, {
       app,
       user,
+      chat
     })
     this.init();
   };
@@ -37,6 +39,8 @@ class users{
     this.app.get('/api/user/addUserRequest', this.addUserRequest.bind(this)); // 好友请求
     this.app.get('/api/user/agreeRequest', this.agreeRequest.bind(this)); // 同意好友
     this.app.get('/api/user/getClassifiedList', this.getClassifiedList.bind(this)); // 获取分类好友信息
+    // 删除所有聊天
+    this.app.get('/api/user/deleteAllChats', this.deleteAllChats.bind(this));
 
     // **** 用户管理 ****
     this.app.get('/api/user/getUserList', this.getUserList.bind(this)); // 获取用户列表
@@ -321,8 +325,6 @@ class users{
   toLogin(req, res, next) {
     const { username, password, captcha } = req.body;
     const currentCaptch = req.session.captch;
-    console.log('captcha', captcha);
-    console.log('currentCaptch', currentCaptch);
     this.user.findOne({ username })
     .then(doc => {
       const { userType } = doc;
@@ -349,7 +351,6 @@ class users{
   getCaptch(req, res, next) {
     const randomCaptch = getRandomNumbers();
     req.session.captch = randomCaptch;
-    console.log('randomCaptch', randomCaptch)
     res.tools.setJson(0, '获取验证码成功', randomCaptch);
   }
 
@@ -357,6 +358,14 @@ class users{
     req.session.username = null;
     req.session.captch = null;
     res.tools.setJson(0, '退出成功', 1);
+  }
+
+  deleteAllChats(req, res, next) {
+    this.chat.remove({})
+    .then(data => {
+      res.tools.setJson(0, '删除成功', 'success')
+    })
+    ;
   }
 
 }

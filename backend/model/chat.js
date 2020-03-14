@@ -16,20 +16,10 @@ import mongoose from 'mongoose';
  * ]
  */
 const chatSchema = mongoose.Schema({
-    username: String,
-    userAvatar: String,
-    userId: Number,
-    messageList: [
-      {
-        receiver: String,
-        receiverId: Number,
-        allMessages: [{
-          content1: String,
-          content2: String,
-          logtime: Date,
-        }] 
-      }
-    ]
+   sender: String,
+   toFriend: String,
+   content: String,
+   time: Date
 });
 
 chatSchema.index({ id: 1 });

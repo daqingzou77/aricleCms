@@ -1,10 +1,10 @@
 import chats from '../model/chat';
-import users from '../model/user';
 
 class SocketIo {
   constructor(io) {
     Object.assign(this, {
       io,
+      chats,
       userList: []   
     });
     this.init();  
@@ -17,13 +17,13 @@ class SocketIo {
       socket.on('login', data  => {
         const { username } = data;
         this.userList[username] = socket.id;
-        console.log('userList', this.userList);
         socket.emit('logined', { msg: `${username}已登录`})
       });
   
       socket.on('sendMessage', data => {
         const { sender, toFriend, time, content } = data;
-        console.log('data', data);
+        this.chats.create(data);
+        // 发给指定用户
         this.io.to(this.userList[toFriend]).emit('receiveMsg', {
           sender,
           toFriend,
@@ -32,16 +32,26 @@ class SocketIo {
         })
       })
 
-      socket.on('getMessage', data => {
+      socket.on('getHistoryMessage', data => {
+        const { sender, toFriend } = data;
         // 数据库获取数据，并返回
-        socket.emit('pushMessage', data);
-      })
+        const nowDate = new Date();
+        const lastDate = nowDate.setDate(nowDate.getDate()-1);
+        this.chats.find({
+          $or: [
+            { sender: { $in: [ sender, toFriend ] } }, 
+            { toFriend: { $in: [sender, toFriend ] } }
+          ],
+          time: { $gt: lastDate}
+        }).then(doc => {
+          socket.emit('pushHistoryMessage', doc);
+        })
+      });
 
       socket.on('logout', data => {
         const { username } = data;
         // 清空数据
         this.userList[username] = null;
-        console.log('userList', this.userList);
         socket.emit('userOut',{ msg: `${username}已退出` })
       })
     })
