@@ -15,7 +15,7 @@ import {
 import styles from './style.less';
 
 export default class FriendsList extends React.Component {
-    
+
   state = {
     chooseKey: 0,
     userList: [],
@@ -28,13 +28,13 @@ export default class FriendsList extends React.Component {
     dialogTips: []
   }
 
-  
-  componentWillMount () {
+
+  componentWillMount() {
     const username = localStorage.getItem('currentUser');
     this.setState({
       currentUsername: username
     })
-   }
+  }
 
   componentDidMount() {
     this.initSocket();
@@ -52,7 +52,7 @@ export default class FriendsList extends React.Component {
     this.socket.on('logined', data => {
       console.log('logined', data.msg);
     })
-   
+
     // 接收历史信息
     this.socket.on('pushHistoryMessage', data => {
       data.map(item => {
@@ -97,7 +97,7 @@ export default class FriendsList extends React.Component {
     this.socket.on('disconnect', () => {
       console.log('socket disconnected');
     });
-    
+
   }
 
   handleOnChange = e => {
@@ -120,15 +120,11 @@ export default class FriendsList extends React.Component {
         })
       } else if (key === 1) {
         this.setState({
-          userList: data.attentionList
-        })
-      } else if (key === 2) {
-        this.setState({
           userList: data.blacklist
         })
       }
     },
-    e => console.log('getClassifiedList-error', e.toString())
+      e => console.log('getClassifiedList-error', e.toString())
     )
   }
 
@@ -140,9 +136,9 @@ export default class FriendsList extends React.Component {
         currentUser: data,
       })
     },
-    e => console.log('getCurrentUserDetail-error', e.toString())
+      e => console.log('getCurrentUserDetail-error', e.toString())
     )
-   }
+  }
 
   watchData = name => {
     this.getCurrentUserDetail(name);
@@ -158,7 +154,7 @@ export default class FriendsList extends React.Component {
       this.socket.emit('getHistoryMessage', { sender: currentUsername, toFriend: name });
     }
     // 用户登入
-    this.socket.emit('login', { username: currentUsername});
+    this.socket.emit('login', { username: currentUsername });
     this.setState({
       messageVisible: true,
       chatWith: name
@@ -210,7 +206,7 @@ export default class FriendsList extends React.Component {
   render() {
     const { chooseKey, userList, dataVisible, messageVisible, currentUser, dialogTips, content, chatWith, currentUsername } = this.state;
     const footer = (
-      <Button onClick={this.handlePushMessage} type="primary" size="small" style={{ float: "right", margin: 5}}>发送</Button>
+      <Button onClick={this.handlePushMessage} type="primary" size="small" style={{ float: "right", margin: 5 }}>发送</Button>
     );
     return (
       <div className={styles.friendlist}>
@@ -221,8 +217,7 @@ export default class FriendsList extends React.Component {
           onChange={this.handleOnChange}
         >
           <Radio.Button value={0}>好友列表</Radio.Button>
-          <Radio.Button value={1}>关注列表</Radio.Button>
-          <Radio.Button value={2}>拉黑名单</Radio.Button>
+          <Radio.Button value={1}>拉黑名单</Radio.Button>
         </Radio.Group>
         <CustomizeEmpty>
           <InfiniteScroll className={styles.listScrolls}>
@@ -232,8 +227,8 @@ export default class FriendsList extends React.Component {
               renderItem={item => (
                 <List.Item
                   actions={[
-                    <a key="list-watch" onClick={() => this.watchData(item.friend)}>查看名片</a>, 
-                    <a key="list-message" onClick={() => this.handleMessage(item.friend)}>私信</a>
+                    <a key="list-watch" onClick={() => this.watchData(item.friend)}>名片</a>,
+                    <a key="list-message" onClick={() => this.handleMessage(item.friend)}>聊天</a>
                   ]}
                 >
                   {chooseKey === 0 ? (
@@ -241,19 +236,14 @@ export default class FriendsList extends React.Component {
                       <Avatar src={item.avatar} shape="circle" icon="user" style={{ background: '#f56a00', marginRight: 5 }} />
                       {item.friend}
                     </div>
-                  ) : chooseKey === 1 ? (
-                    <div>
-                      <Avatar shape="circle" icon="heart" style={{ background: 'red', marginRight: 5 }} />
-                      {item.requester}
-                    </div>
                   ) : (
                     <div>
                       <Avatar shape="circle" icon="stop" style={{ background: 'black', marginRight: 5 }} />
                       {item.requester}
                     </div>
-                  )}
+                    )}
                 </List.Item>
-                )}
+              )}
             />
           </InfiniteScroll>
         </CustomizeEmpty>
@@ -277,7 +267,7 @@ export default class FriendsList extends React.Component {
               </p>
             </div>
           </>
-        </Modal> 
+        </Modal>
         <Modal
           title={chatWith}
           visible={messageVisible}
@@ -285,13 +275,13 @@ export default class FriendsList extends React.Component {
           onCancel={this.handleClosetPrivate}
           footer={footer}
         >
-          <Chat 
-            setContent={this.setContent} 
+          <Chat
+            setContent={this.setContent}
             dialogTips={dialogTips}
             content={content}
           />
         </Modal>
       </div>
     )
-   }
+  }
 }

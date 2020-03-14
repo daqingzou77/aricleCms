@@ -152,7 +152,6 @@ class SystemMenu extends React.Component {
       isOpenToolbar: true,
       visibleCard: false,
       messageVisible: false,
-      messageKey: 1,
     };
   }
 
@@ -206,18 +205,6 @@ class SystemMenu extends React.Component {
     })
   }
 
-  handleGetMessage = () => {
-    this.setState({
-      messageKey: 1
-    })
-  }
-
-  handleGetNotice = () => {
-    this.setState({
-      messageKey: 2
-    })
-  }
-
   MenuCom = props => {
     return menuList.map(item => {
       return (
@@ -261,24 +248,11 @@ class SystemMenu extends React.Component {
 
 
   render() {
-    const { isOpenToolbar, visibleCard, messageVisible, messageKey } = this.state;
+    const { isOpenToolbar, visibleCard, messageVisible } = this.state;
     const { MenuCom } = this;
     const MMenuCom = withRouter(({ history }) => {
       return <MenuCom history={history} />;
     });
-    const footer = (
-      <Row style={{ marginBottom: 10 }} type="flex" justify="space-around">
-        <Col>
-          <Tag color="#2db7f5" onClick={this.handleGetMessage}><Badge dot>消息</Badge></Tag>
-        </Col>
-        <Col>
-          <Tag color="#87d068" style={{ color: '#2884d8', fontSize: 14 }} onClick={this.handleGetNotice}><Badge dot>通知</Badge></Tag>
-        </Col>
-        <Col>
-          <Tag color="red" style={{ fontSize: 14 }}>清空</Tag>
-        </Col>
-      </Row>
-    );
     const layout = (
       <div className={styles.toolbar}>
         <Icon
@@ -307,19 +281,13 @@ class SystemMenu extends React.Component {
         </Modal>
         <Modal
           width={400}
-          title={`消息中心-${messageKey === 1 ? '消息': '通知'}`}
+          title="消息中心"
           visible={messageVisible}
           onOk={this.handleMessageVisible}
           onCancel={this.handleMessageCancel}
-          footer={footer}
+          footer={null}
         >
-          {
-            messageKey === 1 ?  (
-              <MessageCenter />
-           ) : (
-             <Notice />
-             )
-         } 
+          <MessageCenter />
         </Modal>
       </div>
     );
