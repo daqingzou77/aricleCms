@@ -1,6 +1,6 @@
 /* eslint-disable no-nested-ternary */
 import React from 'react';
-import { Radio, List, Avatar, Button, message } from 'antd';
+import { Radio, List, Avatar, Button, Popconfirm, Divider, message } from 'antd';
 import SocketIo from 'socket.io-client';
 import moment from 'moment';
 import { MailOutlined, PhoneOutlined } from '@ant-design/icons';
@@ -10,7 +10,9 @@ import Modal from '@/common/components/Modal';
 import Chat from '@/pages/MessageCenter/component/Chat';
 import {
   getClassifiedList,
-  getCurrentUserDetail
+  getCurrentUserDetail,
+  soloveBlack,
+  deleteFriend
 } from '@/services/userService';
 import styles from './style.less';
 
@@ -120,7 +122,7 @@ export default class FriendsList extends React.Component {
         })
       } else if (key === 1) {
         this.setState({
-          userList: data.blacklist
+          userList: data
         })
       }
     },
@@ -159,6 +161,39 @@ export default class FriendsList extends React.Component {
       messageVisible: true,
       chatWith: name
     })
+  }
+
+  handleBlack = (name, key) => {
+    const { currentUsername } = this.state;
+    soloveBlack({
+      username: currentUsername,
+      targetUser: name,
+      key
+    }, ({ data }) => {
+      if (data.status && key === 1) {
+        message.success('好友拉黑成功');
+        this.getClassifiedList(0)
+      } else if (data.status && key === 2) {
+        message.success('拉黑撤销成功');
+        this.getClassifiedList(1)
+      }
+    }, e => console.log('solveBlack-error', e.toString()))
+  }
+
+  deleteFriend = name => {
+    const { currentUsername } = this.state;
+    deleteFriend({
+      username: currentUsername,
+      targetUser: name
+    }, ({ data }) => {
+      if (data.status) {
+        message.success('好友删除成功');
+        this.getClassifiedList(0)
+      } else {
+        message.error('好友删除失败')
+      }
+    },
+      e => console.log('deleteFriend-error', e.toString()))
   }
 
   setContent = content => {
@@ -208,6 +243,31 @@ export default class FriendsList extends React.Component {
     const footer = (
       <Button onClick={this.handlePushMessage} type="primary" size="small" style={{ float: "right", margin: 5 }}>发送</Button>
     );
+    const text = "是否确认拉黑？";
+    const text1 = "是否确认删除？";
+    const text2 = "是否撤销拉黑";
+    let Actions;
+    if (chooseKey === 0) {
+      Actions = ({ name }) => (
+        <>
+          <a key="list-message" onClick={() => this.handleMessage(name)}>聊天</a>
+          <Divider type="vertical" />
+          <Popconfirm placement="top" title={text} onConfirm={() => this.handleBlack(name, 1)} okText="确认" cancelText="取消">
+            <a>拉黑</a>
+          </Popconfirm>
+          <Divider type="vertical" />
+          <Popconfirm placement="top" title={text1} onConfirm={() => this.deleteFriend(name)} okText="确认" cancelText="取消">
+            <a>删除</a>
+          </Popconfirm>
+        </>
+      )
+    } else {
+      Actions = ({ name }) => (
+        <Popconfirm placement="top" title={text2} onConfirm={() => this.handleBlack(name, 2)} okText="确认" cancelText="取消">
+          <a>撤销拉黑</a>
+        </Popconfirm>
+      )
+    }
     return (
       <div className={styles.friendlist}>
         <Radio.Group
@@ -225,23 +285,23 @@ export default class FriendsList extends React.Component {
               itemLayout="horizontal"
               dataSource={userList}
               renderItem={item => (
-                <List.Item
-                  actions={[
-                    <a key="list-watch" onClick={() => this.watchData(item.friend)}>名片</a>,
-                    <a key="list-message" onClick={() => this.handleMessage(item.friend)}>聊天</a>
-                  ]}
-                >
+                <List.Item>
                   {chooseKey === 0 ? (
                     <div>
                       <Avatar src={item.avatar} shape="circle" icon="user" style={{ background: '#f56a00', marginRight: 5 }} />
-                      {item.friend}
+                      {item.name}
                     </div>
                   ) : (
                     <div>
-                      <Avatar shape="circle" icon="stop" style={{ background: 'black', marginRight: 5 }} />
-                      {item.requester}
+                      <Avatar src={item.avatar} shape="circle" icon="stop" style={{ background: 'black', marginRight: 5 }} />
+                      {item.name}
                     </div>
                     )}
+                  <div style={{ marginLeft: '20%' }}>
+                    <a key="list-watch" onClick={() => this.watchData(item.name)}>名片</a>
+                    <Divider type="vertical" />
+                    <Actions name={item.name} />
+                  </div>
                 </List.Item>
               )}
             />

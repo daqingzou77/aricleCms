@@ -39,6 +39,8 @@ class users{
     this.app.get('/api/user/addUserRequest', this.addUserRequest.bind(this)); // 好友请求
     this.app.get('/api/user/agreeRequest', this.agreeRequest.bind(this)); // 同意好友
     this.app.get('/api/user/getClassifiedList', this.getClassifiedList.bind(this)); // 获取分类好友信息
+    this.app.post('/api/user/solveBlack', this.solveBlack.bind(this)); // 处理好友拉黑
+    this.app.delete('/api/user/deleteFriend', this.deleteFriend.bind(this)); // 删除好友
     // 删除所有聊天
     this.app.get('/api/user/deleteAllChats', this.deleteAllChats.bind(this));
 
@@ -149,7 +151,7 @@ class users{
 
   agreeRequest(req, res, next) {
     const { requester, targetUser, key } = req.query;
-    this.user.findOne({ username: targetUser, 'friendsList.requester': requester }).then(doc =>{
+    this.user.findOne({ username: targetUser, 'friendsList.friend': requester }).then(doc =>{
       if (doc) {
         res.tools.setJson(0, '好友已存在', { status: 0 });
         return;
@@ -158,13 +160,13 @@ class users{
       if (key == 1) {
         this.user.updateOne({ username: requester}, {
           $push: {
-            friendsList: { requester: targetUser }
+            friendsList: { friend: targetUser }
           }
         }).then(next => {
           if (next.nModified === 0) return  res.tools.setJson(0, '同意好友失败', { status: 3 });
           this.user.updateOne({ username: targetUser }, {
             $push: {
-              friendsList: { requester },
+              friendsList: { friend: requester },
             }
           }).then(data => {
             if (data.nModified > 0) {
@@ -197,25 +199,84 @@ class users{
     const option = {};
     switch (key) {
       case '0': option.friendsList = 1;break; // 获取好友列表 
-      case '1': option.attentionList = 1;break; // 获取关注列表
-      case '2': option.blacklist = 1;break; // 获取黑名单列表
+      case '1': option.blacklist = 1;break; // 获取拉黑列表
     }
     this.user.findOne({ username }, option)
     .then(data => {
       let respJson = {};
-      async.map(data.friendsList, (item, callback) => {
-        this.user.findOne({ username: item.requester}, (err, doc) => {
+      if (key == 0) {
+        async.map(data.friendsList, (item, callback) => {
+          this.user.findOne({ username: item.friend }, (err, doc) => {
+            if (err) return res.tools.setJson(0, '信息获取失败', err)
+            respJson['name'] = item.friend;
+            respJson['avatar'] = doc.avatar;
+            callback(null, respJson);
+          })
+        }, (err, result) => {
           if (err) return res.tools.setJson(0, '信息获取失败', err)
-          respJson['friend'] = item.requester;
-          respJson['avatar'] = doc.avatar;
-          callback(null, respJson);
+          res.tools.setJson(0, '好友列表获取成功', result)
         })
-      }, (err, result) => {
-        if (err) return res.tools.setJson(0, '信息获取失败', err)
-        res.tools.setJson(0, '好友列表获取成功', result)
-      })
+      } else {
+        async.map(data.blacklist, (item, callback) => {
+          this.user.findOne({ username: item.black }, (err, doc) => {
+            if (err) return res.tools.setJson(0, '信息获取失败', err)
+            respJson['name'] = item.black;
+            respJson['avatar'] = doc.avatar;
+            callback(null, respJson);
+          })
+        }, (err, result) => {
+          if (err) return res.tools.setJson(0, '信息获取失败', err)
+          res.tools.setJson(0, '拉黑列表获取成功', result)
+        })
+      }
     })
     .catch(err => next(err));
+  }
+
+  solveBlack(req, res, next){
+    const { username, targetUser, key } = req.body;
+    const pullOption = {};
+    const pushOption = {};
+    if (key === 1) {
+       pullOption['friendsList'] = { friend: targetUser };
+       pushOption['blacklist'] = { black: targetUser };
+    } else if (key === 2){
+      pullOption['blacklist'] = { black: targetUser };
+      pushOption['friendsList'] = { friend: targetUser };
+    }
+    this.user.updateOne({
+      username
+    }, {
+      $pull: pullOption,
+      $push: pushOption
+    }).then(doc => {
+      if (doc.nModified > 0) {
+        console.log(doc)
+        res.tools.setJson(0, '好友拉黑成功', { status: true })
+      } else {
+        res.tools.setJson(0, '好友拉黑失败', { status: false })
+      }
+    })
+    .catch(err => next(err));
+  }
+
+  deleteFriend(req, res, next) {
+    const { username, targetUser} = req.body;
+    console.log(targetUser);
+    console.log(username);
+    this.user.updateOne({
+      username
+    },{
+      $pull: { friendsList: { friend: targetUser } }
+    })
+    .then(doc => {
+      if (doc.deletedCount > 0) {
+        res.tools.setJson(0, '好友删除成功', { status: true })
+      } else {
+        res.tools.setJson(0, '好友删除失败', { status: false})
+      }
+    })
+    .catch(err =>next(err))
   }
 
   getUserList(req, res, next) {

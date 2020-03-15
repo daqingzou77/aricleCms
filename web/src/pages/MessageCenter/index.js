@@ -166,7 +166,7 @@ class MessageCenter extends React.Component {
             header={
               <Row type="flex" justify="space-between">
                 <Col>
-                  <Avatar shape="circle" icon="like" style={{ background: '#7265e6', marginRight: 5 }} size="small" /> 赞我
+                  <Avatar shape="circle" icon="like" style={{ background: '#F08080', marginRight: 5 }} size="small" /> 赞我
                 </Col>
                 <Col>
                   <Badge count={3} />
@@ -181,7 +181,7 @@ class MessageCenter extends React.Component {
                 renderItem={item => (
                   <List.Item>
                     <List.Item.Meta
-                      avatar={<Avatar shape="circle" icon="like" style={{ background: '#7265e6', marginRight: 5 }} size="small" />}
+                      avatar={<Avatar shape="circle" icon="like" style={{ background: '#F08080', marginRight: 5 }} size="small" />}
                       title={<span>{item}</span>}
                     />
                     <span>{moment(new Date()).format('YYYY-MM-DD hh:mm:ss')}</span>
@@ -197,14 +197,14 @@ class MessageCenter extends React.Component {
             header={
               <Row type="flex" justify="space-between">
                 <Col>
-                  <Avatar shape="circle" icon="like" style={{ background: '#7265e6', marginRight: 5 }} size="small" /> 私信
+                  <Avatar shape="circle" icon="mail" style={{ background: '#7265e6', marginRight: 5 }} size="small" /> 私信
                 </Col>
                 <Col>
                   <Badge count={3} />
                 </Col>
               </Row>
             }
-            key="-1"
+            key="1"
           >
             <InfiniteScroll className={styles.scroll}>
               <List
@@ -232,7 +232,7 @@ class MessageCenter extends React.Component {
                 </Col>
               </Row>
             }
-            key="0"
+            key="2"
           >
             <InfiniteScroll className={styles.scroll}>
               <List
@@ -260,7 +260,7 @@ class MessageCenter extends React.Component {
                 </Col>
               </Row>
             }
-            key="1"
+            key="3"
           >
             <InfiniteScroll className={styles.scroll}>
               <List
@@ -288,7 +288,7 @@ class MessageCenter extends React.Component {
                 </Col>
               </Row>
             }
-            key="2"
+            key="4"
           >
             <InfiniteScroll className={styles.scroll}>
               <List
