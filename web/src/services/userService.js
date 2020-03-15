@@ -42,15 +42,6 @@ export const deleteFriend = (data, successCb, failCb) => {
 }
 
 
-
-
-
-
-
-
-
-
-
 // **** 用户管理 ****
 
 // 获取用户列表

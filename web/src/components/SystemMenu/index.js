@@ -21,7 +21,6 @@ import icSituation from '@/assets/menuIcon/ic_situation.svg';
 import Modal from '@/common/components/Modal';
 import styles from './index.less';
 import MessageCenter from '@/pages/MessageCenter/index';
-import Notice from '@/pages/MessageCenter/component/Notice';
 import router from 'umi/router';
 
 const formatMessage = id => {

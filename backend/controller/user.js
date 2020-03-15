@@ -37,7 +37,7 @@ class users{
     this.app.get('/api/user/getCurrentUserDetail', this.getCurrentUserDetail.bind(this)); // 获取当前用户信息
     this.app.get('/api/user/getFriendsDetail', this.getFriendsDetail.bind(this)); // 查询好友信息
     this.app.get('/api/user/addUserRequest', this.addUserRequest.bind(this)); // 好友请求
-    this.app.get('/api/user/agreeRequest', this.agreeRequest.bind(this)); // 同意好友
+    // this.app.get('/api/user/agreeRequest', this.agreeRequest.bind(this)); // 同意好友
     this.app.get('/api/user/getClassifiedList', this.getClassifiedList.bind(this)); // 获取分类好友信息
     this.app.post('/api/user/solveBlack', this.solveBlack.bind(this)); // 处理好友拉黑
     this.app.delete('/api/user/deleteFriend', this.deleteFriend.bind(this)); // 删除好友
@@ -145,51 +145,6 @@ class users{
           res.tools.setJson(0, '请求发送失败', { status: 3 })
         }
       })
-    })
-    .catch(err => next(err));
-  }
-
-  agreeRequest(req, res, next) {
-    const { requester, targetUser, key } = req.query;
-    this.user.findOne({ username: targetUser, 'friendsList.friend': requester }).then(doc =>{
-      if (doc) {
-        res.tools.setJson(0, '好友已存在', { status: 0 });
-        return;
-      }
-      // 同意好友请求
-      if (key == 1) {
-        this.user.updateOne({ username: requester}, {
-          $push: {
-            friendsList: { friend: targetUser }
-          }
-        }).then(next => {
-          if (next.nModified === 0) return  res.tools.setJson(0, '同意好友失败', { status: 3 });
-          this.user.updateOne({ username: targetUser }, {
-            $push: {
-              friendsList: { friend: requester },
-            }
-          }).then(data => {
-            if (data.nModified > 0) {
-              this.user.updateOne({
-                username: targetUser
-              }, {
-                $pull: { requestList: { requester } }
-              })
-              .then(doc => {
-                if (doc.nModified > 0) {
-                  res.tools.setJson(0, '同意好友成功', { status: 1 });
-                } else {
-                  res.tools.setJson(0, '同意好友失败', { status: 3 });
-                }
-              })
-            } else {
-              res.tools.setJson(0, '同意好友失败', { status: 3 });
-            }
-          })
-        })
-      } else {
-        res.tools.setJson(0, '拒绝好友', { status: 2 })
-      }
     })
     .catch(err => next(err));
   }
