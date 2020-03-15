@@ -37,7 +37,6 @@ class users{
     this.app.get('/api/user/getCurrentUserDetail', this.getCurrentUserDetail.bind(this)); // 获取当前用户信息
     this.app.get('/api/user/getFriendsDetail', this.getFriendsDetail.bind(this)); // 查询好友信息
     this.app.get('/api/user/addUserRequest', this.addUserRequest.bind(this)); // 好友请求
-    // this.app.get('/api/user/agreeRequest', this.agreeRequest.bind(this)); // 同意好友
     this.app.get('/api/user/getClassifiedList', this.getClassifiedList.bind(this)); // 获取分类好友信息
     this.app.post('/api/user/solveBlack', this.solveBlack.bind(this)); // 处理好友拉黑
     this.app.delete('/api/user/deleteFriend', this.deleteFriend.bind(this)); // 删除好友
@@ -217,8 +216,6 @@ class users{
 
   deleteFriend(req, res, next) {
     const { username, targetUser} = req.body;
-    console.log(targetUser);
-    console.log(username);
     this.user.updateOne({
       username
     },{

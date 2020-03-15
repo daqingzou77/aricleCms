@@ -1,13 +1,14 @@
 import articles from '../model/articles';
-import users from '../model/user';
+import user from '../model/user';
 import chats from '../model/chat';
+import async from '../utils/async';
 
 class MessageCenter {
   constructor(app) {
     Object.assign(this, {
       app,
       articles,
-      users,
+      user,
       chats
     });
     this.init();
@@ -20,11 +21,39 @@ class MessageCenter {
 
   getFriendRequest(req, res, next) {
     const { username } = req.query;
-    this.users.findOne({
+    this.user.findOne({
       username
     }, { requestList: 1})
-    .then(doc => {
-      res.tool.setJson(0, '获取好友列表成功', doc);
+    .then(data => {
+      let respJson = {};
+      // async.map(data.requestList, (item, callback) => {
+      //   console.log(item)
+      //   this.users.findOne({ username: item.requester }, (err, doc) => {
+      //     if (err) return res.tools.setJson(0, '请求列表获取失败', err)
+      //     respJson['name'] = item.requester;
+      //     respJson['avatar'] = doc.avatar;
+      //     callback(null, respJson);
+      //   })
+      // }, (err, result) => {
+      //   if (err) return res.tools.setJson(0, '请求列表获取失败', err)
+      //   res.tools.setJson(0, '亲求列表获取成功', result)
+      // })
+      // const list = [{
+      //   requester: '张家辉'
+      // }, {
+      //   requester: '古天乐'
+      // }]
+      async.map(data.requestList, (item, callback) => {
+        this.user.findOne({ username: item.requester }, (err, doc) => {
+          if (err) return res.tools.setJson(0, '信息获取失败', err)
+          respJson['name'] = item.requester;
+          respJson['avatar'] = doc.avatar;
+          callback(null, respJson);
+        })
+      }, (err, result) => {
+        if (err) return res.tools.setJson(0, '信息获取失败', err)
+        res.tools.setJson(0, '好友列表获取成功', result)
+      })
     })
     .catch(err => next(err))
   }
@@ -43,7 +72,7 @@ class MessageCenter {
             friendsList: { friend: targetUser }
           }
         }).then(next => {
-          if (next.nModified === 0) return  res.tools.setJson(0, '同意好友失败', { status: 3 });
+          if (next.nModified === 0) return  res.tools.setJson(0, '同意好友失败', { status: false });
           this.user.updateOne({ username: targetUser }, {
             $push: {
               friendsList: { friend: requester },
@@ -57,18 +86,28 @@ class MessageCenter {
               })
               .then(doc => {
                 if (doc.nModified > 0) {
-                  res.tools.setJson(0, '同意好友成功', { status: 1 });
+                  res.tools.setJson(0, '同意好友成功', { status: true });
                 } else {
-                  res.tools.setJson(0, '同意好友失败', { status: 3 });
+                  res.tools.setJson(0, '同意好友失败', { status: false });
                 }
               })
             } else {
-              res.tools.setJson(0, '同意好友失败', { status: 3 });
+              res.tools.setJson(0, '同意好友失败', { status: false });
             }
           })
         })
       } else {
-        res.tools.setJson(0, '拒绝好友', { status: 2 })
+        this.user.updateOne({
+          username: targetUser
+        }, {
+          $pull: { requestList: { requester } }
+        }).then(doc => {
+          if (doc.nModified > 0) {
+            res.tools.setJson(0, '拒绝好友成功', { status: true })
+          } else {
+            res.tools.setJson(0, '拒绝好友失败', { status: false })
+          }
+        })
       }
     })
     .catch(err => next(err));

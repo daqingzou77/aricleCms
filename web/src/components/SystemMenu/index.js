@@ -279,7 +279,7 @@ class SystemMenu extends React.Component {
           <p className={styles.logPstyle}>是否确认退出本系统？</p>
         </Modal>
         <Modal
-          width={400}
+          width={500}
           title="消息中心"
           visible={messageVisible}
           onOk={this.handleMessageVisible}

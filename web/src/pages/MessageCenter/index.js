@@ -5,6 +5,7 @@ import SocketIo from 'socket.io-client';
 
 import moment from 'moment';
 import Modal from '@/common/components/Modal';
+import Request from './component/Request';
 import Chat from './component/Chat';
 import styles from './style.less';
 
@@ -253,30 +254,17 @@ class MessageCenter extends React.Component {
           <Panel
             header={
               <Row type="flex" justify="space-between">
-                <Col><Avatar shape="circle" icon="user" style={{ background: '#f56a00', marginRight: 5 }} size="small" /> 请求
+                <Col>
+                  <Avatar shape="circle" icon="user" style={{ background: '#f56a00', marginRight: 5 }} size="small" /> 请求
                 </Col>
                 <Col>
-                  <Badge count={5} />
+                  {/* <Badge count={5} /> */}
                 </Col>
               </Row>
             }
             key="3"
           >
-            <InfiniteScroll className={styles.scroll}>
-              <List
-                dataSource={dataSource}
-                renderItem={item => (
-                  <List.Item>
-                    <List.Item.Meta
-                      avatar={<Avatar shape="circle" icon="user" style={{ background: '#f56a00', marginRight: 5 }} size="small" />}
-                      title={item}
-                      onClick={this.handlePrivaceClick}
-                    />
-                    <Badge count={2} />
-                  </List.Item>
-                )}
-              />
-            </InfiniteScroll>
+            <Request />
           </Panel>
           <Panel
             header={
