@@ -322,7 +322,7 @@ export default class FriendsList extends React.Component {
             </div>
             <div className={styles.detail}>
               <p>
-                <MailOutlined /> <span>{currentUser.account}</span>
+                <MailOutlined /> <span>{currentUser.email}</span>
                 <PhoneOutlined style={{ marginLeft: 26 }} /> <span>{currentUser.telephoneNumber}</span>
               </p>
             </div>

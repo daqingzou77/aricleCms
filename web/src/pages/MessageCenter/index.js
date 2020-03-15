@@ -251,21 +251,21 @@ class MessageCenter extends React.Component {
               />
             </InfiniteScroll>
           </Panel>
-          <Panel
+          {/* <Panel
             header={
               <Row type="flex" justify="space-between">
                 <Col>
                   <Avatar shape="circle" icon="user" style={{ background: '#f56a00', marginRight: 5 }} size="small" /> 请求
                 </Col>
                 <Col>
-                  {/* <Badge count={5} /> */}
+                  <Badge count={5} />
                 </Col>
               </Row>
             }
             key="3"
-          >
+          > */}
             <Request />
-          </Panel>
+          {/* </Panel> */}
           <Panel
             header={
               <Row type="flex" justify="space-between">

@@ -50,12 +50,13 @@ export default class FindFriends extends React.Component {
     }, ({ data }) => {
       const { status } = data;
       if (status === 1) {
-        message.warning('好友请求已发送');
+        message.warning('请求已发送，等待结果');
       } else if (status === 2) {
         message.success('好友请求发送成功');
       } else if (status === 3) {
         message.error('请求发送失败');
       }
+      this.handleFresh();
     },
       e => console.log('handleAddFriend-error', e.toString())
     )

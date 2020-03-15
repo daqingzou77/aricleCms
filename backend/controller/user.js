@@ -3,7 +3,7 @@ import chat from '../model/chat';
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
-import async from '../utils/async';
+import async from 'async';
 import config from '../config/app.config';
 import { getRandomNumbers } from '../utils/index';
 
@@ -128,7 +128,9 @@ class users{
 
   addUserRequest(req, res, next) {
     const { requester, targetUser } = req.query;
-    this.user.findOne({ username: targetUser, "requestList.requester": requester})
+    this.user.findOne({ $or: [{ username: targetUser, "requestList.requester": requester },
+      { username: targetUser, "friendsList.friend": requester }
+    ]})
     .then(doc => {
       if(doc) {
         return res.tools.setJson(0, '请求已发送，不能再次发送', { status: 1 })
@@ -157,26 +159,25 @@ class users{
     }
     this.user.findOne({ username }, option)
     .then(data => {
-      let respJson = {};
       if (key == 0) {
         async.map(data.friendsList, (item, callback) => {
           this.user.findOne({ username: item.friend }, (err, doc) => {
             if (err) return res.tools.setJson(0, '信息获取失败', err)
-            respJson['name'] = item.friend;
-            respJson['avatar'] = doc.avatar;
-            callback(null, respJson);
+            item['name'] = item.friend;
+            item['avatar']  = doc.avatar;
+            callback(null, item);
           })
-        }, (err, result) => {
+        }, (err, results) => {
           if (err) return res.tools.setJson(0, '信息获取失败', err)
-          res.tools.setJson(0, '好友列表获取成功', result)
+          res.tools.setJson(0, '好友列表获取成功', results)
         })
       } else {
         async.map(data.blacklist, (item, callback) => {
           this.user.findOne({ username: item.black }, (err, doc) => {
             if (err) return res.tools.setJson(0, '信息获取失败', err)
-            respJson['name'] = item.black;
-            respJson['avatar'] = doc.avatar;
-            callback(null, respJson);
+            item['name'] = item.black;
+            item['avatar'] = doc.avatar;
+            callback(null, item);
           })
         }, (err, result) => {
           if (err) return res.tools.setJson(0, '信息获取失败', err)
@@ -222,7 +223,7 @@ class users{
       $pull: { friendsList: { friend: targetUser } }
     })
     .then(doc => {
-      if (doc.deletedCount > 0) {
+      if (doc.nModified > 0) {
         res.tools.setJson(0, '好友删除成功', { status: true })
       } else {
         res.tools.setJson(0, '好友删除失败', { status: false})

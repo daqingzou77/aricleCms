@@ -1,7 +1,7 @@
 import articles from '../model/articles';
 import user from '../model/user';
 import chats from '../model/chat';
-import async from '../utils/async';
+import async from 'async';
 
 class MessageCenter {
   constructor(app) {
@@ -25,30 +25,12 @@ class MessageCenter {
       username
     }, { requestList: 1})
     .then(data => {
-      let respJson = {};
-      // async.map(data.requestList, (item, callback) => {
-      //   console.log(item)
-      //   this.users.findOne({ username: item.requester }, (err, doc) => {
-      //     if (err) return res.tools.setJson(0, '请求列表获取失败', err)
-      //     respJson['name'] = item.requester;
-      //     respJson['avatar'] = doc.avatar;
-      //     callback(null, respJson);
-      //   })
-      // }, (err, result) => {
-      //   if (err) return res.tools.setJson(0, '请求列表获取失败', err)
-      //   res.tools.setJson(0, '亲求列表获取成功', result)
-      // })
-      // const list = [{
-      //   requester: '张家辉'
-      // }, {
-      //   requester: '古天乐'
-      // }]
       async.map(data.requestList, (item, callback) => {
         this.user.findOne({ username: item.requester }, (err, doc) => {
           if (err) return res.tools.setJson(0, '信息获取失败', err)
-          respJson['name'] = item.requester;
-          respJson['avatar'] = doc.avatar;
-          callback(null, respJson);
+          item['name'] = item.requester;
+          item['avatar'] = doc.avatar;
+          callback(null, item);
         })
       }, (err, result) => {
         if (err) return res.tools.setJson(0, '信息获取失败', err)
