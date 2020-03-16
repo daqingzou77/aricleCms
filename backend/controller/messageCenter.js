@@ -15,8 +15,49 @@ class MessageCenter {
   }
 
   init(){
+    this.app.get('/api/messageCenter/getPrivateLetter', this.getPrivateLetter.bind(this)); // 获取私信
+    this.app.delete('/api/messageCenter/deletePrivateItem', this.deletePrivateItem.bind(this)); // 删除私信
     this.app.get('/api/messageCenter/getFriendRequest', this.getFriendRequest.bind(this)); // 获取好友请求
     this.app.post('/api/messageCenter/solveFriendRequest', this.solveFriendRequest.bind(this)); // 处理好友请求
+  }
+
+  getPrivateLetter(req, res, next) {
+    const { username } = req.query;
+    this.user.findOne({
+      username,
+    }, { messageList: 1 })
+    .then(doc => {
+      if (!doc) return res.tools.setJson(0, '获取私信失败', []);
+      async.map(doc.messageList, (item, callback) => {
+        this.user.findOne({ username: item.replyer }, (err, data) => {
+          if (!data) return res.tools.setJson(0, '信息获取失败', []);
+          item['replyer'] = item.replyer;
+          item['avatar'] = data.avatar;
+          callback(null, item)
+        })
+      }, (err, result) => {
+        if (err) return res.tools.setJson(0, '信息获取失败', [])
+        res.tools.setJson(0, '获取私信成功', result);
+      })
+    })
+    .catch(err => next(err));
+  }
+
+  deletePrivateItem(req, res, next) {
+    const { username, targetUser, time } = req.body;
+    this.user.updateOne({
+      username
+    }, {
+      $pull: { messageList: { replyer: targetUser, time: new Date(time) } }
+    })
+    .then(doc => {
+      if (doc.nModified > 0) {
+        res.tools.setJson(0, '删除私信成功', { status: true });
+      } else {
+        res.tools.setJson(0, '删除私信失败', { status: false });
+      }
+    })
+    .catch(err => next(err));
   }
 
   getFriendRequest(req, res, next) {

@@ -1,4 +1,5 @@
 import articles from '../model/articles';
+import users from '../model/user';
 import Encrypt from '../utils/encrypt';
 const BigInt = require('big-integer');
 
@@ -6,7 +7,8 @@ class Articles {
   constructor(app) {
     Object.assign(this, {
       app,
-      articles
+      articles,
+      users
     })
     this.init();
   }
@@ -34,6 +36,7 @@ class Articles {
     this.app.post('/api/article/commentArticle', this.commentArticle.bind(this)); // 评论文章
     this.app.get('/api/article/getArticleComment', this.getArticleComment.bind(this)); // 获取文章评论
     this.app.post('/api/article/solveComment', this.solveComment.bind(this)); // 点赞、拉黑评论
+    this.app.post('/api/article/privateContact', this.privateContact.bind(this)); // 私信回复作者
   }
 
   addArticle(req, res, next) {
@@ -328,6 +331,28 @@ class Articles {
           res.tools.setJson(0 ,'评论失败', { status: false });
         }
       })
+    .catch(err => next(err))
+  }
+
+  privateContact(req, res, next) {
+    const { replyer, targetUser, content } = req.body;
+    const pushData = {
+      replyer,
+      content,
+      time: new Date
+    }
+    this.users.updateOne({
+      username: targetUser
+    }, {
+      $push: { messageList: pushData }
+    })
+    .then(data => {
+      if (data.nModified > 0) {
+        res.tools.setJson(0, '私信成功', { status: true });
+      } else {
+        res.tools.setJson(0, '私信失败', { status: false });
+      }
+    })
     .catch(err => next(err))
   }
 }

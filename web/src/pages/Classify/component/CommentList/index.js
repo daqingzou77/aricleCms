@@ -7,7 +7,8 @@ import FormElement from '@/components/FormElement';
 import Modal from '@/common/components/Modal';
 import styles from './style.less';
 import { 
-  solveComment
+  solveComment,
+  privateContact
 } from '@/services/articleSevice'
 
 function include(arr, index) {
@@ -24,10 +25,18 @@ function include(arr, index) {
 class CommentList extends React.Component {
 
   state = {
+    currentUser: '',
     replyModal: false,
     currentCommenter: '',
     choose1Index: [{ indexArray: [] }],
     choose2Index: [{ indexArray: [] }],
+  }
+
+  componentWillMount() {
+    const currentUser = localStorage.getItem('currentUser');
+    this.setState({
+      currentUser
+    })
   }
 
   componentWillReceiveProps(nextProps) {
@@ -44,6 +53,7 @@ class CommentList extends React.Component {
     })
   }
 
+  // 处理评论 点赞、拉黑
   solveComment = (_id, articlename, commentTime, key, index) => {
     const { choose1Index, choose2Index } = this.state;
     solveComment({
@@ -69,6 +79,24 @@ class CommentList extends React.Component {
       }
     },
     e => console.log('solveComment-error', e.toString())
+    )
+  }
+
+  // 私信用户
+  privateContact = (name, content) => {
+    const { currentUser } = this.state; 
+    privateContact({
+      replyer: currentUser,
+      targetUser: name,
+      content
+    }, ({ data }) => {
+       if (data.status) {
+         message.success('私信成功');
+       } else {
+         message.error('私信失败');
+       }
+    },
+    e => console.log('solveCommen-error', e.toString())
     )
   }
 
@@ -120,6 +148,21 @@ class CommentList extends React.Component {
     })
   }
   
+  handlePrivateContact = () => {
+    const { form } = this.props;
+    const { currentCommenter } = this.state;
+    const content = form.getFieldValue('replyContent');
+    if (!content) {
+      message.warning('私信内容不能为空');
+      return;
+    }
+    this.privateContact(currentCommenter, content)
+    this.setState({
+      replyModal: false
+    })
+    form.resetFields();
+  }
+  
   handleReplyCancel = () => {
     this.setState({
       replyModal: false
@@ -127,9 +170,8 @@ class CommentList extends React.Component {
   }
 
   render() {
-    const { replyModal, choose1Index, choose2Index, currentCommenter } = this.state;
+    const { replyModal, choose1Index, choose2Index, currentCommenter, currentUser } = this.state;
     const { form, comments: { commentList }, commentArticlename } = this.props;
-    const currentUser = localStorage.getItem('currentUser');
     let dataSource = [];
     if (commentList) {
       dataSource = commentList
@@ -146,8 +188,8 @@ class CommentList extends React.Component {
     );
     const footer = (
       <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 10 }}>
-        <Button onClick={this.handleReplys} style={{ marginRight: 10 }}>取消</Button>
-        <Button onClick={this.handleReplyCancel} type="primary">私信</Button>
+        <Button onClick={this.handleReplyCancel} style={{ marginRight: 10 }}>取消</Button>
+        <Button onClick={this.handlePrivateContact} type="primary">私信</Button>
       </div>
     )
     return (

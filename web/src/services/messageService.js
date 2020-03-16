@@ -1,4 +1,4 @@
-import { get, post } from '../common/http';
+import { get, post, deletes } from '../common/http';
 
 const scheduleBaseUrl = process.env.apiBaseUrl;
 
@@ -20,6 +20,11 @@ export const getStarList = (data, successCb, failCb) => {
 // 获取私信列表
 export const getPrivateLetter = (data, successCb, failCb) => {
   get(`${scheduleBaseUrl}/api/messageCenter/getPrivateLetter`, data, successCb, failCb);
+}
+
+// 删除单例私信
+export const deletePrivateItem = (data, successCb, failCb) => {
+  deletes(`${scheduleBaseUrl}/api/messageCenter/deletePrivateItem`, data, successCb, failCb);
 }
 
 // 获取新的好友请求
