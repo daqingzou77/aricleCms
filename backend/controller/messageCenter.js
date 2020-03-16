@@ -1,7 +1,7 @@
 import articles from '../model/articles';
 import user from '../model/user';
 import chats from '../model/chat';
-import async from 'async';
+import async, { timesSeries } from 'async';
 
 class MessageCenter {
   constructor(app) {
@@ -19,6 +19,9 @@ class MessageCenter {
     this.app.delete('/api/messageCenter/deletePrivateItem', this.deletePrivateItem.bind(this)); // 删除私信
     this.app.get('/api/messageCenter/getFriendRequest', this.getFriendRequest.bind(this)); // 获取好友请求
     this.app.post('/api/messageCenter/solveFriendRequest', this.solveFriendRequest.bind(this)); // 处理好友请求
+    this.app.get('/api/messageCenter/getUpdatesCount', this.getUpdatesCount.bind(this)); //获取最新动态个数
+    this.app.get('/api/messageCenter/recordModalTime', this.recordModalTime.bind(this)); // 记录弹窗时刻
+    this.app.get('/api/messageCenter/getFriendUpdates', this.getFriendUpdates.bind(this)); // 获取好友动态
   }
 
   getPrivateLetter(req, res, next) {
@@ -134,6 +137,85 @@ class MessageCenter {
       }
     })
     .catch(err => next(err));
+  }
+
+  recordModalTime(req, res, next) {
+    const { username } = req.query;
+    this.user.updateOne({
+      username
+    }, {
+      $set: {
+        lastCloseTime: new Date()
+      }
+    })
+    .then(doc => {
+      if (doc.nModified > 0) {
+        res.tools.setJson(0, '记录时刻成功', { status: true })
+      } else {
+        res.tools.setJson(0, '记录时刻失败', { status: false })
+      }
+    })
+    .catch(err => next(err));
+  }
+
+  getUpdatesCount(req, res, next) {
+    const { username } = req.query;
+    this.user.findOne({
+      username
+    }, { friendsList: 1, lastCloseTime: 1 })
+    .then(doc => {
+      if (doc.length === 0) return res.tools.setJson(0, '获取动态为空', { count: 0 });
+        const authorArray = [];
+        doc.friendsList.map(item => {
+          authorArray.push(item.friend)
+        })
+        this.articles.find({
+          author: { $in: authorArray},
+          status: 3,
+          passTime: { $gte: doc.lastCloseTime }
+        }).countDocuments().then(data => {
+          res.tools.setJson(0, '最新动态数成功', { count: data });
+        })
+    })
+    .catch(err => next(err))
+  }
+
+  getFriendUpdates(req, res, next) {
+    const { username } = req.query;
+    const nowDate = new Date();
+    this.user.findOne({ 
+      username
+    }, { friendsList: 1 })
+    .then(doc => {
+      if (doc.length === 0) return res.tools.setJson(0, '获取动态为空', []);
+      async.map(doc.friendsList, (item, callback) => {
+        this.articles.findOne({
+          author: item.friend,
+          status: 3,
+          passTime: { $lte: nowDate }
+        }, (err, data) => {
+          if (err || !data) return res.tools.setJson(0, '获取动态失败', []);
+          const { articlename, articleForm, articleContent, annexname, passTime } = data;
+          item['articlename'] = articlename;
+          item['form'] = articleForm;
+          item['content'] = articleContent;
+          item['annexname'] = annexname;
+          item['time'] = passTime
+        }).then(datas => {
+          this.user.findOne({
+            username: datas.author
+          }, { avatar: 1 }, (err, detail) => {
+            if (!detail)  return res.tools.setJson(0, '获取动态失败', []);
+            item['avatar'] = detail.avatar;
+            callback(null, item);
+          })
+        })
+      }, (err, result) => {
+        if (err) return res.tools.setJson(0, '获取动态失败', []);
+        res.tools.setJson(0, '获取动态成功', result);
+      })
+    })
+ 
   }
 
 }

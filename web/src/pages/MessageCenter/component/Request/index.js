@@ -56,7 +56,6 @@ export default class Request extends React.Component {
     const { dataSource } = this.state;
     const count = dataSource.length;
     return (
-      // <>
       <Collapse expandIconPosition="right">
         <Panel
           header={
@@ -91,7 +90,6 @@ export default class Request extends React.Component {
           </InfiniteScroll>
         </Panel>
       </Collapse>
-
     )
   }
 }

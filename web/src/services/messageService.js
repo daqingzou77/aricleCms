@@ -37,8 +37,17 @@ export const solveFriendRequest = (data, successCb, failCb) => {
   post(`${scheduleBaseUrl}/api/messageCenter/solveFriendRequest`, data, successCb, failCb);
 }
 
-// 好友动态
+// 获取最新动态数目
+export const getUpdatesCount = (data, successCb, failCb) => {
+  get(`${scheduleBaseUrl}/api/messageCenter/getUpdatesCount`, data, successCb, failCb);
+}
+
+// 查看好友动态
 export const getFriendUpdates = (data, successCb, failCb) => {
-  post(`${scheduleBaseUrl}/api/messageCenter/getFriendUpdates`, data, successCb, failCb);
+  get(`${scheduleBaseUrl}/api/messageCenter/getFriendUpdates`, data, successCb, failCb);
 }
   
+// 记录弹窗关闭时间
+export const recordModalTime = (data, successCb, failCb) => {
+  get(`${scheduleBaseUrl}/api/messageCenter/recordModalTime`, data, successCb, failCb);
+}

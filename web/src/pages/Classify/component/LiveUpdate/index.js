@@ -2,9 +2,9 @@ import React from 'react';
 import { Card, Spin, List, Avatar, Typography, Icon } from 'antd';
 import InfiniteScroll from 'react-infinite-scroller';
 import htmlToDraft from 'html-to-draftjs';
-import moment from 'moment';
 import { EditorState, ContentState } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
+import moment from 'moment';
 import Modal from '@/common/components/Modal';
 import styles from './style.less';
 import {
@@ -117,6 +117,7 @@ export default class LiveUpdate extends React.Component {
       downloadAnnex(name)
     }
   }
+
 
   render() {
     const { liveCardLoading, liveUpdates, modalVisible, editorState  } = this.state;

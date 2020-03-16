@@ -1,6 +1,6 @@
 import { formatMessage as _formatMessage } from 'umi/locale';
 import React from 'react';
-import { Icon, Col, Row, Tag, Badge, } from 'antd';
+import { Icon, Col, Row, Tag, Badge, message, } from 'antd';
 import { Link, withRouter } from 'react-router-dom';
 // import Modal from '@/common/components/dialog/Modal';
 
@@ -22,6 +22,9 @@ import Modal from '@/common/components/Modal';
 import styles from './index.less';
 import MessageCenter from '@/pages/MessageCenter/index';
 import router from 'umi/router';
+import {
+  recordModalTime
+} from '@/services/messageService';
 
 const formatMessage = id => {
   return _formatMessage({ id });
@@ -154,6 +157,22 @@ class SystemMenu extends React.Component {
     };
   }
 
+  // 记录弹窗关闭时间
+  recordModalTime = () => {
+    const username = localStorage.getItem('currentUser');
+    recordModalTime({
+      username
+    }, ({ data }) => {
+       if (data.status) {
+         console.log('弹窗时刻记录成功');
+       } else {
+         message.error('弹窗时刻记录失败');
+       }
+    },
+    e => console.log('recordModalTime-error', e.toString())
+    )
+  }
+
   handleClickUpOrDown = () => {
     const { isOpenToolbar } = this.state;
     const { changeOpenToolbar } = this.props;
@@ -199,6 +218,7 @@ class SystemMenu extends React.Component {
   }
 
   handleMessageCancel = () => {
+    this.recordModalTime();
     this.setState({
       messageVisible: false
     })
@@ -271,8 +291,8 @@ class SystemMenu extends React.Component {
           visible={visibleCard}
           onOk={this.handleCardOk}
           onCancel={this.handleCardCancel}
-          showCancel={true}
-          showOk={true}
+          showCancel
+          showOk
           cancelText="取消"
           okText="确认"
         >
@@ -280,6 +300,7 @@ class SystemMenu extends React.Component {
         </Modal>
         <Modal
           width={500}
+          // width='fit-content'
           title="消息中心"
           visible={messageVisible}
           onOk={this.handleMessageVisible}

@@ -2,13 +2,16 @@ import React from 'react';
 import { Row, Col, Badge, Avatar, List, Collapse, Button, message } from 'antd';
 import InfiniteScroll from 'react-infinite-scroller';
 import SocketIo from 'socket.io-client';
-
 import moment from 'moment';
 import Modal from '@/common/components/Modal';
 import Private from './component/Private';
 import Request from './component/Request';
+import Attention from './component/Attention';
 import Chat from './component/Chat';
 import styles from './style.less';
+import {
+  getUpdatesCount
+} from '@/services/messageService'
 
 const { Panel } = Collapse;
 class MessageCenter extends React.Component {
@@ -18,12 +21,36 @@ class MessageCenter extends React.Component {
     messageVisible: false,
     content: '',
     dialogTips: [],
+    updateCount: 0,
+  }
+
+  componentWillMount() {
+    const currentUser = localStorage.getItem('currentUser');
+    this.setState({
+      currentUser
+    })
   }
 
   componentDidMount() {
-    this.initSocket()
+    const { currentUser } = this.state;
+    this.getUpdatesCount(currentUser);
+    this.initSocket();
   }
 
+  // 获取更新数
+  getUpdatesCount = name => {
+    getUpdatesCount({
+      username: name
+    }, ({ data }) => {
+      this.setState({
+        updateCount: data.count,
+      })
+    },
+    e => console.log('getUpdatesCount-error', e.toString())
+    )
+  }
+
+  // 连接websocket
   initSocket = () => {
     const { dialogTips } = this.state;
     this.socket = SocketIo.connect('http://localhost:80');
@@ -119,7 +146,7 @@ class MessageCenter extends React.Component {
   }
 
   render() {
-    const { commentVisible, messageVisible, dialogTips, content } = this.state;
+    const { commentVisible, messageVisible, dialogTips, content, updateCount } = this.state;
     const footer = (
       <Button onClick={this.handlePushMessage} type="primary" size="small" style={{ float: "right", margin: 5 }}>发送</Button>
     );
@@ -225,48 +252,8 @@ class MessageCenter extends React.Component {
               />
             </InfiniteScroll>
           </Panel>
-          {/* <Panel
-            header={
-              <Row type="flex" justify="space-between">
-                <Col>
-                  <Avatar shape="circle" icon="user" style={{ background: '#f56a00', marginRight: 5 }} size="small" /> 请求
-                </Col>
-                <Col>
-                  <Badge count={5} />
-                </Col>
-              </Row>
-            }
-            key="3"
-          > */}
-            <Request />
-          {/* </Panel> */}
-          <Panel
-            header={
-              <Row type="flex" justify="space-between">
-                <Col><Avatar shape="circle" icon="heart" style={{ background: 'red', marginRight: 5 }} size="small" /> 动态
-                </Col>
-                <Col>
-                  <Badge count={5} />
-                </Col>
-              </Row>
-            }
-            key="4"
-          >
-            <InfiniteScroll className={styles.scroll}>
-              <List
-                dataSource={dataSource}
-                renderItem={item => (
-                  <List.Item>
-                    <List.Item.Meta
-                      avatar={<Avatar shape="circle" icon="heart" style={{ background: 'red', marginRight: 5 }} size="small" />}
-                      title={item}
-                    />
-                    <Badge count={2} />
-                  </List.Item>
-                )}
-              />
-            </InfiniteScroll>
-          </Panel>
+          <Request />
+          <Attention count={updateCount} />
         </Collapse>
         <Modal
           title="评论详情"
