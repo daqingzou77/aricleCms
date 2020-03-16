@@ -26,7 +26,7 @@ class Step1 extends React.Component {
 
   pushAuditMessage = () => {
     const { auditMessage: { articlename }, handleNextStep } = this.props;
-    const auditor = 'daqing';
+    const auditor = localStorage.getItem('currentUser');
     pushAuditMessage({
       articlename,
       auditor

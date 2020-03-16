@@ -185,7 +185,7 @@ class Tables extends React.Component {
     const { form } = this.props;
     const commentContent = form.getFieldValue('comment');
     const { commentArticlename, choose4Index } = this.state;
-    const commenter = 'daqing'; // 模拟当前用户
+    const commenter = localStorage.getItem('currentUser');
     commentArticle({
       articlename: commentArticlename,
       commentContent,
@@ -354,10 +354,6 @@ class Tables extends React.Component {
               <Empty description={<span className={styles.matchFontStyle}>无匹配结果</span>} />
               )
         }
-        {/* <Table
-          dataSource={dataSources}
-          columns={this.columns}
-        /> */}
         <Modal
           visible={visible}
           title="内容详情"
@@ -373,8 +369,8 @@ class Tables extends React.Component {
           title={`评论文章-《${commentArticlename}》`}
           onOk={this.handleCommentOk}
           onCancel={this.handleCommentCancel}
-          showOk={true}
-          showCancel={true}
+          showOk
+          showCancel
         >
           <Form style={{ padding: 10 }}>
             <FormElement

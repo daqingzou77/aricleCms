@@ -179,7 +179,7 @@ class Audit extends React.Component {
           articleDescription,
           articleForm,
           annexname,
-          articleContent
+          articleContent,
         }
       })
     },

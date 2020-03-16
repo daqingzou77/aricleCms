@@ -25,9 +25,9 @@ class Step3 extends React.Component {
   }
 
   render() {
-    const currentUser = 'daqing';
     const { auditMessage } = this.props;
     const { articlename, author, articleType, articleDescription } = auditMessage;
+    const currentUser = localStorage.getItem('currentUser');
     let text;
     switch (articleType) {
       case 0: text = "科学"; break;

@@ -5,6 +5,7 @@ import SocketIo from 'socket.io-client';
 
 import moment from 'moment';
 import Modal from '@/common/components/Modal';
+import Private from './component/Private';
 import Request from './component/Request';
 import Chat from './component/Chat';
 import styles from './style.less';
@@ -194,34 +195,7 @@ class MessageCenter extends React.Component {
         </Collapse>
         {/* 好友 关注 拉黑 */}
         <Collapse style={{ marginTop: 10 }} onChange={() => { }} expandIconPosition="right">
-          <Panel
-            header={
-              <Row type="flex" justify="space-between">
-                <Col>
-                  <Avatar shape="circle" icon="mail" style={{ background: '#7265e6', marginRight: 5 }} size="small" /> 私信
-                </Col>
-                <Col>
-                  <Badge count={3} />
-                </Col>
-              </Row>
-            }
-            key="1"
-          >
-            <InfiniteScroll className={styles.scroll}>
-              <List
-                dataSource={dataSource}
-                renderItem={item => (
-                  <List.Item>
-                    <List.Item.Meta
-                      avatar={<Avatar shape="circle" icon="like" style={{ background: '#7265e6', marginRight: 5 }} size="small" />}
-                      title={<span>{item}</span>}
-                    />
-                    <span>{moment(new Date()).format('YYYY-MM-DD hh:mm:ss')}</span>
-                  </List.Item>
-                )}
-              />
-            </InfiniteScroll>
-          </Panel>
+          <Private />
           <Panel
             header={
               <Row type="flex" justify="space-between">

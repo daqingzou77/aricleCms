@@ -13,7 +13,7 @@ class Step2 extends React.Component {
   }
 
   handleConfirm = articlename => {
-    const passAuditor = 'daqing';
+    const passAuditor = localStorage.getItem('currentUser');
     confirmAuditMessage({
       articlename,
       passAuditor
@@ -29,7 +29,7 @@ class Step2 extends React.Component {
 
   render() {
     const { form, auditMessage } = this.props;
-    const currentUser ='daqing';
+    const currentUser = localStorage.getItem('currentUser');
     const { articlename, author, articleType, articleDescription } = auditMessage;
     let text;
     switch (articleType) {

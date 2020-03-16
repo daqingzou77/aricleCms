@@ -106,6 +106,7 @@ class CommentList extends React.Component {
     }
   }
 
+  // 私信某用户
   handleOnReply = name => {
     this.setState({
       replyModal: true,
@@ -128,6 +129,7 @@ class CommentList extends React.Component {
   render() {
     const { replyModal, choose1Index, choose2Index, currentCommenter } = this.state;
     const { form, comments: { commentList }, commentArticlename } = this.props;
+    const currentUser = localStorage.getItem('currentUser');
     let dataSource = [];
     if (commentList) {
       dataSource = commentList
@@ -173,11 +175,11 @@ class CommentList extends React.Component {
                     评论时间：{moment(item.commentTime).format('YYYY-MM-DD hh:mm:ss')}
                   </span>
                 ]}
-                extra={<a onClick={() => this.handleOnReply(item.commenter)}>回复</a>}
+                extra={currentUser === item.commenter ? null : <a onClick={() => this.handleOnReply(item.commenter)}>私信</a>}
               >
                 <List.Item.Meta
                   avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
-                  title={<a href="https://ant.design">{item.commenter}</a>}
+                  title={<span>{item.commenter}</span>}
                   description={item.commentContent}
                 />
               </List.Item>
@@ -186,7 +188,7 @@ class CommentList extends React.Component {
         </InfiniteScroller>
         <Modal
           visible={replyModal}
-          title={`回复作者--${currentCommenter}`}
+          title={`私信用户--${currentCommenter}`}
           footer={footer}
           onCancel={() => this.setState({ replyModal: false })}
         >

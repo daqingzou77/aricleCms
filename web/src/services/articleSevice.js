@@ -51,3 +51,8 @@ export const getArticleComment = (data, successCb, failCb) => {
 export const solveComment = (data, successCb, failCb) => {
   post(`${scheduleBaseUrl}/api/article/solveComment`, data, successCb, failCb);
 };
+
+// 私信评论人
+export const privateContact = (data, successCb, failCb) => {
+  post(`${scheduleBaseUrl}/api/article/privateContact`, data, successCb, failCb);
+};
