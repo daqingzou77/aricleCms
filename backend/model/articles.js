@@ -63,6 +63,10 @@ const articleSchema = mongoose.Schema({
     keywords: {type: Array, default: []},
     cipherTextIndex: Object,
     preSmi: Number,
+    likeList: [{
+      liker: String,
+      likeTime: Date,
+    }],
     commentList: [{
       commenter: String,
       commentContent: String,

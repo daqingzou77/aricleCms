@@ -250,13 +250,15 @@ class Articles {
   }
 
   solveArticle(req, res, next) {
-    const { key, articlename, currenUser } = req.body;
+    const { key, articlename, liker } = req.body;
     this.articles.findOne({ articlename })
     .then(doc => {
       if(!doc) return res.tools.setJson(0, '无记录', doc);
       let { likes, dislikes, favorites } = doc;
+      let options = {}
       if( key === 1) {
         likes += 1;
+        options['$push'] = { likeList: { liker, likeTime: new Date() }};
       } else if(key === 2) {
         dislikes += 1;
       } else if(key === 3) {
@@ -264,7 +266,8 @@ class Articles {
       } else if (key === 4) {
         favorites -= 1;
       }
-      this.articles.updateOne({ articlename }, {$set: { likes, dislikes, favorites }})
+      options['$set'] = { likes, dislikes, favorites }
+      this.articles.updateOne({ articlename }, options)
       .then(data => {
         if(data.nModified > 0) {
           res.tools.setJson(0, '处理成功', { status: true });

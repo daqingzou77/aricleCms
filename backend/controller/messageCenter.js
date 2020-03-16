@@ -2,7 +2,6 @@ import articles from '../model/articles';
 import user from '../model/user';
 import chats from '../model/chat';
 import async from 'async';
-import moment from 'moment';
 
 class MessageCenter {
   constructor(app) {
@@ -18,8 +17,6 @@ class MessageCenter {
   init(){
     this.app.get('/api/messageCenter/getCommentCounts', this.getCommentCounts.bind(this)); // 获取最新评论数
     this.app.get('/api/messageCenter/getCommentList', this.getCommentList.bind(this)); // 获取评论列表
-    
-    this.app.get('/api/messageCenter/getCommentStarsCounts', this.getCommentStarsCounts.bind(this)); // 获取评论点赞数
     this.app.get('/api/messageCenter/getStarCounts', this.getStarCounts.bind(this)); // 获取文章点赞数
     this.app.get('/api/messageCenter/getStarList', this.getStarList.bind(this)); // 获取点赞列表
     
@@ -68,20 +65,91 @@ class MessageCenter {
           respArray.push(data[i].commentList[j]);
         }
       }
-      res.tools.setJson(0, '获取评论成功', respArray);
+      return respArray
     })
-  }
-
-  getCommentStarsCounts(req, res, next) {
-
+    .then(data => {
+      const datas = [];
+      data.map(item=> {
+        datas.push({
+          commenter: item.commenter,
+          content: item.commentContent,
+          time: item. commentTime
+        })
+      })
+      async.map(datas, (item, callback) => {
+        this.user.findOne({ username: item.commenter }, (err, doc) => {
+          if (!doc) return res.tools.setJson(0, '信息获取失败', []);
+          item['avatar'] = doc.avatar;
+          callback(null, item)
+        })
+      }, (err, result) => {
+        if (err) return res.tools.setJson(0, '信息获取失败', [])
+        res.tools.setJson(0, '获取私信成功', result);
+      })
+    })
+    .catch(err => next(err));
   }
 
   getStarCounts(req, res, next) {
-     
+    const { username } = req.query;
+    this.user.findOne({ username }, { lastCloseTime: 1 }).then(data => {
+      if (!data) return res.tools.setJson(0, '获取点赞数失败', []);
+      const { lastCloseTime } = data;
+      this.articles.find({
+        author: username,
+        "likeList.likeTime": { $gte: new Date(lastCloseTime) }
+      }, {
+        likeList: 1
+      }).then(datas => {
+        if (datas.length === 0) return res.tools.setJson(0, '获取点赞数失败', []);
+        let count = 0;
+        datas.map(item => {
+          count += item.likeList.length;
+        })
+        res.tools.setJson(0, '获取点赞数成功', { count });
+      })
+    })
+    .catch(err => next(err));
   }
 
   getStarList(req, res, next) {
-
+    const { username } = req.query;
+    this.articles.find({
+      author: username
+    }, {
+      likeList: 1
+    })
+    .then(data => {
+      if (data.length === 0) return res.tools.setJson(0, '获取点赞失败', []);
+      let respArray = [];
+      for (let i = 0; i < data.length; i++) {
+        for (let j = 0; j < data[i].likeList.length; j++) {
+          respArray.push(data[i].likeList[j]);
+        }
+      }
+      return respArray
+    })
+    .then(doc => {
+      const data = [];
+      doc.map(v => {
+        data.push({
+          liker: v.liker,
+          time: v.likeTime
+        })
+      })
+      async.map(data, (item, callback) => {
+        this.user.findOne({
+          username: item.liker
+        }, { avatar: 1 })
+        .then(datas => {
+          item['avatar'] = datas.avatar;
+          callback(null, item)
+        })
+      }, (err, result) => {
+        if (err) return  res.tools.setJson(0, '点赞列表获取失败',  []);
+        res.tools.setJson(0, '点赞列表获取成功', result);
+      })
+    })
   }
 
   getPrivateLetter(req, res, next) {
@@ -254,24 +322,32 @@ class MessageCenter {
           status: 3,
           passTime: { $lte: nowDate }
         }, (err, data) => {
-          if (err || !data) return res.tools.setJson(0, '获取动态失败', []);
-          const { articlename, articleForm, articleContent, annexname, passTime } = data;
-          item['articlename'] = articlename;
-          item['form'] = articleForm;
-          item['content'] = articleContent;
-          item['annexname'] = annexname;
-          item['time'] = passTime
-        }).then(datas => {
-          this.user.findOne({
-            username: datas.author
-          }, { avatar: 1 }, (err, detail) => {
-            if (!detail)  return res.tools.setJson(0, '获取动态失败', []);
-            item['avatar'] = detail.avatar;
-            callback(null, item);
-          })
+          if (err) return res.tools.setJson(0, '获取动态失败', []);
+          if (data) {
+            const { articlename, articleForm, articleContent, annexname, passTime } = data;
+            item['articlename'] = articlename;
+            item['form'] = articleForm;
+            item['content'] = articleContent;
+            item['annexname'] = annexname;
+            item['time'] = passTime;
+            this.user.findOne({
+              username: item.friend
+            }, { avatar: 1 }, (err, detail) => {
+              if (!detail)  return res.tools.setJson(0, '获取动态失败', []);
+              item['avatar'] = detail.avatar;
+              callback(null, item);
+            })
+          } else {
+            callback()
+          }
         })
       }, (err, result) => {
         if (err) return res.tools.setJson(0, '获取动态失败', []);
+        result.map((item, index) => {
+          if (!item) {
+            result.splice(index, 1);
+          }
+        })
         res.tools.setJson(0, '获取动态成功', result);
       })
     })

@@ -20,14 +20,14 @@ import styles from './style.less';
 
 function include(arr, index) {
   const result = false;
-    if (!arr) {
-      return false;
-    }
-    if (arr[0].indexArray.includes(index)) {
-      return !result;
-    }
-    return result;
+  if (!arr) {
+    return false;
   }
+  if (arr[0].indexArray.includes(index)) {
+    return !result;
+  }
+  return result;
+}
 
 class Tables extends React.Component {
 
@@ -69,20 +69,20 @@ class Tables extends React.Component {
       const { choose1Index, choose2Index, choose3Index, choose4Index } = that.state;
       return (
         <>
-          <LikeTwoTone 
-            twoToneColor={include(choose1Index, index) ? '#FF0000': ''}  
+          <LikeTwoTone
+            twoToneColor={include(choose1Index, index) ? '#FF0000' : ''}
             onClick={() => that.handleArticle(articlename, 1, index)}
-          /> {choose1Index[index+1].likes}
+          /> {choose1Index[index + 1].likes}
           <DislikeTwoTone
-            style={{ marginLeft: 8 }} 
-            twoToneColor={include(choose2Index, index) ? '#303030': ''}
+            style={{ marginLeft: 8 }}
+            twoToneColor={include(choose2Index, index) ? '#303030' : ''}
             onClick={() => that.handleArticle(articlename, 2, index)}
-          /> {choose2Index[index+1].dislikes}
-          <StarTwoTone 
-            style={{ marginLeft: 8 }} 
-            twoToneColor={include(choose3Index, index) ? '#FFCC00': ''}
+          /> {choose2Index[index + 1].dislikes}
+          <StarTwoTone
+            style={{ marginLeft: 8 }}
+            twoToneColor={include(choose3Index, index) ? '#FFCC00' : ''}
             onClick={() => that.handleArticle(articlename, 3, index)}
-          /> {choose3Index[index+1].favorites}
+          /> {choose3Index[index + 1].favorites}
           <Popover
             content={
               <>
@@ -92,10 +92,10 @@ class Tables extends React.Component {
             }
             title="操作详情"
           >
-            <MessageTwoTone 
-              style={{ marginLeft: 8 }} 
-              twoToneColor={include(choose4Index, index) ? '#CC6600': ''}
-            /> {choose4Index[index+1].comments}
+            <MessageTwoTone
+              style={{ marginLeft: 8 }}
+              twoToneColor={include(choose4Index, index) ? '#CC6600' : ''}
+            /> {choose4Index[index + 1].comments}
           </Popover>
         </>
       )
@@ -127,58 +127,60 @@ class Tables extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     const { dataSource } = nextProps;
-    const { choose1Index, choose2Index, choose3Index, choose4Index } = this.state; 
-     dataSource.map(item => {
-       const { likes, dislikes, favorites, comments } = item;
-       choose1Index.push({ likes });
-       choose2Index.push({ dislikes });
-       choose3Index.push({ favorites });
-       choose4Index.push({ comments });
-     })
-     this.setState({
-       choose1Index,
-       choose2Index,
-       choose3Index,
-       choose4Index
-     })
-   }
+    const { choose1Index, choose2Index, choose3Index, choose4Index } = this.state;
+    dataSource.map(item => {
+      const { likes, dislikes, favorites, comments } = item;
+      choose1Index.push({ likes });
+      choose2Index.push({ dislikes });
+      choose3Index.push({ favorites });
+      choose4Index.push({ comments });
+    })
+    this.setState({
+      choose1Index,
+      choose2Index,
+      choose3Index,
+      choose4Index
+    })
+  }
 
   solveArticle = (articlename, key, index) => {
-    const { choose1Index, choose2Index, choose3Index, choose4Index } = this.state; 
-   solveArticle({
-     articlename,
-     key
-   }, ( { data} ) => {
-     if (data.status) {
-       if (key === 1) {
-        message.success('文章点赞成功');
-        choose1Index[index+1].likes += 1;
-        this.setState({
-          choose1Index
-        })
-       } else if (key === 2) {
-        message.success('文章拉黑成功');
-        choose2Index[index+1].dislikes += 1;
-        this.setState({
-          choose2Index
-        })
-       } else if (key === 3 ) {
-        message.success('文章收藏成功');
-        choose3Index[index+1].favorites += 1;
-        this.setState({
-          choose3Index
-        })
-       } else if (key === 4) {
-        message.success('取消收藏成功');
-        choose3Index[index+1].favorites -= 1;
-        this.setState({
-          choose3Index
-        })
-       }
-     }
-   },
-   e => console.log('solveArticle-error', e.toString())
-   )
+    const { choose1Index, choose2Index, choose3Index } = this.state;
+    const currentUser = localStorage.getItem('currentUse');
+    solveArticle({
+      articlename,
+      key,
+      liker: currentUser
+    }, ({ data }) => {
+      if (data.status) {
+        if (key === 1) {
+          message.success('文章点赞成功');
+          choose1Index[index + 1].likes += 1;
+          this.setState({
+            choose1Index
+          })
+        } else if (key === 2) {
+          message.success('文章拉黑成功');
+          choose2Index[index + 1].dislikes += 1;
+          this.setState({
+            choose2Index
+          })
+        } else if (key === 3) {
+          message.success('文章收藏成功');
+          choose3Index[index + 1].favorites += 1;
+          this.setState({
+            choose3Index
+          })
+        } else if (key === 4) {
+          message.success('取消收藏成功');
+          choose3Index[index + 1].favorites -= 1;
+          this.setState({
+            choose3Index
+          })
+        }
+      }
+    },
+      e => console.log('solveArticle-error', e.toString())
+    )
   }
 
   commentArticle = (index) => {
@@ -193,7 +195,7 @@ class Tables extends React.Component {
     }, ({ data }) => {
       if (data.status) {
         message.success('文章评论成功');
-        choose4Index[index+1].comments += 1;
+        choose4Index[index + 1].comments += 1;
         this.setState({
           choose4Index
         })
@@ -201,7 +203,7 @@ class Tables extends React.Component {
         message.error('文章评论失败');
       }
     },
-    e => console.log('commentArticle-error', e.toString())
+      e => console.log('commentArticle-error', e.toString())
     )
   }
 
@@ -213,7 +215,7 @@ class Tables extends React.Component {
         comments: data
       })
     },
-    e => console.log('comments-error', e.toString())
+      e => console.log('comments-error', e.toString())
     )
   }
 
@@ -242,9 +244,9 @@ class Tables extends React.Component {
   handleArticle = (articlename, key, index) => {
     const { choose1Index, choose2Index, choose3Index } = this.state;
     if (key === 1) {
-      if (include(choose1Index, index)){
-         message.warning('文章已赞');
-         return;
+      if (include(choose1Index, index)) {
+        message.warning('文章已赞');
+        return;
       }
       if (include(choose2Index, index)) {
         message.warning('该文章已拉黑，不能点赞');
@@ -256,7 +258,7 @@ class Tables extends React.Component {
         choose1Index
       })
     } else if (key === 2) {
-      if (include(choose2Index, index)){
+      if (include(choose2Index, index)) {
         message.warning('文章已拉黑');
         return;
       }
@@ -351,7 +353,7 @@ class Tables extends React.Component {
                 columns={this.columns}
               />
             ) : (
-              <Empty description={<span className={styles.matchFontStyle}>无匹配结果</span>} />
+                <Empty description={<span className={styles.matchFontStyle}>无匹配结果</span>} />
               )
         }
         <Modal
