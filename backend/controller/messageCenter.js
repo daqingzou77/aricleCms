@@ -1,7 +1,8 @@
 import articles from '../model/articles';
 import user from '../model/user';
 import chats from '../model/chat';
-import async, { timesSeries } from 'async';
+import async from 'async';
+import moment from 'moment';
 
 class MessageCenter {
   constructor(app) {
@@ -15,6 +16,13 @@ class MessageCenter {
   }
 
   init(){
+    this.app.get('/api/messageCenter/getCommentCounts', this.getCommentCounts.bind(this)); // 获取最新评论数
+    this.app.get('/api/messageCenter/getCommentList', this.getCommentList.bind(this)); // 获取评论列表
+    
+    this.app.get('/api/messageCenter/getCommentStarsCounts', this.getCommentStarsCounts.bind(this)); // 获取评论点赞数
+    this.app.get('/api/messageCenter/getStarCounts', this.getStarCounts.bind(this)); // 获取文章点赞数
+    this.app.get('/api/messageCenter/getStarList', this.getStarList.bind(this)); // 获取点赞列表
+    
     this.app.get('/api/messageCenter/getPrivateLetter', this.getPrivateLetter.bind(this)); // 获取私信
     this.app.delete('/api/messageCenter/deletePrivateItem', this.deletePrivateItem.bind(this)); // 删除私信
     this.app.get('/api/messageCenter/getFriendRequest', this.getFriendRequest.bind(this)); // 获取好友请求
@@ -22,6 +30,58 @@ class MessageCenter {
     this.app.get('/api/messageCenter/getUpdatesCount', this.getUpdatesCount.bind(this)); //获取最新动态个数
     this.app.get('/api/messageCenter/recordModalTime', this.recordModalTime.bind(this)); // 记录弹窗时刻
     this.app.get('/api/messageCenter/getFriendUpdates', this.getFriendUpdates.bind(this)); // 获取好友动态
+  }
+
+  getCommentCounts(req, res, next) {
+    const { username } = req.query;
+    this.user.findOne({ username }, { lastCloseTime: 1 }).then(data => {
+      if (!data) return res.tools.setJson(0, '获取评论数失败', []);
+      const { lastCloseTime } = data;
+      this.articles.find({
+        author: username,
+        "commentList.commentTime": { $gte: new Date(lastCloseTime) }
+      }, {
+        commentList: 1
+      }).then(datas => {
+        if (datas.length === 0) return res.tools.setJson(0, '获取评论数失败', []);
+        let count = 0;
+        datas.map(item => {
+          count += item.commentList.length;
+        })
+        res.tools.setJson(0, '获取评论数成功', { count });
+      })
+    })
+    .catch(err => next(err));
+  }
+
+  getCommentList(req, res, next) {
+    const { username } = req.query;
+    this.articles.find({
+      author: username
+    }, {
+      commentList: 1
+    }).then(data => {
+      if (data.length === 0) return res.tools.setJson(0, '获取评论失败', []);
+      let respArray = [];
+      for (let i = 0; i < data.length; i++) {
+        for (let j = 0; j < data[i].commentList.length; j++) {
+          respArray.push(data[i].commentList[j]);
+        }
+      }
+      res.tools.setJson(0, '获取评论成功', respArray);
+    })
+  }
+
+  getCommentStarsCounts(req, res, next) {
+
+  }
+
+  getStarCounts(req, res, next) {
+     
+  }
+
+  getStarList(req, res, next) {
+
   }
 
   getPrivateLetter(req, res, next) {

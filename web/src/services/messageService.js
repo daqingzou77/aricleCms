@@ -2,14 +2,24 @@ import { get, post, deletes } from '../common/http';
 
 const scheduleBaseUrl = process.env.apiBaseUrl;
 
+// 获取最新评论数目
+export const getCommentCounts = (data, successCb, failCb) => {
+  get(`${scheduleBaseUrl}/api/messageCenter/getCommentCounts`, data, successCb, failCb);
+}
+
 // 获取评论列表
 export const getCommentList = (data, successCb, failCb) => {
   get(`${scheduleBaseUrl}/api/messageCenter/getCommentList`, data, successCb, failCb);
 }
 
-// 查看评论详情
-export const watchCommetDetail = (data, successCb, failCb) => {
-  get(`${scheduleBaseUrl}/api/messageCenter/watchCommetDetail`, data, successCb, failCb);
+// 获取最新评论点赞数
+export const getCommentStarsCounts = (data, successCb, failCb) => {
+  get(`${scheduleBaseUrl}/api/messageCenter/getCommentStarsCounts`, data, successCb, failCb);
+}
+
+// 获取最新文章点赞数目
+export const getStarCounts = (data, successCb, failCb) => {
+  get(`${scheduleBaseUrl}/api/messageCenter/getStarCounts`, data, successCb, failCb);
 }
 
 // 查看赞列表
