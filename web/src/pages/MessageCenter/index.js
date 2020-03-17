@@ -4,13 +4,19 @@ import InfiniteScroll from 'react-infinite-scroller';
 import SocketIo from 'socket.io-client';
 import moment from 'moment';
 import Modal from '@/common/components/Modal';
+import Comment from './component/Comment';
+import Like from './component/Like';
 import Private from './component/Private';
+import Message from './component/Message';
 import Request from './component/Request';
 import Attention from './component/Attention';
 import Chat from './component/Chat';
 import styles from './style.less';
 import {
-  getUpdatesCount
+  getCommentCounts,
+  getStarCounts,
+  getPrivateCounts,
+  getUpdatesCount,
 } from '@/services/messageService'
 
 const { Panel } = Collapse;
@@ -21,7 +27,10 @@ class MessageCenter extends React.Component {
     messageVisible: false,
     content: '',
     dialogTips: [],
-    updateCount: 0,
+    commentCount: 0,
+    starCount: 0,
+    privateCount: 0,
+    updateCount: 0
   }
 
   componentWillMount() {
@@ -33,6 +42,9 @@ class MessageCenter extends React.Component {
 
   componentDidMount() {
     const { currentUser } = this.state;
+    this.getCommentCounts(currentUser);
+    this.getStarCounts(currentUser);
+    this.getPrivateCounts(currentUser);
     this.getUpdatesCount(currentUser);
     this.initSocket();
   }
@@ -47,6 +59,44 @@ class MessageCenter extends React.Component {
       })
     },
     e => console.log('getUpdatesCount-error', e.toString())
+    )
+  }
+
+  // 获取评论数
+  getCommentCounts = name => {
+    getCommentCounts({
+      username: name
+    }, ({ data }) => {
+      this.setState({
+        commentCount: data.count,
+      })
+    },
+    e => console.log('getCommentCounts-error', e.toString())
+    )
+  }
+
+  // 获取点赞数
+  getStarCounts = name => {
+    getStarCounts({
+      username: name
+    }, ({ data }) => {
+      this.setState({
+        starCount: data.count,
+      })
+    },
+    e => console.log('getStarCounts-error', e.toString())
+    )
+  }
+
+  getPrivateCounts = name => {
+    getPrivateCounts({
+      username: name
+    }, ({ data }) => {
+      this.setState({
+        privateCount: data.count,
+      })
+    },
+    e => console.log('getStarCounts-error', e.toString())
     )
   }
 
@@ -146,112 +196,20 @@ class MessageCenter extends React.Component {
   }
 
   render() {
-    const { commentVisible, messageVisible, dialogTips, content, updateCount } = this.state;
+    const { commentVisible, messageVisible, dialogTips, content, updateCount, commentCount, starCount, privateCount } = this.state;
     const footer = (
       <Button onClick={this.handlePushMessage} type="primary" size="small" style={{ float: "right", margin: 5 }}>发送</Button>
     );
-    const dataSource = [
-      'user1',
-      'user2',
-      'user3',
-      'user1',
-      'user2',
-      'user3',
-    ];
     return (
       <div className={styles.message}>
-        {/* 评论 赞我 私信 */}
         <Collapse onChange={() => { }} expandIconPosition="right">
-          <Panel
-            header={
-              <Row type="flex" justify="space-between">
-                <Col>
-                  <Avatar shape="circle" icon="message" style={{ background: 'green', marginRight: 5 }} size="small" /> 评论
-                </Col>
-                <Col>
-                  <Badge count={5} />
-                </Col>
-              </Row>
-            }
-            key="1"
-          >
-            <InfiniteScroll className={styles.scroll}>
-              <List
-                dataSource={dataSource}
-                renderItem={item => (
-                  <List.Item>
-                    <List.Item.Meta
-                      onClick={this.handleCommentClick}
-                      avatar={<Avatar shape="circle" icon="message" style={{ background: 'green', marginRight: 5 }} size="small" />}
-                      title={<span>{item}评论了我</span>}
-                    />
-                    <span>{moment(new Date).format('YYYY-MM-DD')}</span>
-                  </List.Item>
-                )}
-              />
-            </InfiniteScroll>
-          </Panel>
-          <Panel
-            header={
-              <Row type="flex" justify="space-between">
-                <Col>
-                  <Avatar shape="circle" icon="like" style={{ background: '#F08080', marginRight: 5 }} size="small" /> 赞我
-                </Col>
-                <Col>
-                  <Badge count={3} />
-                </Col>
-              </Row>
-            }
-            key="2"
-          >
-            <InfiniteScroll className={styles.scroll}>
-              <List
-                dataSource={dataSource}
-                renderItem={item => (
-                  <List.Item>
-                    <List.Item.Meta
-                      avatar={<Avatar shape="circle" icon="like" style={{ background: '#F08080', marginRight: 5 }} size="small" />}
-                      title={<span>{item}</span>}
-                    />
-                    <span>{moment(new Date()).format('YYYY-MM-DD hh:mm:ss')}</span>
-                  </List.Item>
-                )}
-              />
-            </InfiniteScroll>
-          </Panel>
+          <Comment count={commentCount} />
+          <Like count={starCount} />
         </Collapse>
         {/* 好友 关注 拉黑 */}
         <Collapse style={{ marginTop: 10 }} onChange={() => { }} expandIconPosition="right">
-          <Private />
-          <Panel
-            header={
-              <Row type="flex" justify="space-between">
-                <Col>
-                  <Avatar shape="circle" icon="solution" style={{ background: '#ffbf00', marginRight: 5 }} size="small" /> 聊天
-                </Col>
-                <Col>
-                  <Badge count={7} />
-                </Col>
-              </Row>
-            }
-            key="2"
-          >
-            <InfiniteScroll className={styles.scroll}>
-              <List
-                dataSource={dataSource}
-                renderItem={item => (
-                  <List.Item>
-                    <List.Item.Meta
-                      avatar={<Avatar shape="circle" icon="solution" style={{ background: '#ffbf00', marginRight: 5 }} size="small" />}
-                      title={item}
-                      onClick={this.handlePrivaceClick}
-                    />
-                    <Badge count={2} />
-                  </List.Item>
-                )}
-              />
-            </InfiniteScroll>
-          </Panel>
+          <Private count={privateCount} />
+          <Message />
           <Request />
           <Attention count={updateCount} />
         </Collapse>

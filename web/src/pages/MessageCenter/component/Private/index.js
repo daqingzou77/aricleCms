@@ -64,7 +64,7 @@ class Private extends React.Component {
 
   render() {
     const { dataSource, contentModal } = this.state;
-    const { form } = this.props;
+    const { form, count } = this.props;
     const formElementProps = {
       form,
       width: 300
@@ -79,7 +79,7 @@ class Private extends React.Component {
                   <Avatar shape="circle" icon="mail" style={{ background: '#7265e6', marginRight: 5 }} size="small" /> 私信
                 </Col>
                 <Col>
-                  <Badge count={dataSource.length} />
+                  <Badge count={count} />
                 </Col>
               </Row>
             }

@@ -256,7 +256,7 @@ class Articles {
       if(!doc) return res.tools.setJson(0, '无记录', doc);
       let { likes, dislikes, favorites } = doc;
       let options = {}
-      if( key === 1) {
+      if( key === 1 && liker) {
         likes += 1;
         options['$push'] = { likeList: { liker, likeTime: new Date() }};
       } else if(key === 2) {

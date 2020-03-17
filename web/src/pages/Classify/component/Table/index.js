@@ -145,7 +145,7 @@ class Tables extends React.Component {
 
   solveArticle = (articlename, key, index) => {
     const { choose1Index, choose2Index, choose3Index } = this.state;
-    const currentUser = localStorage.getItem('currentUse');
+    const currentUser = localStorage.getItem('currentUser');
     solveArticle({
       articlename,
       key,

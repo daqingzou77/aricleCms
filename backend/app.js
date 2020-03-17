@@ -65,7 +65,7 @@ app.use((req, res, next) => {
   next(err);
 });
 
-app.use((err, req, res, next) => {
+app.use((err, res) => {
   res.send({
     status: err.status || 500, 
     message: err.message || '发生错误'

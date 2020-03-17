@@ -22,6 +22,11 @@ export const getStarList = (data, successCb, failCb) => {
   get(`${scheduleBaseUrl}/api/messageCenter/getStarList`, data, successCb, failCb);
 }
 
+// 获取最新私信的个数
+export const getPrivateCounts = (data, successCb, failCb) => {
+  get(`${scheduleBaseUrl}/api/messageCenter/getPrivateCounts`, data, successCb, failCb);
+}
+
 // 获取私信列表
 export const getPrivateLetter = (data, successCb, failCb) => {
   get(`${scheduleBaseUrl}/api/messageCenter/getPrivateLetter`, data, successCb, failCb);

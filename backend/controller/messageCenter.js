@@ -19,7 +19,7 @@ class MessageCenter {
     this.app.get('/api/messageCenter/getCommentList', this.getCommentList.bind(this)); // 获取评论列表
     this.app.get('/api/messageCenter/getStarCounts', this.getStarCounts.bind(this)); // 获取文章点赞数
     this.app.get('/api/messageCenter/getStarList', this.getStarList.bind(this)); // 获取点赞列表
-    
+    this.app.get('/api/messageCenter/getPrivateCounts', this.getPrivateCounts.bind(this)); // 获取私信个数
     this.app.get('/api/messageCenter/getPrivateLetter', this.getPrivateLetter.bind(this)); // 获取私信
     this.app.delete('/api/messageCenter/deletePrivateItem', this.deletePrivateItem.bind(this)); // 删除私信
     this.app.get('/api/messageCenter/getFriendRequest', this.getFriendRequest.bind(this)); // 获取好友请求
@@ -32,7 +32,7 @@ class MessageCenter {
   getCommentCounts(req, res, next) {
     const { username } = req.query;
     this.user.findOne({ username }, { lastCloseTime: 1 }).then(data => {
-      if (!data) return res.tools.setJson(0, '获取评论数失败', []);
+      if (!data) return res.tools.setJson(0, '获取评论数失败', { count: 0 });
       const { lastCloseTime } = data;
       this.articles.find({
         author: username,
@@ -40,12 +40,8 @@ class MessageCenter {
       }, {
         commentList: 1
       }).then(datas => {
-        if (datas.length === 0) return res.tools.setJson(0, '获取评论数失败', []);
-        let count = 0;
-        datas.map(item => {
-          count += item.commentList.length;
-        })
-        res.tools.setJson(0, '获取评论数成功', { count });
+        if (datas.length === 0) return res.tools.setJson(0, '获取最新评论数为空', { count: 0 });
+        res.tools.setJson(0, '获取评论数成功', { count: datas.length });
       })
     })
     .catch(err => next(err));
@@ -58,7 +54,6 @@ class MessageCenter {
     }, {
       commentList: 1
     }).then(data => {
-      if (data.length === 0) return res.tools.setJson(0, '获取评论失败', []);
       let respArray = [];
       for (let i = 0; i < data.length; i++) {
         for (let j = 0; j < data[i].commentList.length; j++) {
@@ -68,6 +63,7 @@ class MessageCenter {
       return respArray
     })
     .then(data => {
+      if (data.length === 0) return  res.tools.setJson(0, '获取评论为空', []);
       const datas = [];
       data.map(item=> {
         datas.push({
@@ -78,12 +74,12 @@ class MessageCenter {
       })
       async.map(datas, (item, callback) => {
         this.user.findOne({ username: item.commenter }, (err, doc) => {
-          if (!doc) return res.tools.setJson(0, '信息获取失败', []);
+          if (!doc) return res.tools.setJson(0, '信息获取失败', { count: 0 });
           item['avatar'] = doc.avatar;
           callback(null, item)
         })
       }, (err, result) => {
-        if (err) return res.tools.setJson(0, '信息获取失败', [])
+        if (err) return res.tools.setJson(0, '信息获取失败', { count: 0 })
         res.tools.setJson(0, '获取私信成功', result);
       })
     })
@@ -93,7 +89,7 @@ class MessageCenter {
   getStarCounts(req, res, next) {
     const { username } = req.query;
     this.user.findOne({ username }, { lastCloseTime: 1 }).then(data => {
-      if (!data) return res.tools.setJson(0, '获取点赞数失败', []);
+      if (!data) return res.tools.setJson(0, '获取点赞数失败', { count: 0 });
       const { lastCloseTime } = data;
       this.articles.find({
         author: username,
@@ -101,12 +97,8 @@ class MessageCenter {
       }, {
         likeList: 1
       }).then(datas => {
-        if (datas.length === 0) return res.tools.setJson(0, '获取点赞数失败', []);
-        let count = 0;
-        datas.map(item => {
-          count += item.likeList.length;
-        })
-        res.tools.setJson(0, '获取点赞数成功', { count });
+        if (datas.length === 0) return res.tools.setJson(0, '获取最新点赞数为空', { count: 0 });
+        res.tools.setJson(0, '获取点赞数成功', { count: datas.length });
       })
     })
     .catch(err => next(err));
@@ -120,7 +112,6 @@ class MessageCenter {
       likeList: 1
     })
     .then(data => {
-      if (data.length === 0) return res.tools.setJson(0, '获取点赞失败', []);
       let respArray = [];
       for (let i = 0; i < data.length; i++) {
         for (let j = 0; j < data[i].likeList.length; j++) {
@@ -130,6 +121,7 @@ class MessageCenter {
       return respArray
     })
     .then(doc => {
+      if (doc.length === 0) return res.tools.setJson(0, '获取点赞为空', []);
       const data = [];
       doc.map(v => {
         data.push({
@@ -150,6 +142,23 @@ class MessageCenter {
         res.tools.setJson(0, '点赞列表获取成功', result);
       })
     })
+    .catch(err => next(err))
+  }
+
+  getPrivateCounts(req, res, next) {
+    const { username } = req.query;
+    this.user.findOne({ username }, { lastCloseTime: 1 }).then(data => {
+      if (!data) return res.tools.setJson(0, '获取点赞数失败', { count: 0 });
+      const { lastCloseTime } = data;
+      this.user.findOne({
+        username,
+        "messageList.time": { $gte: new Date(lastCloseTime) }
+      }, { messageList : 1 })
+      .countDocuments().then(doc => {
+       res.tools.setJson(0, '获取私信的个数', { count: doc })
+      })
+    })
+    .catch(err => next(err));
   }
 
   getPrivateLetter(req, res, next) {
