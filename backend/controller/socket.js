@@ -32,9 +32,10 @@ class SocketIo {
           content
         })
       })
-
+      
       socket.on('getHistoryMessage', data => {
         const { sender, toFriend } = data;
+        const sendObj = this.userList[sender]
         // 数据库获取数据，并返回
         const nowDate = new Date();
         const lastDate = nowDate.setDate(nowDate.getDate()-1);
@@ -45,16 +46,15 @@ class SocketIo {
           ],
           time: { $gt: lastDate}
         }).then(doc => {
-          socket.emit('pushHistoryMessage', doc);
+          console.log('sendObj', sendObj);
+          this.io.to(sendObj).emit('pushHistoryMessage', doc);
         })
       });
 
       socket.on('logout', data => {
-        const { username } = data;
         // 清空数据
+        const { username } = data;
         this.userList[username] = null;
-        console.log(this.userList);
-        socket.emit('userOut',{ msg: `${username}已退出` })
       })
     })
   }

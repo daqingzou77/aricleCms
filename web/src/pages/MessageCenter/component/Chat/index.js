@@ -11,10 +11,10 @@ class Chat extends React.Component {
   }
 
   render() {
-    const { content, dialogTips } = this.props;
+    const { content, dialogTips, myAvatar, friendAvatar } = this.props;
     return (
       <div className={styles.chatmain}>
-        <Message dialogTips={dialogTips} />
+        <Message dialogTips={dialogTips} myAvatar={myAvatar} friendAvatar={friendAvatar} />
         <Send setContent={this.setContent} content={content} />
       </div>
     )

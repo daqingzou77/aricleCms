@@ -46,6 +46,7 @@ class Home extends React.Component {
 
   render() {
     const { currentUser, loading } = this.state;
+    const myAvatar = currentUser.avatar;
     return (
       <div>
         <Row gutter={24}>
@@ -55,7 +56,7 @@ class Home extends React.Component {
             {/* 查询好友 */}
             <FindFriends />
             {/* 列表信息 */}
-            <FriendsList />
+            <FriendsList myAvatar={myAvatar} />
           </Col>
           <Col lg={17} md={24}>
             <div

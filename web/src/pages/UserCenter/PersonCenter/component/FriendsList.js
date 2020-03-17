@@ -27,7 +27,8 @@ export default class FriendsList extends React.Component {
     currentUsername: '',
     content: '',
     chatWith: '',
-    dialogTips: []
+    dialogTips: [],
+    friendAvatar: ''
   }
 
 
@@ -36,16 +37,52 @@ export default class FriendsList extends React.Component {
     this.setState({
       currentUsername: username
     })
-    this.initSocket();
   }
 
   componentDidMount() {
-    this.pushMessage();
+    this.initSocket();
     this.getClassifiedList(0);
+
+  }
+
+  handleReceiveMsg = data => {
+    const { dialogTips } = this.state;
+    dialogTips.push({
+      senderContent: data.content,
+      toFriendContent: '',
+      logtime: moment(new Date())
+    })
+    this.setState({
+      dialogTips
+    })
+  }
+
+  setDialogTips = data => {
+    const { currentUsername } = this.state;
+    const dataArray = [];
+    data.map(item => {
+      const { sender, toFriend, content, time } = item;
+      if (sender === currentUsername) {
+        dataArray.push({
+          senderContent: '',
+          toFriendContent: content,
+          logtime: moment(time)
+        })
+      } else if (toFriend === currentUsername) {
+        dataArray.push({
+          senderContent: content,
+          toFriendContent: '',
+          logtime: moment(time)
+        })
+      }
+    })
+    this.setState({
+      dialogTips: dataArray
+    })
   }
 
   initSocket = () => {
-    const { dialogTips } = this.state;
+    const { dialogTips, currentUsername } = this.state;
     this.socket = SocketIo.connect('http://localhost:80');
     console.log('dialogTips', dialogTips);
     // socket连接
@@ -53,66 +90,41 @@ export default class FriendsList extends React.Component {
       console.log('socket conneted')
     });
     // 用户登入
+    this.socket.emit('login', { username: currentUsername });
+
+    // 用户登入
     this.socket.on('logined', data => {
       console.log('logined', data.msg);
     })
 
-    // 用户退出，清除聊天记录
-    this.socket.on('userOut', data => {
-      console.log(data.msg)
-      this.setState({
-        dialogTips: []
-      })
-    })
-
-    // 接收消息
-    this.socket.on('receiveMsg', data => {
-      console.log('receicveMsg', data);
-      dialogTips.push({
-        senderContent: data.content,
-        toFriendContent: '',
-        logtime: moment(new Date())
-      })
-      this.setState({
-        dialogTips
-      })
-    })
-    // socket断开
-    this.socket.on('disconnect', () => {
-      console.log('socket disconnected');
-    });
-
-  }
-
-  pushMessage = () => {
-    const { currentUsername, dialogTips } = this.state;
-    // 接收历史信息
+    // 发送消息
     this.socket.on('pushHistoryMessage', data => {
       if (data.length === 0) {
         this.setState({
           dialogTips: []
         })
-      } else {
-        data.map(item => {
-          const { sender, toFriend, content, time } = item;
-          if (sender === currentUsername) {
-            dialogTips.push({
-              senderContent: '',
-              toFriendContent: content,
-              logtime: moment(time)
-            })
-          } else if (toFriend === currentUsername) {
-            dialogTips.push({
-              senderContent: content,
-              toFriendContent: '',
-              logtime: moment(time)
-            })
-          }
-        })
+        return;
+      }
+      if (dialogTips.length === data.length) {
         this.setState({
           dialogTips
         })
+        return
       }
+      this.setDialogTips(data);
+    });
+
+    // 接收消息
+    this.socket.on('receiveMsg', data => {
+      this.handleReceiveMsg(data);
+    })
+
+    // socket断开
+    this.socket.on('disconnect', () => {
+      // 用户退出
+      this.socket.emit('logout', {
+        username: currentUsername
+      })
     });
   }
 
@@ -163,7 +175,7 @@ export default class FriendsList extends React.Component {
     })
   }
 
-  handleMessage = name => {
+  handleMessage = ( name, avatar) => {
     const { currentUsername, dialogTips, messageVisible } = this.state;
     if (messageVisible) {
       message.warning('请关闭与其他人聊天的弹窗');
@@ -173,10 +185,10 @@ export default class FriendsList extends React.Component {
       // 获取历史记录
       this.socket.emit('getHistoryMessage', { sender: currentUsername, toFriend: name });
     }
-    // 用户登入
-    this.socket.emit('login', { username: currentUsername });
+    
     this.setState({
       messageVisible: true,
+      friendAvatar: avatar,
       chatWith: name
     })
   }
@@ -246,19 +258,15 @@ export default class FriendsList extends React.Component {
 
 
   handleClosetPrivate = () => {
-    const { currentUsername } = this.state;
     this.setState({
       messageVisible: false,
-      // dialogTips: []
-    })
-    // 用户退出
-    this.socket.emit('logout', {
-      username: currentUsername
+      dialogTips: []
     })
   }
 
   render() {
-    const { chooseKey, userList, dataVisible, messageVisible, currentUser, dialogTips, content, chatWith, currentUsername } = this.state;
+    const { chooseKey, userList, dataVisible, messageVisible, currentUser, dialogTips, content, chatWith, friendAvatar } = this.state;
+    const { myAvatar } = this.props;
     const footer = (
       <Button onClick={this.handlePushMessage} type="primary" size="small" style={{ float: "right", margin: 5 }}>发送</Button>
     );
@@ -267,9 +275,9 @@ export default class FriendsList extends React.Component {
     const text2 = "是否撤销拉黑";
     let Actions;
     if (chooseKey === 0) {
-      Actions = ({ name }) => (
+      Actions = ({ name, avatar }) => (
         <>
-          <a key="list-message" onClick={() => this.handleMessage(name)}>聊天</a>
+          <a key="list-message" onClick={() => this.handleMessage(name, avatar)}>聊天</a>
           <Divider type="vertical" />
           <Popconfirm placement="top" title={text} onConfirm={() => this.handleBlack(name, 1)} okText="确认" cancelText="取消">
             <a>拉黑</a>
@@ -311,15 +319,15 @@ export default class FriendsList extends React.Component {
                       {item.name}
                     </div>
                   ) : (
-                      <div>
-                        <Avatar src={item.avatar} shape="circle" icon="stop" style={{ background: 'black', marginRight: 5 }} />
-                        {item.name}
-                      </div>
-                    )}
+                    <div>
+                      <Avatar src={item.avatar} shape="circle" icon="stop" style={{ background: 'black', marginRight: 5 }} />
+                      {item.name}
+                    </div>
+                  )}
                   <div style={{ marginLeft: '20%' }}>
                     <a key="list-watch" onClick={() => this.watchData(item.name)}>名片</a>
                     <Divider type="vertical" />
-                    <Actions name={item.name} />
+                    <Actions name={item.name} avatar={item.avatar} />
                   </div>
                 </List.Item>
               )}
@@ -358,6 +366,8 @@ export default class FriendsList extends React.Component {
             setContent={this.setContent}
             dialogTips={dialogTips}
             content={content}
+            myAvatar={myAvatar}
+            friendAvatar={friendAvatar}
           />
         </Modal>
       </div>
