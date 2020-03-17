@@ -20,9 +20,9 @@ var server = require('http').Server(app);
 var io = require('socket.io')(server);
 
 // 监听 80 端口
-// server.listen(80, () => {
-//    console.log('websocket服务启动')
-// });
+server.listen(80, () => {
+   console.log('websocket服务启动')
+});
 
 // const sessionStore = sessionMongoose(connect);
 // const store = new sessionStore({url: config.mongo.sessionUrl});

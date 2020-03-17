@@ -5,11 +5,28 @@ import styles from './style.less'
 
 class Message extends React.Component {
 
+  state = {
+    showAllMessage: false
+  }
+
+  showHistory = () => {
+    this.setState({
+      showAllMessage: true
+    })
+  }
+
   render() {
-   const { dialogTips } = this.props;
-    const messageTips = dialogTips.map((item, index, arr) => (
+    const { showAllMessage } = this.state;
+    const { dialogTips } = this.props;
+    let newDialog;
+    if (!showAllMessage && dialogTips.length > 7) {
+      newDialog = dialogTips.slice(0, 7);
+    } else {
+      newDialog = dialogTips;
+    }
+    const messages = newDialog.map((item, index, arr) => (
       <div className={styles.mainDiv}>
-        <div style={{ textAlign: 'center'}}>{ index === 0 ? item.logtime.format('hh:mm:ss') : item.logtime.second() - arr[index-1].logtime.second() > 5 ? item.logtime.format('hh:mm:ss') : null}</div>
+        <div style={{ textAlign: 'center'}}>{index === 0 ? item.logtime.format('hh:mm:ss') : item.logtime.second() - arr[index-1].logtime.second() > 5 ? item.logtime.format('hh:mm:ss') : null}</div>
         <div style={{ display: item.senderContent === '' ? 'none': 'flex', flexDirection: 'row' }}>
           <Avatar icon="user" style={{ color: 'red', marginLeft: 5 }} />
           <div className={styles.senderDiv}>
@@ -28,7 +45,14 @@ class Message extends React.Component {
     return (
       <div className={styles.main}>
         <InfiniteSrcoll className={styles.scrolls}>
-          {messageTips}
+          {
+            !showAllMessage && dialogTips.length > 7 ?  (
+              <div className={styles.loadMore}>
+                <a onClick={this.showHistory}>获取更早记录</a>
+              </div>
+            ) : null
+          }
+          {messages}
         </InfiniteSrcoll>
       </div>
     )

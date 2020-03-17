@@ -17,6 +17,7 @@ class SocketIo {
       socket.on('login', data  => {
         const { username } = data;
         this.userList[username] = socket.id;
+        console.log('username', this.userList);
         socket.emit('logined', { msg: `${username}已登录`})
       });
   
@@ -38,7 +39,7 @@ class SocketIo {
         const nowDate = new Date();
         const lastDate = nowDate.setDate(nowDate.getDate()-1);
         this.chats.find({
-          $or: [
+          $and: [
             { sender: { $in: [ sender, toFriend ] } }, 
             { toFriend: { $in: [sender, toFriend ] } }
           ],
@@ -52,6 +53,7 @@ class SocketIo {
         const { username } = data;
         // 清空数据
         this.userList[username] = null;
+        console.log(this.userList);
         socket.emit('userOut',{ msg: `${username}已退出` })
       })
     })

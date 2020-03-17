@@ -36,16 +36,18 @@ export default class FriendsList extends React.Component {
     this.setState({
       currentUsername: username
     })
+    this.initSocket();
   }
 
   componentDidMount() {
-    this.initSocket();
+    this.pushMessage();
     this.getClassifiedList(0);
   }
 
   initSocket = () => {
-    const { dialogTips, currentUsername } = this.state;
+    const { dialogTips } = this.state;
     this.socket = SocketIo.connect('http://localhost:80');
+    console.log('dialogTips', dialogTips);
     // socket连接
     this.socket.on('connect', () => {
       console.log('socket conneted')
@@ -55,37 +57,17 @@ export default class FriendsList extends React.Component {
       console.log('logined', data.msg);
     })
 
-    // 接收历史信息
-    this.socket.on('pushHistoryMessage', data => {
-      data.map(item => {
-        console.log('data', data);
-        const { sender, content, time } = item;
-        if (sender === currentUsername) {
-          dialogTips.push({
-            senderContent: '',
-            toFriendContent: content,
-            logtime: moment(time)
-          })
-        } else {
-          dialogTips.push({
-            senderContent: content,
-            toFriendContent: '',
-            logtime: moment(time)
-          })
-        }
-      })
-      this.setState({
-        dialogTips
-      })
-    });
-
     // 用户退出，清除聊天记录
     this.socket.on('userOut', data => {
-      message.success(data.msg)
+      console.log(data.msg)
+      this.setState({
+        dialogTips: []
+      })
     })
 
     // 接收消息
     this.socket.on('receiveMsg', data => {
+      console.log('receicveMsg', data);
       dialogTips.push({
         senderContent: data.content,
         toFriendContent: '',
@@ -100,6 +82,38 @@ export default class FriendsList extends React.Component {
       console.log('socket disconnected');
     });
 
+  }
+
+  pushMessage = () => {
+    const { currentUsername, dialogTips } = this.state;
+    // 接收历史信息
+    this.socket.on('pushHistoryMessage', data => {
+      if (data.length === 0) {
+        this.setState({
+          dialogTips: []
+        })
+      } else {
+        data.map(item => {
+          const { sender, toFriend, content, time } = item;
+          if (sender === currentUsername) {
+            dialogTips.push({
+              senderContent: '',
+              toFriendContent: content,
+              logtime: moment(time)
+            })
+          } else if (toFriend === currentUsername) {
+            dialogTips.push({
+              senderContent: content,
+              toFriendContent: '',
+              logtime: moment(time)
+            })
+          }
+        })
+        this.setState({
+          dialogTips
+        })
+      }
+    });
   }
 
   handleOnChange = e => {
@@ -150,7 +164,11 @@ export default class FriendsList extends React.Component {
   }
 
   handleMessage = name => {
-    const { currentUsername, dialogTips } = this.state;
+    const { currentUsername, dialogTips, messageVisible } = this.state;
+    if (messageVisible) {
+      message.warning('请关闭与其他人聊天的弹窗');
+      return;
+    }
     if (dialogTips.length === 0) {
       // 获取历史记录
       this.socket.emit('getHistoryMessage', { sender: currentUsername, toFriend: name });
@@ -226,11 +244,12 @@ export default class FriendsList extends React.Component {
     });
   }
 
+
   handleClosetPrivate = () => {
     const { currentUsername } = this.state;
     this.setState({
       messageVisible: false,
-      dialogTips: []
+      // dialogTips: []
     })
     // 用户退出
     this.socket.emit('logout', {
@@ -292,10 +311,10 @@ export default class FriendsList extends React.Component {
                       {item.name}
                     </div>
                   ) : (
-                    <div>
-                      <Avatar src={item.avatar} shape="circle" icon="stop" style={{ background: 'black', marginRight: 5 }} />
-                      {item.name}
-                    </div>
+                      <div>
+                        <Avatar src={item.avatar} shape="circle" icon="stop" style={{ background: 'black', marginRight: 5 }} />
+                        {item.name}
+                      </div>
                     )}
                   <div style={{ marginLeft: '20%' }}>
                     <a key="list-watch" onClick={() => this.watchData(item.name)}>名片</a>

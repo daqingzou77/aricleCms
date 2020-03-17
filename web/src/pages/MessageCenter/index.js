@@ -46,7 +46,7 @@ class MessageCenter extends React.Component {
     this.getStarCounts(currentUser);
     this.getPrivateCounts(currentUser);
     this.getUpdatesCount(currentUser);
-    this.initSocket();
+    // this.initSocket();
   }
 
   // 获取更新数
@@ -101,26 +101,26 @@ class MessageCenter extends React.Component {
   }
 
   // 连接websocket
-  initSocket = () => {
-    const { dialogTips } = this.state;
-    this.socket = SocketIo.connect('http://localhost:80');
-    this.socket.on('connect', () => {
-      console.log('socket connected');
-    });
-    this.socket.on('receiveMsg', data => {
-      dialogTips.push({
-        senderContent: data.content,
-        toFriendContent: '',
-        logtime: moment(new Date())
-      })
-      this.setState({
-        dialogTips
-      })
-    })
-    this.socket.on('disconnect', () => {
-      console.log('socket disconnected');
-    });
-  }
+  // initSocket = () => {
+  //   const { dialogTips } = this.state;
+  //   this.socket = SocketIo.connect('http://localhost:80');
+  //   this.socket.on('connect', () => {
+  //     console.log('socket connected');
+  //   });
+  //   this.socket.on('receiveMsg', data => {
+  //     dialogTips.push({
+  //       senderContent: data.content,
+  //       toFriendContent: '',
+  //       logtime: moment(new Date())
+  //     })
+  //     this.setState({
+  //       dialogTips
+  //     })
+  //   })
+  //   this.socket.on('disconnect', () => {
+  //     console.log('socket disconnected');
+  //   });
+  // }
 
   setContent = content => {
     this.setState({
@@ -228,13 +228,13 @@ class MessageCenter extends React.Component {
           onCancel={this.handlePrivateCancel}
           footer={footer}
         >
-          <Chat
+          {/* <Chat
             setContent={this.setContent}
             username="张家辉"
             socket={this.socket}
             dialogTips={dialogTips}
             content={content}
-          />
+          /> */}
         </Modal>
 
       </div>
