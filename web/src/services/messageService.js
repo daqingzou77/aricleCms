@@ -37,6 +37,16 @@ export const deletePrivateItem = (data, successCb, failCb) => {
   deletes(`${scheduleBaseUrl}/api/messageCenter/deletePrivateItem`, data, successCb, failCb);
 }
 
+// 获取新消息
+export const getNewMessageCounts = (data, successCb, failCb) => {
+  get(`${scheduleBaseUrl}/api/messageCenter/getNewMessage`, data, successCb, failCb);
+}
+
+// 删除某消息
+export const deltetMessage = (data, successCb, failCb) => {
+  deletes(`${scheduleBaseUrl}/api/messageCenter/deltetMessage`, data, successCb, failCb);
+}
+
 // 获取新的好友请求
 export const getFriendRequest = (data, successCb, failCb) => {
   get(`${scheduleBaseUrl}/api/messageCenter/getFriendRequest`, data, successCb, failCb);
@@ -48,7 +58,7 @@ export const solveFriendRequest = (data, successCb, failCb) => {
 }
 
 // 获取最新动态数目
-export const getUpdatesCount = (data, successCb, failCb) => {
+export const getUpdatesCounts = (data, successCb, failCb) => {
   get(`${scheduleBaseUrl}/api/messageCenter/getUpdatesCount`, data, successCb, failCb);
 }
 

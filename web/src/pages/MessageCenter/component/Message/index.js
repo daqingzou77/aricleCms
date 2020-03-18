@@ -14,6 +14,11 @@ export default class Message extends React.Component {
 
   render() {
     const { dataSource } = this.state;
+    const { messageArray } = this.props;
+    let count = 0;
+    messageArray.map(item => {
+     count += item.count;
+    })
     return (
       <Collapse expandIconPosition="right">
         <Panel
@@ -23,7 +28,7 @@ export default class Message extends React.Component {
                 <Avatar shape="circle" icon="solution" style={{ background: '#ffbf00', marginRight: 5 }} size="small" /> 聊天
               </Col>
               <Col>
-                <Badge count={7} />
+                <Badge count={count} />
               </Col>
             </Row>
             }
@@ -31,15 +36,15 @@ export default class Message extends React.Component {
         >
           <InfiniteScroll className={styles.scroll}>
             <List
-              dataSource={dataSource}
+              dataSource={messageArray}
               renderItem={item => (
                 <List.Item>
                   <List.Item.Meta
                     avatar={<Avatar shape="circle" icon="solution" style={{ background: '#ffbf00', marginRight: 5 }} size="small" />}
-                    title={item}
+                    title={item.friend}
                     onClick={this.handlePrivaceClick}
                   />
-                  <Badge count={2} />
+                  <Badge count={item.count} />
                 </List.Item>
                 )}
             />

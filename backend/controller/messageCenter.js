@@ -1,7 +1,11 @@
 import articles from '../model/articles';
 import user from '../model/user';
 import chats from '../model/chat';
+import offlineMessage from '../model/offlineMessaeg';
+import Tool from '../utils/tools';
 import async from 'async';
+
+const Tools = new Tool();
 
 class MessageCenter {
   constructor(app) {
@@ -9,7 +13,8 @@ class MessageCenter {
       app,
       articles,
       user,
-      chats
+      chats,
+      offlineMessage
     });
     this.init();
   }
@@ -22,6 +27,10 @@ class MessageCenter {
     this.app.get('/api/messageCenter/getPrivateCounts', this.getPrivateCounts.bind(this)); // 获取私信个数
     this.app.get('/api/messageCenter/getPrivateLetter', this.getPrivateLetter.bind(this)); // 获取私信
     this.app.delete('/api/messageCenter/deletePrivateItem', this.deletePrivateItem.bind(this)); // 删除私信
+    
+    this.app.get('/api/messageCenter/getNewMessage', this.getNewMessage.bind(this)); // 获取新消息
+    this.app.delete('/api/messageCenter/deltetMessage', this.deltetMessage.bind(this)); // 删除消息记录
+    
     this.app.get('/api/messageCenter/getFriendRequest', this.getFriendRequest.bind(this)); // 获取好友请求
     this.app.post('/api/messageCenter/solveFriendRequest', this.solveFriendRequest.bind(this)); // 处理好友请求
     this.app.get('/api/messageCenter/getUpdatesCount', this.getUpdatesCount.bind(this)); //获取最新动态个数
@@ -199,6 +208,35 @@ class MessageCenter {
     })
     .catch(err => next(err));
   }
+
+  getNewMessage(req, res, next) {
+    const { username } = req.query;
+    this.offlineMessage.find({
+      toFriend: username
+    })
+    .then(doc => {
+      if (doc.length === 0) return res.tools.setJson(0, '获取消息失败', []);
+      return res.tools.setJson(0, '获取信息消息', Tools.staticMessage(doc));
+    })
+    .catch(err => next(err));
+  } 
+
+  deltetMessage(req, res, next) {
+    const { username, targetUser } = req.body;
+    this.offlineMessage.remove({
+      sender: targetUser,
+      toFriend: username
+    })
+    .then(doc => {
+      if (doc.deletedCount === 0) return res.tools.setJson(0, '删除消息失败', { status: false });
+      this.offlineMessage.find({ toFriend: username })
+      .then(data => {
+        if (data.length === 0) return res.tools.setJson(0, '消息已清空', []);
+        return res.tools.setJson(0, '删除后消息列表为', Tools.staticMessage(data));
+      })
+    })
+    .catch(err => next(err));
+  } 
 
   getFriendRequest(req, res, next) {
     const { username } = req.query;

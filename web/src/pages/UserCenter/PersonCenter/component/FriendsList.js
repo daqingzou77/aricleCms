@@ -114,6 +114,11 @@ export default class FriendsList extends React.Component {
       this.setDialogTips(data);
     });
 
+    // 离线提醒
+    this.socket.on('offlineRemind', data => {
+      message.warning(`${data.toFriend}处于离线状态`)
+    })
+
     // 接收消息
     this.socket.on('receiveMsg', data => {
       this.handleReceiveMsg(data);

@@ -16,7 +16,8 @@ import {
   getCommentCounts,
   getStarCounts,
   getPrivateCounts,
-  getUpdatesCount,
+  getUpdatesCounts,
+  getNewMessageCounts
 } from '@/services/messageService'
 
 const { Panel } = Collapse;
@@ -30,7 +31,8 @@ class MessageCenter extends React.Component {
     commentCount: 0,
     starCount: 0,
     privateCount: 0,
-    updateCount: 0
+    updateCount: 0,
+    newMessageArray: []
   }
 
   componentWillMount() {
@@ -45,20 +47,21 @@ class MessageCenter extends React.Component {
     this.getCommentCounts(currentUser);
     this.getStarCounts(currentUser);
     this.getPrivateCounts(currentUser);
-    this.getUpdatesCount(currentUser);
+    this.getUpdatesCounts(currentUser);
+    this.getNewMessageCounts(currentUser);
     // this.initSocket();
   }
 
   // 获取更新数
-  getUpdatesCount = name => {
-    getUpdatesCount({
+  getUpdatesCounts = name => {
+    getUpdatesCounts({
       username: name
     }, ({ data }) => {
       this.setState({
         updateCount: data.count,
       })
     },
-    e => console.log('getUpdatesCount-error', e.toString())
+    e => console.log('getUpdatesCounts-error', e.toString())
     )
   }
 
@@ -94,6 +97,18 @@ class MessageCenter extends React.Component {
     }, ({ data }) => {
       this.setState({
         privateCount: data.count,
+      })
+    },
+    e => console.log('getStarCounts-error', e.toString())
+    )
+  }
+
+  getNewMessageCounts = name => {
+    getNewMessageCounts({
+      username: name
+    }, ({ data }) => {
+      this.setState({
+        newMessageArray: data,
       })
     },
     e => console.log('getStarCounts-error', e.toString())
@@ -196,7 +211,7 @@ class MessageCenter extends React.Component {
   }
 
   render() {
-    const { commentVisible, messageVisible, dialogTips, content, updateCount, commentCount, starCount, privateCount } = this.state;
+    const { commentVisible, messageVisible, dialogTips, content, updateCount, commentCount, starCount, privateCount, newMessageArray } = this.state;
     const footer = (
       <Button onClick={this.handlePushMessage} type="primary" size="small" style={{ float: "right", margin: 5 }}>发送</Button>
     );
@@ -209,7 +224,7 @@ class MessageCenter extends React.Component {
         {/* 好友 关注 拉黑 */}
         <Collapse style={{ marginTop: 10 }} onChange={() => { }} expandIconPosition="right">
           <Private count={privateCount} />
-          <Message />
+          <Message messageArray={newMessageArray} />
           <Request />
           <Attention count={updateCount} />
         </Collapse>
