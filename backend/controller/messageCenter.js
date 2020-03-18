@@ -229,11 +229,7 @@ class MessageCenter {
     })
     .then(doc => {
       if (doc.deletedCount === 0) return res.tools.setJson(0, '删除消息失败', { status: false });
-      this.offlineMessage.find({ toFriend: username })
-      .then(data => {
-        if (data.length === 0) return res.tools.setJson(0, '消息已清空', []);
-        return res.tools.setJson(0, '删除后消息列表为', Tools.staticMessage(data));
-      })
+      return res.tools.setJson(0, '删除消息成功', { status: true });
     })
     .catch(err => next(err));
   } 

@@ -48,7 +48,7 @@ class MessageCenter extends React.Component {
     this.getStarCounts(currentUser);
     this.getPrivateCounts(currentUser);
     this.getUpdatesCounts(currentUser);
-    this.getNewMessageCounts(currentUser);
+    this.getNewMessageCounts();
     // this.initSocket();
   }
 
@@ -103,7 +103,8 @@ class MessageCenter extends React.Component {
     )
   }
 
-  getNewMessageCounts = name => {
+  getNewMessageCounts = () => {
+    const name = localStorage.getItem('currentUser');
     getNewMessageCounts({
       username: name
     }, ({ data }) => {
@@ -224,7 +225,7 @@ class MessageCenter extends React.Component {
         {/* 好友 关注 拉黑 */}
         <Collapse style={{ marginTop: 10 }} onChange={() => { }} expandIconPosition="right">
           <Private count={privateCount} />
-          <Message messageArray={newMessageArray} />
+          <Message messageArray={newMessageArray} getNewMessageCounts={this.getNewMessageCounts}/>
           <Request />
           <Attention count={updateCount} />
         </Collapse>
