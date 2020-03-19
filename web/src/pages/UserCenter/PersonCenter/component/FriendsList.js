@@ -12,7 +12,8 @@ import {
   getClassifiedList,
   getCurrentUserDetail,
   soloveBlack,
-  deleteFriend
+  deleteFriend,
+  checkStatus
 } from '@/services/userService';
 import {
   deleteMessage
@@ -189,29 +190,64 @@ export default class FriendsList extends React.Component {
       username: currentUser,
       targetUser: name
     }, ({ data }) => {
-      console.log(`后台消息清理状况${data.status}`)
+      console.log(`后台消息清理状况${data.status}`);
     },
     e => console.log('deleteMessage-error', e.toString())
     )
   }
 
+  // 判断是否拉黑和删除
+  checkStatus = (username, targetUser) => {
+    checkStatus({
+      username,
+      targetUser
+    }, ({ data }) => {
+      if (data.status === 0 ) {
+        message.warning('您已被好友删除');
+        return false;
+      } 
+      if (data.status === 1) {
+        message.warning('您已被好友拉黑');
+        return false;
+      }
+      return true;
+    },
+    e => console.log('checkStatus-error', e.toString())
+    )
+  }
+
+  // 处理聊天
   handleMessage = ( name, avatar) => {
     const { currentUsername, dialogTips, messageVisible } = this.state;
     this.deleteMessage(name);
-    if (messageVisible) {
-      message.warning('请关闭与其他人聊天的弹窗');
-      return;
-    }
-    if (dialogTips.length === 0) {
-      // 获取历史记录
-      this.socket.emit('getHistoryMessage', { sender: currentUsername, toFriend: name });
-    }
-    
-    this.setState({
-      messageVisible: true,
-      friendAvatar: avatar,
-      chatWith: name
-    })
+    checkStatus({
+      username: currentUsername,
+      targetUser: name
+    }, ({ data }) => {
+      if (data.status === 0 ) {
+        message.warning('您已被好友删除');
+        return;
+      } 
+      if (data.status === 1) {
+        message.warning('您已被好友拉黑');
+        return;
+      }
+      if (messageVisible) {
+        message.warning('请关闭与其他人聊天的弹窗');
+        return;
+      }
+      if (dialogTips.length === 0) {
+        // 获取历史记录
+        this.socket.emit('getHistoryMessage', { sender: currentUsername, toFriend: name });
+      }
+      this.setState({
+        messageVisible: true,
+        friendAvatar: avatar,
+        chatWith: name
+      })
+    },
+    e => console.log('checkStatus-error', e.toString())
+    )
   }
 
   setContent = content => {

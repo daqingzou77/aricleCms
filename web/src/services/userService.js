@@ -29,6 +29,11 @@ export const getClassifiedList = (data, successCb, failCb) => {
   get(`${scheduleBaseUrl}/api/user/getClassifiedList`, data, successCb, failCb);
 }
 
+// 检查好友状态
+export const checkStatus = (data, successCb, failCb) => {
+  post(`${scheduleBaseUrl}/api/user/checkStatus`, data, successCb, failCb);
+}
+
 // 拉黑和撤销拉黑
 export const soloveBlack = (data, successCb, failCb) => {
   post(`${scheduleBaseUrl}/api/user/solveBlack`, data, successCb, failCb);
