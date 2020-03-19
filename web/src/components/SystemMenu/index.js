@@ -2,8 +2,7 @@ import { formatMessage as _formatMessage } from 'umi/locale';
 import React from 'react';
 import { Icon, Col, Row, Tag, Badge, message, } from 'antd';
 import { Link, withRouter } from 'react-router-dom';
-// import Modal from '@/common/components/dialog/Modal';
-
+import SocketIo from 'socket.io-client';
 import icArrangment from '@/assets/menuIcon/ic_arrangement.svg';
 import icChangeShift from '@/assets/menuIcon/ic_changeshift.svg';
 import icDutyevent from '@/assets/menuIcon/ic_dutyevent.svg';
@@ -157,6 +156,14 @@ class SystemMenu extends React.Component {
     };
   }
 
+  componentDidMount() {
+    this.initSocket();
+  }
+
+  initSocket = () => {
+    this.socket = SocketIo.connect('http://localhost:80');
+  }
+
   // 记录弹窗关闭时间
   recordModalTime = () => {
     const username = localStorage.getItem('currentUser');
@@ -197,13 +204,19 @@ class SystemMenu extends React.Component {
   }
 
   handleCardOk = () => {
+    const username = localStorage.getItem('currentUser');
     this.setState({
       visibleCard: false
     });
     localStorage.removeItem('currentUser');
     localStorage.removeItem('userType');
     router.push('/user/login')
+    this.socket.emit('logout', {
+      username
+    })
   }
+
+
 
   handleCardCancel = () => {
     this.setState({

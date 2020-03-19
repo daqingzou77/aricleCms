@@ -9,7 +9,6 @@ import SystemMenu from '../components/SystemMenu';
 import styles from './Schedule.less';
 import SystemFooter from '../components/SystemFooter';
 import router from 'umi/router';
-// import { getUopUser, getBacklogRemind } from '@/services/scheduleService';
 
 const customizeRenderEmpty = () => (
   <div style={{ textAlign: 'center', }}>

@@ -29,13 +29,14 @@ class MessageCenter {
     this.app.delete('/api/messageCenter/deletePrivateItem', this.deletePrivateItem.bind(this)); // 删除私信
     
     this.app.get('/api/messageCenter/getNewMessage', this.getNewMessage.bind(this)); // 获取新消息
-    this.app.delete('/api/messageCenter/deltetMessage', this.deltetMessage.bind(this)); // 删除消息记录
+    this.app.delete('/api/messageCenter/deleteMessage', this.deleteMessage.bind(this)); // 删除消息记录
     
     this.app.get('/api/messageCenter/getFriendRequest', this.getFriendRequest.bind(this)); // 获取好友请求
     this.app.post('/api/messageCenter/solveFriendRequest', this.solveFriendRequest.bind(this)); // 处理好友请求
     this.app.get('/api/messageCenter/getUpdatesCount', this.getUpdatesCount.bind(this)); //获取最新动态个数
     this.app.get('/api/messageCenter/recordModalTime', this.recordModalTime.bind(this)); // 记录弹窗时刻
     this.app.get('/api/messageCenter/getFriendUpdates', this.getFriendUpdates.bind(this)); // 获取好友动态
+    this.app.get('/api/messageCenter/getUserAvatar', this.getUserAvatar.bind(this)); // 获取当前用户头像
   }
 
   getCommentCounts(req, res, next) {
@@ -216,12 +217,26 @@ class MessageCenter {
     })
     .then(doc => {
       if (doc.length === 0) return res.tools.setJson(0, '获取消息失败', []);
-      return res.tools.setJson(0, '获取信息消息', Tools.staticMessage(doc));
+      return Tools.staticMessage(doc);
+    })
+    .then(data => {
+      async.map(data, (item, callback) => {
+        this.user.findOne({
+          username: item.friend
+        }, { avatar: 1 })
+        .then(datas => {
+          item['avatar'] = datas.avatar
+          callback(null, item);
+        })
+      }, (err, result) => {
+        res.tools.setJson(0, '好友信息获取成功', result)
+      }
+      )
     })
     .catch(err => next(err));
   } 
 
-  deltetMessage(req, res, next) {
+  deleteMessage(req, res, next) {
     const { username, targetUser } = req.body;
     this.offlineMessage.remove({
       sender: targetUser,
@@ -394,9 +409,20 @@ class MessageCenter {
         res.tools.setJson(0, '获取动态成功', result);
       })
     })
- 
   }
 
+  getUserAvatar(req, res, next) {
+    const { username } = req.query;
+    this.user.findOne({
+      username
+    }, { avatar: 1 })
+    .then(doc => {
+      if (!doc) return res.tools.setJson(0 ,'获取好友头像失败', { avatar: '' });
+      const { avatar } = doc;
+      return res.tools.setJson(0, '头像获取成功', { avatar })
+    })
+    .catch(err => next(err));
+  }
 }
 
 export default MessageCenter;

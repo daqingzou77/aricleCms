@@ -30,17 +30,14 @@ export const getClassifiedList = (data, successCb, failCb) => {
 }
 
 // 拉黑和撤销拉黑
-
 export const soloveBlack = (data, successCb, failCb) => {
   post(`${scheduleBaseUrl}/api/user/solveBlack`, data, successCb, failCb);
 }
 
 // 删除好友
-
 export const deleteFriend = (data, successCb, failCb) => {
   deletes(`${scheduleBaseUrl}/api/user/deleteFriend`, data, successCb, failCb);
 }
-
 
 // **** 用户管理 ****
 

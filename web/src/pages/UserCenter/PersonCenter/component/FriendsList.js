@@ -14,6 +14,9 @@ import {
   soloveBlack,
   deleteFriend
 } from '@/services/userService';
+import {
+  deleteMessage
+} from '@/services/messageService';
 import styles from './style.less';
 
 export default class FriendsList extends React.Component {
@@ -180,8 +183,21 @@ export default class FriendsList extends React.Component {
     })
   }
 
+  deleteMessage = name => {
+    const currentUser = localStorage.getItem('currentUser');
+    deleteMessage({
+      username: currentUser,
+      targetUser: name
+    }, ({ data }) => {
+      console.log(`后台消息清理状况${data.status}`)
+    },
+    e => console.log('deleteMessage-error', e.toString())
+    )
+  }
+
   handleMessage = ( name, avatar) => {
     const { currentUsername, dialogTips, messageVisible } = this.state;
+    this.deleteMessage(name);
     if (messageVisible) {
       message.warning('请关闭与其他人聊天的弹窗');
       return;
@@ -196,39 +212,6 @@ export default class FriendsList extends React.Component {
       friendAvatar: avatar,
       chatWith: name
     })
-  }
-
-  handleBlack = (name, key) => {
-    const { currentUsername } = this.state;
-    soloveBlack({
-      username: currentUsername,
-      targetUser: name,
-      key
-    }, ({ data }) => {
-      if (data.status && key === 1) {
-        message.success('好友拉黑成功');
-        this.getClassifiedList(0)
-      } else if (data.status && key === 2) {
-        message.success('拉黑撤销成功');
-        this.getClassifiedList(1)
-      }
-    }, e => console.log('solveBlack-error', e.toString()))
-  }
-
-  deleteFriend = name => {
-    const { currentUsername } = this.state;
-    deleteFriend({
-      username: currentUsername,
-      targetUser: name
-    }, ({ data }) => {
-      if (data.status) {
-        message.success('好友删除成功');
-        this.getClassifiedList(0)
-      } else {
-        message.error('好友删除失败')
-      }
-    },
-      e => console.log('deleteFriend-error', e.toString()))
   }
 
   setContent = content => {
@@ -267,6 +250,40 @@ export default class FriendsList extends React.Component {
       messageVisible: false,
       dialogTips: []
     })
+  }
+
+
+  handleBlack = (name, key) => {
+    const { currentUsername } = this.state;
+    soloveBlack({
+      username: currentUsername,
+      targetUser: name,
+      key
+    }, ({ data }) => {
+      if (data.status && key === 1) {
+        message.success('好友拉黑成功');
+        this.getClassifiedList(0)
+      } else if (data.status && key === 2) {
+        message.success('拉黑撤销成功');
+        this.getClassifiedList(1)
+      }
+    }, e => console.log('solveBlack-error', e.toString()))
+  }
+
+  deleteFriend = name => {
+    const { currentUsername } = this.state;
+    deleteFriend({
+      username: currentUsername,
+      targetUser: name
+    }, ({ data }) => {
+      if (data.status) {
+        message.success('好友删除成功');
+        this.getClassifiedList(0)
+      } else {
+        message.error('好友删除失败')
+      }
+    },
+      e => console.log('deleteFriend-error', e.toString()))
   }
 
   render() {
@@ -363,7 +380,6 @@ export default class FriendsList extends React.Component {
         <Modal
           title={chatWith}
           visible={messageVisible}
-          onOk={this.handlePrivateOk}
           onCancel={this.handleClosetPrivate}
           footer={footer}
         >

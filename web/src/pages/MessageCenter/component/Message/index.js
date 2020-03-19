@@ -1,24 +1,19 @@
 import React from 'react';
-import { Collapse, Row, Col, Avatar, Badge, List, message, Popconfirm } from 'antd';
-import moment from 'moment';
+import { Collapse, Row, Col, Avatar, Badge, List, message, Popconfirm, Button } from 'antd';
 import InfiniteScroll from 'react-infinite-scroller';
-import Modal from '@/common/components/Modal';
 import styles from '../style.less';
 import {
-  deltetMessage
+  deleteMessage,
 } from '@/services/messageService';
 
 const { Panel } = Collapse;
 
 export default class Message extends React.Component {
-  state = {
-    dataSource: []
-  }
 
-  deltetMessage = name => {
+  deleteMessage = name => {
     const { getNewMessageCounts } = this.props;
     const currentUser = localStorage.getItem('currentUser');
-    deltetMessage({
+    deleteMessage({
       username: currentUser,
       targetUser: name
     }, ({ data }) => {
@@ -33,9 +28,7 @@ export default class Message extends React.Component {
     )
   }
 
-
   render() {
-    const { dataSource } = this.state;
     const { messageArray } = this.props;
     const text = "是否确认清空？"
     let count = 0;
@@ -48,7 +41,7 @@ export default class Message extends React.Component {
           header={
             <Row type="flex" justify="space-between">
               <Col>
-                <Avatar shape="circle" icon="solution" style={{ background: '#ffbf00', marginRight: 5 }} size="small" /> 聊天
+                <Avatar shape="circle" icon="solution" style={{ background: '#ffbf00', marginRight: 5 }} size="small" /> 离线消息
               </Col>
               <Col>
                 <Badge count={count} />
@@ -63,18 +56,16 @@ export default class Message extends React.Component {
               renderItem={item => (
                 <List.Item
                   actions={[
-                    <a>聊天</a>,
-                    <Popconfirm placement="top" title={text} onConfirm={() => this.deltetMessage(item.friend)} okText="确认" cancelText="取消">
+                    <Popconfirm placement="top" title={text} onConfirm={() => this.deleteMessage(item.friend)} okText="确认" cancelText="取消">
                       <a>清空</a>
                     </Popconfirm>
                   ]}
                 >
                   <List.Item.Meta
-                    avatar={<Avatar shape="circle" icon="solution" style={{ background: '#ffbf00', marginRight: 5 }} size="small" />}
+                    avatar={<Avatar src={item.avatar} shape="circle" icon="solution" style={{ background: '#ffbf00', marginRight: 5 }} size="small" />}
                     title={item.friend}
-                  // onClick={this.handlePrivaceClick}
                   />
-                  <Badge count={item.count} />
+                  <span>向您发送了{item.count}条未读消息</span>
                 </List.Item>
               )}
             />

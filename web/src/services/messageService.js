@@ -43,8 +43,8 @@ export const getNewMessageCounts = (data, successCb, failCb) => {
 }
 
 // 删除某消息
-export const deltetMessage = (data, successCb, failCb) => {
-  deletes(`${scheduleBaseUrl}/api/messageCenter/deltetMessage`, data, successCb, failCb);
+export const deleteMessage = (data, successCb, failCb) => {
+  deletes(`${scheduleBaseUrl}/api/messageCenter/deleteMessage`, data, successCb, failCb);
 }
 
 // 获取新的好友请求
