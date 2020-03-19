@@ -142,8 +142,9 @@ export default class LiveUpdate extends React.Component {
                 renderItem={(item, index) => (
                   <List.Item key={item.author}>
                     <List.Item.Meta
-                      avatar={<Avatar style={{ backgroundColor: avatarColor[index % 7] }} icon="user" />}
+                      avatar={<Avatar src={item.avatar} style={{ backgroundColor: avatarColor[index % 7] }} icon="user" />}
                       title={<Text strong>作者-{item.author}</Text>}
+
                       description={
                         <span>
                           <a 
@@ -154,7 +155,7 @@ export default class LiveUpdate extends React.Component {
                         </span>
                       }
                     />
-                    <div>
+                    <div style={{ float: 'right', marginTop: '-3%' }}>
                       发布时间：{moment(item.passTime).format('YYYY-MM-DD hh:mm:ss')}
                     </div>
                   </List.Item>

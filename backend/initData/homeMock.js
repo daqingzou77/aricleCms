@@ -1,32 +1,23 @@
-   
-   import biancheng from '@/assets/books/biancheng1.jpg';
-   import pingfandeshijie from '@/assets/books/pingfanshijie.jpg';
-   import weicheng from '@/assets/books/weicheng.jpg';
-   import honggaoliang from '@/assets/books/honggaoliang.jpg';
-   
-   // 头像颜色 
-   const avatarColor = ['#f56a00', '#7265e6', '#ffbf00', '#00a2ae', '#f32432', '#2322d1', "#fff146"];
-
    // 每日更新  
    const list = [{
      id: `fake-list-1`,
      title: '边城',
-     imgSrc: biancheng,
+     imgSrc: 'http://localhost:9999/images/cover/biancheng.jpg',
      description: '《边城》是沈从文创作的中篇小说，首次出版于1934年。该小说以20世纪30年代川湘交界的边城小镇茶峒为背景，以兼具抒情诗和小品文的优美笔触，描绘了湘西地区特有的风土人情；借船家少女翠翠的纯爱故事，展现出了人性的善良美好。',
    }, {
      id: `fake-list-2`,
      title: '平凡的世界',
-     imgSrc: pingfandeshijie,
+     imgSrc: 'http://localhost:9999/images/cover/pingfanshijie.jpg',
      description: '《平凡的世界》以孙少安和孙少平两兄弟为中心，刻画了当时社会各阶层众多普通人的形象；劳动与爱情、挫折与追求、痛苦与欢乐、日常生活与巨大社会冲突纷繁地交织在一起，深刻地展示了普通人在大时代历史进程中所走过的艰难曲折的道路。'
    }, {
      id: `fake-list-3`,
      title: '围城',
-     imgSrc: weicheng,
+     imgSrc: 'http://localhost:9999/images/cover/weicheng.jpg',
      description: '《围城》是钱钟书所著的长篇小说，是中国现代文学史上一部风格独特的讽刺小说。被誉为“新儒林外史”。第一版于1947年由上海晨光出版公司出版。故事主要写抗战初期知识分子的群相。'
    }, {
      id: `fake-list-1`,
      title: '红高粱',
-     imgSrc: honggaoliang,
+     imgSrc: 'http://localhost:9999/images/cover/honggaoliang.jpg',
      description: '《红高粱》是一部表现高密人民在抗日战争中的顽强生命力和充满血性与民族精神的经典之作，从民间的角度给读者再现了抗日战争的年代，展现的是一种为生存而奋起反抗的暴力欲。'
    }]
 
@@ -34,7 +25,7 @@
    const listData = [{
      name: '朱自清',
      href: 'https://baike.baidu.com/item/%E6%9C%B1%E8%87%AA%E6%B8%85/106017?fr=aladdin',
-     avatar: 'http://img1.imgtn.bdimg.com/it/u=2182637661,2104375444&fm=26&gp=0.jpg',
+     avatar: 'http://localhost:9999/images/cover/zhuziqing.jpg',
      description: '散文家、诗人、学者。代表作：《春》《绿》《背影》《荷塘月色》《匆匆》',
      favorites: '1.1K',
      likes: '12K',
@@ -64,7 +55,7 @@
    const hotArticles = [{
      articlename: '《匆匆》-朱自清',
      description: '燕子去了，有再来的时候；杨柳枯了，有再青的时候；桃花谢了，有再开的时候。但是，聪明的，你告诉我，我们的日子为什么一去不复返呢？',
-     articleImgSrc: 'https://bkimg.cdn.bcebos.com/pic/42166d224f4a20a45c34157c94529822720ed066?x-bce-process=image/resize,m_lfit,w_268,limit_1/format,f_jpg',
+     articleImgSrc: 'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=2789062348,1002085452&fm=26&gp=0.jpg',
      href: 'https://zhidao.baidu.com/question/21816886.html?qbl=relate_question_0&word=%B4%D2%B4%D2',
      favorites: '2K',
      likes: '134K',
@@ -73,7 +64,7 @@
    }, {
      articlename: '《骆驼祥子》-老舍',
      description: '今天买上了新车，就算是生日吧，人的也是车的，好记，而且车既是自己的心血，简直没什么不可以把人与车算在一块的地方。',
-     articleImgSrc: 'http://img5.imgtn.bdimg.com/it/u=2279722130,3687285283&fm=26&gp=0.jpg',
+     articleImgSrc: 'https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=994103856,3948510057&fm=26&gp=0.jpg',
      href: 'https://www.ppzuowen.com/book/luotuoxiangzi/',
      favorites: '1.5K',
      likes: '83K',
@@ -90,46 +81,8 @@
      messages: '6.4K'
    }];
 
-   // 每日更新
-   const dailyUpdate = [{
-     author: '小橘',
-     avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-     updateContent: '更新小说《犯罪现场》第三节',
-     updateTime: new Date(),
-   }, {
-     author: '小黑',
-     avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-     updateContent: '上传附件-落日下的余晖.doc',
-     updateTime: new Date(),
-   }, {
-     author: 'yellow336',
-     avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-     updateContent: '发布散文《秋意》',
-     updateTime: new Date(),
-   }, {
-     author: 'daqing',
-     avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-     updateContent: '发布短文《两心相悦》',
-     updateTime: new Date(),
-   }, {
-     author: '婷婷701',
-     avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-     updateContent: '上传附件-这不是真的爱情.doc',
-     updateTime: new Date(),
-   }, {
-     author: '小猪有点皮',
-     avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-     updateContent: '发布短文《山下农民》',
-     updateTime: new Date(),
-   }, {
-     author: '早更晚更的都更',
-     avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-     updateContent: '更新小说《校园奇幻漂流》',
-     updateTime: new Date(),
-   }];
-
-   // 每日金句
-   const dailyComments = [{
+   // 高亮神评
+   const hotComments = [{
      commenter: '走打球大气',
      commentObject: '婷婷酱',
      commentContent: '我多想再爱你一次，我的太阳~',
@@ -173,11 +126,9 @@
      commentsDislike: '4K'
    }];
 
-   export {
-    avatarColor,
+   export default {
     list,
     listData,
     hotArticles,
-    dailyUpdate,
-    dailyComments
+    hotComments
    }

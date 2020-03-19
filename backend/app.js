@@ -27,7 +27,7 @@ server.listen(80, () => {
 // const sessionStore = sessionMongoose(connect);
 // const store = new sessionStore({url: config.mongo.sessionUrl});
 // app.use(log4js.connectLogger(logger('normal'), {level:'auto', format: ':method :url :status'}));  //日志
-
+app.use(express.static('public'));
 app.use(bodyParse.json()); // 解析url信息中的参数
 app.use(bodyParse.urlencoded({ extended: false }));
 app.use(cookieParse(config.secret)); //解析签名cookie
@@ -46,7 +46,7 @@ app.use(session({
 }))
 
 app.use(/\/api/, tools);
-app.use(/\/api/, express.static('public'));
+// app.use(/\/api/, express.static('public'));
 
 // app.use(/\/api/, (req, res, next) => {
 //   if (req.session.username || req.path.indexOf('/user/toLogin') !== -1 || req.path.indexOf('/user/getCaptch') !== -1 ) {

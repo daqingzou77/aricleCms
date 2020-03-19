@@ -1,3 +1,5 @@
+import async from 'async';
+import user from '../model/user';
 import articles from '../model/articles';
 import scienceMock from '../initData/scienceMock';
 import historMock from '../initData/historyMock';
@@ -16,6 +18,7 @@ class Classify {
   constructor(app) {
     Object.assign(this, {
       app,
+      user,
       articles
     });
     this.init();
@@ -39,16 +42,32 @@ class Classify {
     this.app.get('/api/classify/getSportSense', this.getSportSense.bind(this)); // 获取体育常识
   }
 
-  getHotRecommandFromScience(req, res, next) {
+  getHotRecommandFromScience(req, res) {
     const responData = Tool.mockData(3, hotScience);
     res.tools.setJson(0, '科学热门推荐获取成功', responData);
   }
 
   getLiveUpdateFromScience(req, res, next) {
-    this.articles.find({ passTime: {$lte: new Date}}).sort({_id: -1}).limit(3)
+    this.articles.find({ passTime: { $lte: new Date }}, {
+      articlename: 1,
+      author: 1,
+      articleContent: 1,
+      articleForm: 1,
+      annexname: 1
+    }).sort({_id: -1}).limit(3)
     .then(doc => {
-      res.tools.setJson(0, '实时更新科学列表成功', doc)
+      async.map(doc, (item, callback) => {
+        this.user.findOne({
+          username: item.author
+        }).then(data=>{
+          item['avatar'] = data.avatar;
+          callback(null, item);
+        })
+      }, (err, result) => {
+        res.tools.setJson(0, '实时更新科学列表成功', result);
+      })
     })
+    .catch(err => next(err))
   }
 
   getScienceTips(req, res, next) {

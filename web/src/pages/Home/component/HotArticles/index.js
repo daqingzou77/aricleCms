@@ -1,5 +1,8 @@
 import React from 'react';
 import { Card, List, Icon, Typography } from 'antd';
+import {
+  getHotArticles
+} from '@/services/homeService';
 
 const { Text } = Typography; 
 
@@ -8,6 +11,19 @@ export default class HotArticles extends React.Component {
   state = {
     hotArticles: []
   }
+
+  componentDidMount() {
+    this.getHotArticles()
+  }
+
+  getHotArticles = () => {
+    getHotArticles({}, ({ data }) => {
+      this.setState({
+        hotArticles: data
+      })
+    })
+  }
+
 
   render() {
     const { hotArticles } = this.state;

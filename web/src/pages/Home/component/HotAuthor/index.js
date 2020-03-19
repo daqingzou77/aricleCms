@@ -1,6 +1,9 @@
 /* eslint-disable react/jsx-no-target-blank */
 import React from 'react';
 import { List, Card, Avatar, Icon, Typography } from 'antd';
+import {
+  getHotAuthor
+} from '@/services/homeService';
 
 const { Text } = Typography;
 
@@ -8,6 +11,18 @@ export default class HotAuthor extends React.Component {
 
   state = {
     listData: []
+  }
+
+  componentDidMount() {
+    this.getHotAuthor()
+  }
+
+  getHotAuthor = () => {
+    getHotAuthor({}, ({ data }) => {
+      this.setState({
+        listData: data
+      })
+    })
   }
 
   render() {

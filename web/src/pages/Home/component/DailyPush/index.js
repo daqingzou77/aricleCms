@@ -1,12 +1,28 @@
 import React from 'react';
 import { List, Card, Typography, Icon } from 'antd';
+import {
+  getDailyPush
+} from '@/services/homeService';
 
 const { Paragraph } = Typography;
+
 
 export default class DailyPush extends React.Component {
 
   state = {
    list: []
+  }
+
+  componentDidMount() {
+    this.getDailyPush()
+  }
+
+  getDailyPush = () => {
+    getDailyPush({}, ({ data }) => {
+      this.setState({
+        list: data
+      })
+    })
   }
 
   render() {

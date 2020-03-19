@@ -1,11 +1,28 @@
 import React from 'react';
 import { List, Card, Icon, Typography } from 'antd';
+import {
+  getHotComments
+} from '@/services/homeService';
 
 const { Text, Paragraph} = Typography;
 
 export default class HotComments extends React.Component {
   state = {
     hotComments: []
+  }
+
+  componentDidMount() {
+    this.getHotComments();
+  }
+
+  getHotComments = () => {
+    getHotComments({}, ({ data }) => {
+      this.setState({
+        hotComments: data
+      })
+    },
+    e => console.log('getHotComments-error', e.toString())
+    )
   }
 
   render() {
@@ -21,7 +38,7 @@ export default class HotComments extends React.Component {
           renderItem={item => (
             <List.Item>
               <div style={{ width: '100%' }}>
-                <Text strong>{item.commenter} <a>评论</a> {item.commentObject}</Text>
+                <Text strong>{item.commenter} 评论 {item.commentObject}</Text>
                 <Text style={{ float: 'right'}}>
                   <Icon type="like" />{item.commentStars} &nbsp;<Icon type="dislike" />{item.commentsDislike}
                 </Text>
