@@ -123,12 +123,17 @@ class MessageCenter extends React.Component {
 
   render() {
     const { commentVisible, updateCount, commentCount, starCount, privateCount, newMessageArray } = this.state;
+    const userType = localStorage.getItem('userType');
     return (
       <div className={styles.message}>
-        <Collapse onChange={() => { }} expandIconPosition="right">
-          <Comment count={commentCount} />
-          <Like count={starCount} />
-        </Collapse>
+        {
+          userType === '1' ? (
+            <Collapse onChange={() => { }} expandIconPosition="right">
+              <Comment count={commentCount} />
+              <Like count={starCount} />
+            </Collapse>
+          ) : null
+        }
         <Collapse style={{ marginTop: 10 }} onChange={() => { }} expandIconPosition="right">
           <Private count={privateCount} />
           <Message 

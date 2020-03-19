@@ -282,30 +282,30 @@ class MessageCenter {
             username: targetUser,
             'friendsList.friend': requester
           })
-          .then(data => {
-            console.log('data', data);
-            if (!data) {
-              this.user.updateOne({ username: targetUser }, {
-                $push: {
-                  friendsList: { friend: requester },
-                }
-              })
-              .then(doc => {
-                this.user.updateOne({
-                  username: targetUser
-                }, {
-                  $pull: { requestList: { requester } }
+            .then(data => {
+              if (!data) {
+                this.user.updateOne({ username: targetUser }, {
+                  $push: {
+                    friendsList: { friend: requester },
+                  }
+                }).then(()=>{
+                  console.log('好友添加成功')
                 })
+              }
+              this.user.updateOne({
+                username: targetUser
+              }, {
+                $pull: { requestList: { requester } }
+              })
                 .then(doc => {
+                  console.log(doc)
                   if (doc.nModified > 0) {
                     res.tools.setJson(0, '同意好友成功', { status: true });
                   } else {
                     res.tools.setJson(0, '同意好友失败', { status: false });
-                    }
+                  }
                 })
-              })
-            }
-          })
+            })
         })
     } else {
       this.user.updateOne({
@@ -366,11 +366,12 @@ class MessageCenter {
   getFriendUpdates(req, res, next) {
     const { username } = req.query;
     const nowDate = new Date();
+    let id = 0;
     this.user.findOne({
       username
     }, { friendsList: 1 })
       .then(doc => {
-        if (doc.length === 0) return res.tools.setJson(0, '获取动态为空', []);
+        if (doc.friendsList.length === 0) return res.tools.setJson(0, '获取动态为空', []);
         async.map(doc.friendsList, (item, callback) => {
           this.articles.findOne({
             author: item.friend,
@@ -393,15 +394,17 @@ class MessageCenter {
                 callback(null, item);
               })
             } else {
-              callback()
+              ++id
+              callback(null)
             }
           })
         }, (err, result) => {
-          if (err) return res.tools.setJson(0, '获取动态失败', []);
+          if (result.length == id) {
+            return res.tools.setJson(0, '好友无动态', []);
+          }
           result.map((item, index) => {
-            if (!item) {
-              result.splice(index, 1);
-            }
+            if (!item)
+              result.splice(index, 1)
           })
           res.tools.setJson(0, '获取动态成功', result);
         })

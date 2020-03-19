@@ -17,13 +17,6 @@ import {
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 
-const customizeRenderEmpty = () => (
-  <div style={{ textAlign: 'center' }}>
-    <MehOutlined style={{ fontSize: 20 }} />
-    <p>暂无数据</p>
-  </div>
-);
-
 class Manage extends React.Component {
 
   columns = [{
@@ -85,7 +78,7 @@ class Manage extends React.Component {
             处理
           </a>
           <Divider type="vertical" />
-          <Popconfirm placement="top" title="是否确认删除嘛?" onConfirm={() => this.handleConfirm(articlename)} okText="Yes" cancelText="No">
+          <Popconfirm placement="top" title="是否确认删除嘛?" onConfirm={() => this.handleConfirm(articlename)} okText="确认" cancelText="取消">
             <a href="" style={{ color: 'red' }}>删除</a>
           </Popconfirm>
         </>
@@ -180,11 +173,11 @@ class Manage extends React.Component {
     }, ({ data }) => {
       if (data.deletedCount > 0) {
         message.success('删除成功');
+        this.getArticleList();
       } else {
         message.success('删除失败');
       }
     })
-    this.getArticleList();
   }
 
   // 0 未发布 1 已发布 2 审核中 3 通过 4 已撤销

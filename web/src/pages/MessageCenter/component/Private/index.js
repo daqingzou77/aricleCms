@@ -76,7 +76,7 @@ class Private extends React.Component {
             header={
               <Row type="flex" justify="space-between">
                 <Col>
-                  <Avatar shape="circle" icon="mail" style={{ background: '#7265e6', marginRight: 5 }} size="small" /> 私信
+                  <Avatar shape="circle" icon="mail" style={{ background: '#7265e6', marginRight: 5 }} size="small" /> 用户私信
                 </Col>
                 <Col>
                   <Badge count={count} />

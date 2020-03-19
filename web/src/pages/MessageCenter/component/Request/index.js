@@ -61,7 +61,7 @@ export default class Request extends React.Component {
           header={
             <Row type="flex" justify="space-between">
               <Col>
-                <Avatar shape="circle" icon="user" style={{ background: '#f56a00', marginRight: 5 }} size="small" /> 请求
+                <Avatar shape="circle" icon="user" style={{ background: '#f56a00', marginRight: 5 }} size="small" /> 好友请求
               </Col>
               <Col>
                 <Badge count={count} />

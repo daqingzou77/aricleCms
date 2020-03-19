@@ -42,6 +42,7 @@ export default class Attention extends React.Component {
     getFriendUpdates({
       username: name
     }, ({ data }) => {
+      console.log('data', data);
       this.setState({
         dataSource: data
       })
@@ -74,7 +75,7 @@ export default class Attention extends React.Component {
           header={
             <Row type="flex" justify="space-between">
               <Col>
-                <Avatar shape="circle" icon="heart" style={{ background: 'red', marginRight: 5 }} size="small" /> 动态
+                <Avatar shape="circle" icon="heart" style={{ background: 'red', marginRight: 5 }} size="small" /> 好友动态
               </Col>
               <Col>
                 <Badge count={count} />
