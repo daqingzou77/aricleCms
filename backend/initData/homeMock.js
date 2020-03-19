@@ -34,7 +34,7 @@
    const listData = [{
      name: '朱自清',
      href: 'https://baike.baidu.com/item/%E6%9C%B1%E8%87%AA%E6%B8%85/106017?fr=aladdin',
-     avatar: 'https://bkimg.cdn.bcebos.com/pic/c2cec3fdfc0392459c0ea3798b94a4c27d1e2508?x-bce-process=image/resize,m_lfit,w_268,limit_1/format,f_jpg',
+     avatar: 'http://img1.imgtn.bdimg.com/it/u=2182637661,2104375444&fm=26&gp=0.jpg',
      description: '散文家、诗人、学者。代表作：《春》《绿》《背影》《荷塘月色》《匆匆》',
      favorites: '1.1K',
      likes: '12K',

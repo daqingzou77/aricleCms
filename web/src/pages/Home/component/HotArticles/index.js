@@ -4,7 +4,13 @@ import { Card, List, Icon, Typography } from 'antd';
 const { Text } = Typography; 
 
 export default class HotArticles extends React.Component {
+
+  state = {
+    hotArticles: []
+  }
+
   render() {
+    const { hotArticles } = this.state;
     const IconText = ({ type, text }) => (
       <span>
         <Icon type={type} style={{ marginRight: 8 }} />
@@ -20,7 +26,7 @@ export default class HotArticles extends React.Component {
       >
         <List
           itemLayout="vertical"
-          // dataSource={hotArticles}
+          dataSource={hotArticles}
           renderItem={item => (
             <List.Item
               key={item.articlename}

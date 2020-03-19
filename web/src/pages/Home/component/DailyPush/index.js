@@ -4,12 +4,18 @@ import { List, Card, Typography, Icon } from 'antd';
 const { Paragraph } = Typography;
 
 export default class DailyPush extends React.Component {
+
+  state = {
+   list: []
+  }
+
   render() {
+    const { list } = this.state;
     const cardList = (
       <List
         rowKey="id"
-        // grid={{ gutter: 24, xl: 4, lg: 3, md: 3, sm: 2, xs: 1 }}
-        // dataSource={list}
+        grid={{ gutter: 24, xl: 4, lg: 3, md: 3, sm: 2, xs: 1 }}
+        dataSource={list}
         renderItem={item => (
           <List.Item>
             <Card

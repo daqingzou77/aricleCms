@@ -10,6 +10,7 @@ import {
   HotComment
 } from './component'
 
+
 class Home extends React.Component {
 
   render() {

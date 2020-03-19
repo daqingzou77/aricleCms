@@ -4,7 +4,12 @@ import { List, Card, Icon, Typography } from 'antd';
 const { Text, Paragraph} = Typography;
 
 export default class HotComments extends React.Component {
+  state = {
+    hotComments: []
+  }
+
   render() {
+    const { hotComments } = this.state;
     return (
       <Card
         title={<span style={{ fontWeight: 'bold' }}>每日热评</span>}
@@ -12,7 +17,7 @@ export default class HotComments extends React.Component {
         extra={<div style={{ color: '#2884D8', cursor: 'pointer' }}><Icon type='reload' />&nbsp;换一换</div>}
       >
         <List
-          // dataSource={dailyComments}
+          dataSource={hotComments}
           renderItem={item => (
             <List.Item>
               <div style={{ width: '100%' }}>

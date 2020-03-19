@@ -1,10 +1,17 @@
+/* eslint-disable react/jsx-no-target-blank */
 import React from 'react';
 import { List, Card, Avatar, Icon, Typography } from 'antd';
 
 const { Text } = Typography;
 
 export default class HotAuthor extends React.Component {
+
+  state = {
+    listData: []
+  }
+
   render() {
+    const { listData } = this.state;
     // 公共组件
     const Atext = ({ href, text }) => (
       <a href={href} target="_blank">{text}</a>
@@ -26,7 +33,7 @@ export default class HotAuthor extends React.Component {
       >
         <List
           itemLayout="vertical"
-          // dataSource={listData}
+          dataSource={listData}
           renderItem={item => (
             <List.Item
               key={item.name}
