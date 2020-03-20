@@ -83,6 +83,7 @@ class Home {
       })
       res.tools.setJson(0, '获取统计成功', resp);
     })
+    .catch(err => next(err));
   }
 }
 

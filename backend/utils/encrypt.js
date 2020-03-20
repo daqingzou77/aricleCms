@@ -1,9 +1,12 @@
-const prime = require('./randomPrime');
-const BigInt = require('big-integer');
+import prime from './randomPrime';
+import BigInt from 'big-integer';
+import config from '../config/app.config';
 const jsSHA = require('jssha');
 
-const shaObj = new jsSHA('SHA3-224', 'TEXT');
+const { K, K1, P, m } = config;
 const { bigPrime128, bigPrime224 } = prime;
+
+const shaObj = new jsSHA('SHA3-224', 'TEXT');
 
 class Encrypt {
   constructor(keywords) {
@@ -12,10 +15,10 @@ class Encrypt {
     this.save3 = 128;
     this.save4 = 128;
     this.n = keywords.length;
-    this.K = BigInt("86612358491908511013050328653420959105");
-    this.K1 = BigInt("3240609483273039941180911220367410437902811099537681295979371054795801829111143924137950446372332815845466881991456594237356307772002608177563575450383716");
-    this.P = BigInt("12978682430222561568034866250693885788654275539020604194476164247884695620293970389882054324052935685139441016272502626712038480544064483355282279585119653");
-    this.m = BigInt("14518694755501105963175998984713125977260836932474148266335604697803");
+    this.K = K;
+    this.K1 = K1;
+    this.P = P;
+    this.M = M;
     this.keywordsDictionary = keywords;
   }
 
@@ -32,7 +35,7 @@ class Encrypt {
   getCiphertextDoor(queryVectorArray) {
     const queryArray = this.queryIndexVector(queryVectorArray);
     const Ci = this.randomArrayCi();
-    const Q1 = this.cipherTextDoor(queryArray, this.m, Ci);
+    const Q1 = this.cipherTextDoor(queryArray, this.M, Ci);
     return Q1;
   }
   // 定义初始相似度
@@ -41,7 +44,7 @@ class Encrypt {
 
   // 计算加密相似度
    getEndSmi(I1, Q1, θ) {
-    const E = this.getMiddleNumberE(this.m, θ);
+    const E = this.getMiddleNumberE(this.M, θ);
     const F = this.getMiddleNumberF(I1, Q1);
     const G = this.getMiddleNumberG(F, E);
     const finalSmi = this.getFinalSmi(G, E);
@@ -173,4 +176,4 @@ class Encrypt {
   }
 }
 
-module.exports = Encrypt;
+export default Encrypt;

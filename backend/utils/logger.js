@@ -1,35 +1,35 @@
 import log4js from 'log4js';
+import path from 'path';
 
-// 配置日志
+// 配置文档输出日志
 log4js.configure(
   {
-    appenders: {
+    appenders: { // 指定日志输出位置
       file: {
         type: 'file',
-        filename: __dirname + '/logs/test.log',
+        filename: path.resolve(__dirname, '../logs/test.log'),
         maxLogSize: 1024,
         compress: true,
         backups: 4,
         category: 'normal'
       },
-      dateFile: {
-        type: 'dateFile',
-        filename: 'more-important-things.log',
-        pattern: 'yyyy-MM-dd-hh',
-        compress: true
-      },
+      // dateFile: {
+      //   type: 'dateFile',
+      //   filename: 'more-important-things.log',
+      //   pattern: 'yyyy-MM-dd-hh',
+      //   compress: true
+      // },
       out: {
         type: 'stdout'
       }
     },
-    categories: {
-      default: { appenders: ['file', 'dateFile', 'out'], level: 'info' }
+    categories: { // 分区
+      default: { appenders: ['file', 'out'], level: 'info' }
     }
   }
 );
 
 export default (name) => {
-  const logger = log4js.getLogger('normal');
-  // logger.setLevel('INFO');
+  const logger = log4js.getLogger(name);
   return logger;
 }

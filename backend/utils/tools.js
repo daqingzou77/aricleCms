@@ -1,3 +1,4 @@
+// 封装工具类
 class Tools {
   constructor(req, res) {
     Object.assign(this, {
