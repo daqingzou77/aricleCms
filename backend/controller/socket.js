@@ -1,12 +1,13 @@
 import chats from '../model/chat';
-import offlineMessage from '../model/offlineMessaeg';
+import offline from '../model/offline';
+
 
 class SocketIo {
   constructor(io) {
     Object.assign(this, {
       io,
       chats,
-      offlineMessage,
+      offline,
       userList: []
     });
     this.init();
@@ -23,18 +24,20 @@ class SocketIo {
         socket.emit('logined', { msg: `${username}已登录` })
       });
 
+      // 发送消息
       socket.on('sendMessage', data => {
         const { sender, toFriend, time, content } = data;
         // 判断好友是否上线
         if (!this.userList[toFriend]) {
-         // 好友未上线，消息入库
-         this.offlineMessage.create(data);
-         this.io.to(this.userList[sender]).emit('offlineRemind', {
-           toFriend
-         })
+          // 好友未上线，未读消息入库
+          this.offline.create(data);
+          this.io.to(this.userList[sender]).emit('offlineRemind', {
+            toFriend
+          })
         }
+        // 聊天消息内容入库
         this.chats.create(data);
-        // 发给指定用户
+        // 发给指定用户接收
         this.io.to(this.userList[toFriend]).emit('receiveMsg', {
           sender,
           toFriend,
@@ -43,10 +46,11 @@ class SocketIo {
         })
       })
 
+      // 获取历史消息
       socket.on('getHistoryMessage', data => {
         const { sender, toFriend } = data;
         const sendObj = this.userList[sender];
-        // 数据库获取数据，并返回
+        // 返回过去一天内容的消息记录
         const nowDate = new Date();
         const lastDate = nowDate.setDate(nowDate.getDate() - 1);
         this.chats.find({
@@ -56,15 +60,15 @@ class SocketIo {
           ],
           time: { $gt: lastDate }
         }).then(doc => {
+          // 推送指定用户
           this.io.to(sendObj).emit('pushHistoryMessage', doc);
         })
       });
 
+      // 用户退出，清空用户对应socket
       socket.on('logout', data => {
-        // 清空数据
         const { username } = data;
         this.userList[username] = null;
-        console.log(`${username} logout`);
       })
     })
   }

@@ -1,7 +1,7 @@
 import articles from '../model/articles';
 import user from '../model/user';
 import chats from '../model/chat';
-import offlineMessage from '../model/offlineMessaeg';
+import offline from '../model/offline';
 import Tool from '../utils/tools';
 import async from 'async';
 
@@ -14,29 +14,33 @@ class MessageCenter {
       articles,
       user,
       chats,
-      offlineMessage
+      offline
     });
     this.init();
   }
 
   init() {
+    // 消息中心-评论
     this.app.get('/api/messageCenter/getCommentCounts', this.getCommentCounts.bind(this)); // 获取最新评论数
     this.app.get('/api/messageCenter/getCommentList', this.getCommentList.bind(this)); // 获取评论列表
+    // 消息中心-点赞
     this.app.get('/api/messageCenter/getStarCounts', this.getStarCounts.bind(this)); // 获取文章点赞数
     this.app.get('/api/messageCenter/getStarList', this.getStarList.bind(this)); // 获取点赞列表
+    // 消息中心-私信
     this.app.get('/api/messageCenter/getPrivateCounts', this.getPrivateCounts.bind(this)); // 获取私信个数
     this.app.get('/api/messageCenter/getPrivateLetter', this.getPrivateLetter.bind(this)); // 获取私信
     this.app.delete('/api/messageCenter/deletePrivateItem', this.deletePrivateItem.bind(this)); // 删除私信
-
+    // 消息中心-新消息
     this.app.get('/api/messageCenter/getNewMessage', this.getNewMessage.bind(this)); // 获取新消息
     this.app.delete('/api/messageCenter/deleteMessage', this.deleteMessage.bind(this)); // 删除消息记录
-
+    // 消息中心-好友请求
     this.app.get('/api/messageCenter/getFriendRequest', this.getFriendRequest.bind(this)); // 获取好友请求
     this.app.post('/api/messageCenter/solveFriendRequest', this.solveFriendRequest.bind(this)); // 处理好友请求
+    // 消息中心-动态
     this.app.get('/api/messageCenter/getUpdatesCount', this.getUpdatesCount.bind(this)); //获取最新动态个数
-    this.app.get('/api/messageCenter/recordModalTime', this.recordModalTime.bind(this)); // 记录弹窗时刻
     this.app.get('/api/messageCenter/getFriendUpdates', this.getFriendUpdates.bind(this)); // 获取好友动态
-    this.app.get('/api/messageCenter/getUserAvatar', this.getUserAvatar.bind(this)); // 获取当前用户头像
+    // 消息中心-记录弹窗时刻
+    this.app.get('/api/messageCenter/recordModalTime', this.recordModalTime.bind(this)); // 记录弹窗时刻
   }
 
   getCommentCounts(req, res, next) {
@@ -212,7 +216,7 @@ class MessageCenter {
 
   getNewMessage(req, res, next) {
     const { username } = req.query;
-    this.offlineMessage.find({
+    this.offline.find({
       toFriend: username
     })
       .then(doc => {
@@ -235,7 +239,7 @@ class MessageCenter {
 
   deleteMessage(req, res, next) {
     const { username, targetUser } = req.body;
-    this.offlineMessage.remove({
+    this.offline.remove({
       sender: targetUser,
       toFriend: username
     })

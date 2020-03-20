@@ -5,7 +5,10 @@ import async from 'async';
 import user from '../model/user';
 import chat from '../model/chat';
 import config from '../config/app.config';
-import { getRandomNumbers } from '../utils/index';
+import Tool from '../utils/tools';
+
+const Tools = new Tool();
+// import { getRandomNumbers } from '../utils/index';
 
 // 设置图片存储路径
 var storage = multer.diskStorage({
@@ -32,7 +35,7 @@ class users {
 
 
   init() {
-    // **** 用户中心 ****
+    // 个人中心
     this.app.post('/api/user/uploadUserAvatar', upload.array('avatar', 1), this.uploadUserAvatar.bind(this)); // 用户头像上传
     this.app.put('/api/user/updateUserDetail', this.updateUserDetail.bind(this)); // 更新用户详细信息
     this.app.get('/api/user/getCurrentUserDetail', this.getCurrentUserDetail.bind(this)); // 获取当前用户信息
@@ -42,10 +45,9 @@ class users {
     this.app.post('/api/user/checkStatus', this.checkStatus.bind(this)); // 检查通信状态
     this.app.post('/api/user/solveBlack', this.solveBlack.bind(this)); // 处理好友拉黑
     this.app.delete('/api/user/deleteFriend', this.deleteFriend.bind(this)); // 删除好友
-    // 删除所有聊天
-    this.app.get('/api/user/deleteAllChats', this.deleteAllChats.bind(this));
+    this.app.get('/api/user/deleteAllChats', this.deleteAllChats.bind(this)); // 删除所有用户的消息记录
 
-    // **** 用户管理 ****
+    // 用户管理
     this.app.get('/api/user/getUserList', this.getUserList.bind(this)); // 获取用户列表
     this.app.post('/api/user/getUserByOptions', this.getUserByOptions.bind(this)); // 条件查询用户
     this.app.post('/api/user/addUserParam', this.addUserParam.bind(this)); // 添加用户
@@ -54,7 +56,7 @@ class users {
     this.app.get('/api/user/queryUserItem', this.queryUserItem.bind(this)); // 查询单个用户
     this.app.put('/api/user/editUserItem', this.editUserItem.bind(this)); // 编辑单个用户
 
-    // 登录、注册、获取验证码
+    // 系统登录、注册、验证码功能
     this.app.post('/api/user/register', this.registerUser.bind(this));
     this.app.post('/api/user/toLogin', this.toLogin.bind(this));
     this.app.get('/api/user/logOut', this.logOut.bind(this));
@@ -399,7 +401,7 @@ class users {
   }
 
   getCaptch(req, res, next) {
-    const randomCaptch = getRandomNumbers();
+    const randomCaptch = Tools.getRandomNumbers();
     req.session.captch = randomCaptch;
     res.tools.setJson(0, '获取验证码成功', randomCaptch);
   }
@@ -415,7 +417,6 @@ class users {
       .then(data => {
         res.tools.setJson(0, '删除成功', 'success')
       })
-
   }
 
 }

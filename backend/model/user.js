@@ -13,10 +13,10 @@ import mongoose from 'mongoose';
  * 创建时间 creatTime
  * 私信列表 messageList: []
  * 新消息 newMessageList: []
-   好友请求列表 requestList: []
-   好友列表 friendsList: []
-   拉黑列表 blacklist: []
-   上次关闭弹窗时间 lastCloseTime
+ * 好友请求列表 requestList: []
+ * 好友列表 friendsList: []
+ * 拉黑列表 blacklist: []
+ * 上次关闭弹窗时间 lastCloseTime
  * 
  */
 const userSchema = mongoose.Schema({

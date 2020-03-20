@@ -1,7 +1,6 @@
 import articles from '../model/articles';
 import users from '../model/user';
 import Encrypt from '../utils/encrypt';
-const BigInt = require('big-integer');
 
 class Articles {
   constructor(app) {

@@ -21,7 +21,7 @@ class Tools {
   }
 
   /**
-   * mock数据
+   * mock随机数据
    * @param {*Number} number
    * @param {*Array} dataSource 
    */
@@ -55,7 +55,7 @@ class Tools {
   }
 
   /**
-   * 获取消息统计
+   * 消息统计
    * @param {*Array} arr
    */
   staticMessage(arr) {
@@ -86,6 +86,19 @@ class Tools {
       })
     }
     return respArray;
+  }
+
+  /**
+   * 产生随机数生成验证码
+   */
+  getRandomNumbers() {
+    let numbersArray = '';
+    const strs = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    for (let i = 0; i < 6; i ++ ) {
+      const index = Math.round(Math.random()*strs.length);
+      numbersArray += strs.charAt(index)
+    }
+    return numbersArray;
   }
 
 }

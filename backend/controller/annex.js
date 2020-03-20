@@ -1,8 +1,7 @@
 import articles from '../model/articles';
 import formidable from 'formidable';
 import url from 'url';
-import fs, { copyFile } from 'fs';
-import path from 'path';
+import fs from 'fs';
 import config from '../config/app.config';
 
 class Annex {

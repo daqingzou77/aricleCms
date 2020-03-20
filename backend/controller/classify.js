@@ -25,18 +25,23 @@ class Classify {
   }
 
   init() {
+    // 科学类
     this.app.get('/api/classify/getHotRecommandFromScience', this.getHotRecommandFromScience.bind(this)); // 获取科学热门推荐
     this.app.get('/api/classify/getScienceTips', this.getScienceTips.bind(this)); // 获取科学知识
    
+    // 历史类
     this.app.get('/api/classify/getHotRecommandFromHistory', this.getHotRecommandFromHistory.bind(this)); // 获取历史推荐
     this.app.get('/api/classify/getHistoricalStorys', this.getHistoricalStorys.bind(this)); // 获取历史典故
 
+    // 文学类
     this.app.get('/api/classify/getHotRecommandFromLitterateur', this.getHotRecommandFromLitterateur.bind(this)); // 获取文学热门推荐
     this.app.get('/api/classify/getExcerpts', this.getExcerpts.bind(this)); // 获取金句摘抄
 
+    // 体育类
     this.app.get('/api/classify/getHotRecommandFromPhysic', this.getHotRecommandFromPhysic.bind(this)); // 获取体育热门
     this.app.get('/api/classify/getSportSense', this.getSportSense.bind(this)); // 获取体育常识
     
+    // 获取实时更新内容
     this.app.get('/api/classify/getLiveUpdates', this.getLiveUpdates.bind(this)); // 获取实时更新
   }
 

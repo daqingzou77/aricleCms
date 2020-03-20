@@ -12,8 +12,9 @@ class PublishOnline {
   }
 
   init() {
-    this.app.post('/api/publishOnline/saveArticleRecord', this.saveArticleRecord.bind(this)); // 保存文章编辑记录
+    // 在线上传+文章编辑
     this.app.post('/api/publishOnline/publishArticle', this.publishArticle.bind(this)); // 文章上传
+    this.app.post('/api/publishOnline/saveArticleRecord', this.saveArticleRecord.bind(this)); // 保存文章编辑记录
     this.app.get('/api/publishOnline/getEditRecord', this.getEditRecord.bind(this)); // 获取编辑记录
     this.app.post('/api/publishOnline/getArticleDetail', this.getArticleDetail.bind(this)); // 获取编辑详情
     this.app.get('/api/publishOnline/getPublishedArtilces', this.getPublishedArtilces.bind(this)); // 获取已发布文章信息

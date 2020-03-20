@@ -1,5 +1,6 @@
 import log4js from 'log4js';
 
+// 配置日志
 log4js.configure(
   {
     appenders: {
