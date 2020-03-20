@@ -26,7 +26,7 @@ export default class Statistics extends React.Component {
         statistic: data
       })
     },
-    e => console.log('getStatics-error', e.toString())
+      e => console.log('getStatics-error', e.toString())
     )
   }
 
@@ -50,8 +50,8 @@ export default class Statistics extends React.Component {
           icon="like"
         />
         <DataBlock
-          color="#330033"
-          color2='#fda33a'
+          color="#FF0000"
+          color2="#029cf5"
           count={comments}
           tip="文章评论"
           icon="message"
@@ -64,8 +64,8 @@ export default class Statistics extends React.Component {
           icon="star"
         />
         <DataBlock
-          color="#FF0000"
-          color2="#029cf5"
+          color="#330033"
+          color2='#fda33a'
           count={dislikes}
           tip="文章拉黑"
           icon="dislike"

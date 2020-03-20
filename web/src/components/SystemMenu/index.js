@@ -1,26 +1,13 @@
 import { formatMessage as _formatMessage } from 'umi/locale';
 import React from 'react';
-import { Icon, Col, Row, Tag, Badge, message, } from 'antd';
+import { Icon, message } from 'antd';
 import { Link, withRouter } from 'react-router-dom';
 import SocketIo from 'socket.io-client';
-import icArrangment from '@/assets/menuIcon/ic_arrangement.svg';
-import icChangeShift from '@/assets/menuIcon/ic_changeshift.svg';
-import icDutyevent from '@/assets/menuIcon/ic_dutyevent.svg';
-import icHelp from '@/assets/menuIcon/ic_help.svg';
-import icHistoricalLog from '@/assets/menuIcon/ic_historical_log.svg';
-import icMailCheckin from '@/assets/menuIcon/ic_mail_checkin.svg';
-import icMap from '@/assets/menuIcon/ic_map.svg';
-import icMatter from '@/assets/menuIcon/ic_matter.svg';
-import icNewLog from '@/assets/menuIcon/ic_new_daily_record.svg';
-import icPhoneCheckin from '@/assets/menuIcon/ic_phone_checkin.svg';
-import icPunchCard from '@/assets/menuIcon/ic_punch_card.svg';
-import icScheduling from '@/assets/menuIcon/ic_scheduling.svg';
-import icSituation from '@/assets/menuIcon/ic_situation.svg';
-
 import Modal from '@/common/components/Modal';
 import styles from './index.less';
 import MessageCenter from '@/pages/MessageCenter/index';
 import router from 'umi/router';
+import menu from './menus';
 import {
   recordModalTime
 } from '@/services/messageService';
@@ -29,122 +16,6 @@ const formatMessage = id => {
   return _formatMessage({ id });
 };
 
-const menuList = [
-  {
-    key: 1,
-    title: '首页',
-    child: [
-      {
-        key: 101,
-        title: '首页',
-        icon: icMap,
-        path: '/home',
-      },
-    ],
-  },
-  {
-    key: 2,
-    title: '文章分类',
-    child: [
-      {
-        key: 201,
-        title: '科学',
-        icon: icChangeShift,
-        path: '/classify/science',
-      },
-      {
-        key: 202,
-        title: '历史',
-        icon: icDutyevent,
-        path: '/classify/history',
-      },
-      {
-        key: 203,
-        title: '文学',
-        icon: icHistoricalLog,
-        path: '/classify/Litterateur',
-      },
-      {
-        key: 204,
-        title: '体育',
-        icon: icMatter,
-        path: '/classify/physical',
-      },
-    ],
-  },
-  {
-    key: 3,
-    title: '文章发布',
-    child: [
-      {
-        key: 301,
-        title: '在线发布',
-        icon: icPunchCard,
-        path: '/publish/publishOnline',
-      },
-      {
-        key: 302,
-        title: '文章上传',
-        icon: icSituation,
-        path: '/publish/AnnexUpload',
-      }
-    ]
-  },
-  {
-    key: 4,
-    title: '文章管理',
-    child: [
-      {
-        key: 401,
-        title: '文章审核',
-        icon: icScheduling,
-        path: '/maintain/audit'
-      },
-      {
-        key: 401,
-        title: '文章管理',
-        icon: icMailCheckin,
-        path: '/maintain/manage',
-      },
-    ],
-  },
-  {
-    key: 5,
-    title: '用户中心',
-    child: [
-      {
-        key: 501,
-        title: '个人中心',
-        icon: icArrangment,
-        path: '/userCenter/personCenter',
-      },
-      {
-        key: 502,
-        title: '消息中心',
-        icon: icPhoneCheckin,
-        path: '/userCenter/messageCenter',
-      },
-      {
-        key: 503,
-        title: '用户管理',
-        icon: icNewLog,
-        path: '/userCenter/userManage'
-      }
-    ],
-  },
-  {
-    key: 6,
-    title: '退出',
-    child: [
-      {
-        key: 601,
-        title: '退出系统',
-        icon: icHelp,
-        path: '/help',
-      },
-    ],
-  },
-]
 
 class SystemMenu extends React.Component {
   constructor(props) {
@@ -154,6 +25,19 @@ class SystemMenu extends React.Component {
       visibleCard: false,
       messageVisible: false,
     };
+  }
+  
+  componentWillMount() {
+    const userType = localStorage.getItem('userType');
+    if (userType === '0') {
+      this.menuList = menu.userMenu;
+    } else if (userType === '1') {
+      this.menuList = menu.writeMenu;
+    } else if (userType === '2') {
+      this.menuList = menu.adminMenu;
+    } else {
+      this.menuList = menu.mainMenu;
+    }
   }
 
   componentDidMount() {
@@ -238,7 +122,7 @@ class SystemMenu extends React.Component {
   }
 
   MenuCom = props => {
-    return menuList.map(item => {
+    return this.menuList.map(item => {
       return (
         <div key={item.key} className={styles.toolContainer}>
           <div className={styles.toolList}>
