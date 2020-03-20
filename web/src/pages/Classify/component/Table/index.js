@@ -4,7 +4,7 @@ import { Table, Spin, Empty, message, Form, Popover, List } from 'antd';
 import { LikeTwoTone, DislikeTwoTone, StarTwoTone, MessageTwoTone } from '@ant-design/icons'
 import htmlToDraft from 'html-to-draftjs';
 import { EditorState, ContentState } from 'draft-js';
-import { Editor } from 'react-draft-wysiwyg';
+import ContentModal from '@/components/ContentModal';
 import FormElement from '@/components/FormElement';
 import Modal from '@/common/components/Modal';
 import CommentList from '../CommentList';
@@ -353,8 +353,8 @@ class Tables extends React.Component {
                 columns={this.columns}
               />
             ) : (
-                <Empty description={<span className={styles.matchFontStyle}>无匹配结果</span>} />
-              )
+              <Empty description={<span className={styles.matchFontStyle}>无匹配结果</span>} />
+            )
         }
         <Modal
           visible={visible}
@@ -362,9 +362,7 @@ class Tables extends React.Component {
           onCancel={this.handleCancel}
           onOk={this.handleOk}
         >
-          <Editor
-            editorState={editorState}
-          />
+          <ContentModal editorState={editorState} />
         </Modal>
         <Modal
           visible={commentModalVisible}

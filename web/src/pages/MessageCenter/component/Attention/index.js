@@ -4,7 +4,7 @@ import InfiniteScroll from 'react-infinite-scroller';
 import moment from 'moment';
 import htmlToDraft from 'html-to-draftjs';
 import { EditorState, ContentState } from 'draft-js';
-import { Editor } from 'react-draft-wysiwyg';
+import ContentModal from '@/components/ContentModal';
 import Modal from '@/common/components/Modal';
 import styles from '../style.less';
 import {
@@ -116,9 +116,7 @@ export default class Attention extends React.Component {
             onCancel={() => this.setState({ modalVisible: false, editorState: '' })}
             onOk={() => this.setState({ modalVisible: false, editorState: '' })}
           >
-            <Editor
-              editorState={editorState}
-            />
+            <ContentModal editorState={editorState} />
           </Modal>
         </Panel>
       </Collapse>

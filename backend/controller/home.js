@@ -62,7 +62,27 @@ class Home {
   }
 
   getStatics(req, res, next) {
-      
+    this.articles.find({}, {
+     likes: 1,
+     dislikes: 1,
+     comments: 1,
+     favorites: 1
+    }).then(doc => {
+      let resp = {};
+      resp['release'] = doc.length;
+      resp['likes'] = 0;
+      resp['dislikes'] = 0;
+      resp['favorites'] = 0;
+      resp['comments'] = 0;
+      doc.map(item => {
+        const { likes, dislikes, favorites, comments } = item;
+        resp['likes'] += likes;
+        resp['dislikes'] += dislikes;
+        resp['favorites'] += favorites;
+        resp['comments'] += comments;
+      })
+      res.tools.setJson(0, '获取统计成功', resp);
+    })
   }
 }
 

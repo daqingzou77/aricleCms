@@ -3,9 +3,9 @@ import InfiniteScroll from 'react-infinite-scroller';
 import { Card, List, Avatar, Typography, Icon } from 'antd';
 import htmlToDraft from 'html-to-draftjs';
 import { EditorState, ContentState } from 'draft-js';
-import { Editor } from 'react-draft-wysiwyg';
 import moment from 'moment';
 import Modal from '@/common/components/Modal';
+import ContentModal from '@/components/ContentModal';
 import styles from './style.less';
 import {
   getAuthorUpdate
@@ -51,7 +51,7 @@ export default class LiveUpdate extends React.Component {
   }
 
   render() {
-    const { dailyUpdate, modalVisible, editorState} = this.state;
+    const { dailyUpdate, modalVisible, editorState } = this.state;
     const avatarColor = ['#f56a00', '#7265e6', '#ffbf00', '#00a2ae', '#f32432', '#2322d1', "#fff146"];
     return (
       <Card
@@ -70,7 +70,7 @@ export default class LiveUpdate extends React.Component {
                   title={<Text strong>作者-{item.author}</Text>}
                   description={
                     <span>
-                      <a 
+                      <a
                         style={{ color: '#2884D8' }}
                         onClick={() => this.handleClick(item.annexname, item.articleForm, item.articleContent)}
                       >
@@ -90,11 +90,9 @@ export default class LiveUpdate extends React.Component {
           onCancel={() => this.setState({ modalVisible: false, editorState: '' })}
           onOk={() => this.setState({ modalVisible: false, editorState: '' })}
         >
-          <Editor
-            editorState={editorState}
-          />
+          <ContentModal editorState={editorState} />
         </Modal>
       </Card>
     )
-  }    
+  }
 }

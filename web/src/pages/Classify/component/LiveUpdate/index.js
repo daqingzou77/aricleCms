@@ -1,20 +1,18 @@
+/* eslint-disable default-case */
 import React from 'react';
 import { Card, Spin, List, Avatar, Typography, Icon } from 'antd';
 import InfiniteScroll from 'react-infinite-scroller';
 import htmlToDraft from 'html-to-draftjs';
 import { EditorState, ContentState } from 'draft-js';
-import { Editor } from 'react-draft-wysiwyg';
 import moment from 'moment';
 import Modal from '@/common/components/Modal';
+import ContentModal from '@/components/ContentModal';
 import styles from './style.less';
 import {
   downloadAnnex
 } from '@/services/annexService';
 import {
-  getLiveUpdateFromScience,
-  getLiveUpdateFromHistory,
-  getLiveUpdateFromLitterateur,
-  getLiveUpdateFromPhysic
+  getLiveUpdates
 } from '@/services/classifyService';
 
 
@@ -32,15 +30,7 @@ export default class LiveUpdate extends React.Component {
 
   componentDidMount() {
     const { keys } = this.props;
-    if (keys === 'science') {
-      this.getLiveUpdateFromScience();
-    } else if (keys === 'history') {
-      this.getLiveUpdateFromHistory();
-    } else if (keys === 'litterateur') {
-      this.getLiveUpdateFromLitterateur();
-    } else if (keys === 'physics') {
-      this.getLiveUpdateFromPhysic();
-    }
+    this.getLiveUpdates(keys);
   }
 
   handleLiveFresh = () => {
@@ -49,59 +39,30 @@ export default class LiveUpdate extends React.Component {
     })
     setTimeout(() => {
       const { keys } = this.props;
-      if (keys === 'science') {
-        this.getLiveUpdateFromScience();
-      } else if (keys === 'history') {
-        this.getLiveUpdateFromHistory();
-      } else if (keys === 'litterateur') {
-        this.getLiveUpdateFromLitterateur();
-      } else if (keys === 'physics') {
-        this.getLiveUpdateFromPhysic();
-      }
+      this.getLiveUpdates(keys)
       this.setState({
         liveCardLoading: false
       })
     }, 1000)
   }
 
-  getLiveUpdateFromScience = () => {
-    getLiveUpdateFromScience({}, ({ data }) => {
-        this.setState({
-          liveUpdates: data
-        })
-      },
-      e => console.log('getLiveUpdateFromScience-error', e.toString())
-      )
-  }
-
-  getLiveUpdateFromHistory = () => {
-    getLiveUpdateFromHistory({}, ({ data }) => {
-        this.setState({
-          liveUpdates: data
-        })
-      },
-      e => console.log('getLiveUpdateFromHistory-error', e.toString())
-      )
-  }
-
-  getLiveUpdateFromLitterateur = () => {
-    getLiveUpdateFromLitterateur({}, ({ data }) => {
-        this.setState({
-          liveUpdates: data
-        })
-      },
-      e => console.log('getLiveUpdateFromLitterateur-error', e.toString())
-      )
-  }
-
-  getLiveUpdateFromPhysic = () => {
-    getLiveUpdateFromPhysic({}, ({ data }) => {
-        this.setState({
-          liveUpdates: data
-        })
-      },
-      e => console.log('getLiveUpdateFromPhysic-error', e.toString())
-      )
+  getLiveUpdates = key => {
+    let articleType;
+    switch (key) {
+      case 'science': articleType = 0;break;
+      case 'history': articleType = 1;break;
+      case 'litterateur': articleType = 2;break;
+      case 'physics': articleType = 3;break;
+    }
+    getLiveUpdates({
+      articleType
+    }, ({ data }) => {
+      this.setState({
+        liveUpdates: data
+      })
+    },
+    e => console.log('getLiveUpdates-error', e.toString())
+    )
   }
 
   handleClick = (name, articleForm, articleContent) => {
@@ -170,9 +131,7 @@ export default class LiveUpdate extends React.Component {
           onCancel={() => this.setState({ modalVisible: false, editorState: '' })}
           onOk={() => this.setState({ modalVisible: false, editorState: '' })}
         >
-          <Editor
-            editorState={editorState}
-          />
+          <ContentModal editorState={editorState} />
         </Modal>
       </Card>   
     )  

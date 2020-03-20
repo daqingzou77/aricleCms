@@ -23,10 +23,6 @@ export default class DataBlock extends Component {
             tip,
         } = this.props;
 
-        // const blockStyle = {
-        //     border: `1px solid ${color}`,
-        // };
-
         const blockStyle = {
             background: `linear-gradient(to left,${color},${color2})`,
         };

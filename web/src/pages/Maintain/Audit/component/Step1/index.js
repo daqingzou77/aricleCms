@@ -1,9 +1,9 @@
 import React from 'react';
 import { Form, Button, Row, Col, message } from 'antd';
-import { Editor } from 'react-draft-wysiwyg';
 import htmlToDraft from 'html-to-draftjs';
 import { EditorState, ContentState } from 'draft-js';
 import FormElement from '@/components/FormElement';
+import ContentModal from '@/components/ContentModal';
 import {
   downloadAnnex
 } from '@/services/annexService'
@@ -53,12 +53,6 @@ class Step1 extends React.Component {
     }
   }
 
-  onEditorStateChange = (editorState) => {
-    this.setState({
-      editorState
-    })
-  }
-
   handleOk = () => {
     this.setState({
       visible: false
@@ -75,9 +69,7 @@ class Step1 extends React.Component {
     const { form, auditMessage, } = this.props;
     const { visible, editorState } = this.state;
     const { articlename, author, articleType, articleForm, articleDescription, annexname, articleContent } = auditMessage;
-    const currentUser = 'daqing';
     const content = annexname !== '' ? annexname : articlename;
-    console.log('articleContent', articleContent);
     const formElementProps = {
       form,
       width: 400
@@ -170,10 +162,7 @@ class Step1 extends React.Component {
           onCancel={this.handleCancel}
           onOk={this.handleOk}
         >
-          <Editor
-            editorState={editorState}
-            onEditorStateChange={this.onEditorStateChange}
-          />
+          <ContentModal editorState={editorState} />
         </Modal>
       </>
     )
