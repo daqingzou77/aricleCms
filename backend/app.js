@@ -13,16 +13,17 @@ import tools from './middlewares/tools';
 import routes from './routes/index';
 import config from './config/app.config';
 
+var server = require('http').Server(app);
+var io = require('socket.io')(server);
+// websocket监听服务 80 端口
+server.listen(80, () => {
+  console.log('websocket服务启动')
+});
+
 // const fileStores = fileStore(sessionMongoose);
 const mongDB = new mongoDb();
 const app = express();
-var server = require('http').Server(app);
-var io = require('socket.io')(server);
 
-// 监听 80 端口
-server.listen(80, () => {
-   console.log('websocket服务启动')
-});
 
 // const sessionStore = sessionMongoose(connect);
 // const store = new sessionStore({url: config.mongo.sessionUrl});
@@ -31,7 +32,7 @@ app.use(express.static('public'));
 app.use(bodyParse.json()); // 解析url信息中的参数
 app.use(bodyParse.urlencoded({ extended: false }));
 app.use(cookieParse(config.secret)); //解析签名cookie
-app.use(cors({'credentials': true, origin: 'http://localhost:9007'}));
+app.use(cors({'credentials': true, origin: 'http://localhost:9007'})); // 设置跨域并允许请求中携带cookie
 
 
 // 设置session
@@ -46,20 +47,20 @@ app.use(session({
 }))
 
 app.use(/\/api/, tools);
-// app.use(/\/api/, express.static('public'));
 
-// app.use(/\/api/, (req, res, next) => {
-//   if (req.session.username || req.path.indexOf('/user/toLogin') !== -1 || req.path.indexOf('/user/getCaptch') !== -1 ) {
-//     next();
-//   } else {
-//     res.tools.setJson(503, '无访问权限', []);
-//   }
-// });
+app.use(/\/api/, (req, res, next) => {
+  if (req.session.username || req.path.indexOf('/user/toLogin') !== -1 || req.path.indexOf('/user/getCaptch') !== -1 ) {
+    next();
+  } else {
+    res.tools.setJson(503, '无访问权限', []);
+  }
+});
 
+// 路由匹配
 routes(app, io);
 
 app.use((req, res, next) => {
-  const err = new Error('Not Found');
+  const err = new Error();
   err.status = 404;
   err.message = '系统未发现'
   next(err);
