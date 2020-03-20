@@ -27,8 +27,8 @@ class Articles {
     this.app.get('/api/article/getAuditArticleList', this.getAuditArticleList.bind(this)); // 获取待审核文章列表
     this.app.post('/api/article/pushAuditMessage', this.pushAuditMessage.bind(this)); // 提交审核信息
     this.app.post('/api/article/confirmAuditMessage', this.confirmAuditMessage.bind(this)); // 确认审核内容
-   
-    // 多关键词检索
+
+    // 多关键词检索+文章类型查询
     this.app.post('/api/article/getArticleByMutiKeys', this.getArticleByMutiKeys.bind(this)); // 多关键字查询
 
     // 文章点赞、拉黑、收藏、评论
@@ -152,21 +152,38 @@ class Articles {
   }
 
   solveArticleItem(req, res, next) {
-    const { status, articlename } = req.body;
-    let passTime, auditTime, publishTime, revokeTime = '';
+    const { status, articlename, solver } = req.body;
+    let passTime, auditTime, publishTime, revokeTime, auditor, passAuditor = '';
+    let preSmi;
     switch (status) {
       case 1: publishTime = new Date(); break;
-      case 2: auditTime = new Date(); break;
-      case 3: passTime = new Date(); break;
+      case 2: auditTime = new Date(); auditor = solver; break;
+      case 3: passTime = new Date(); passAuditor = solver; break;
       case 4: revokeTime = new Date(); break;
     }
-    this.articles.updateOne({ articlename }, { $set: { status, publishTime, auditTime, passTime, revokeTime } })
+    this.articles.findOne({ articlename })
       .then(doc => {
-        if (doc.nModified > 0) {
-          res.tools.setJson(0, '处理成功', doc);
-        } else {
-          res.tools.setJson(0, '处理失败', doc);
-        }
+        preSmi = doc.keywords.length / 2;
+      }).then(() => {
+        this.articles.updateOne({ articlename }, {
+          $set: {
+            status,
+            publishTime,
+            auditTime,
+            passTime,
+            revokeTime,
+            auditor,
+            passAuditor,
+            preSmi
+          }
+        })
+          .then(doc => {
+            if (doc.nModified > 0) {
+              res.tools.setJson(0, '处理成功', doc);
+            } else {
+              res.tools.setJson(0, '处理失败', doc);
+            }
+          })
       })
       .catch(err => next(err));
   }
@@ -205,46 +222,45 @@ class Articles {
   confirmAuditMessage(req, res, next) {
     const { articlename, passAuditor } = req.body;
     let preSmi;
-    this.articles.findOne({articlename})
-    .then(doc => {
-      const { keywords } = doc;
-      preSmi = keywords.length / 2;
-    }).then(cipherObj => {
-      this.articles.updateOne({
-        articlename
-      }, {
-        $set: {
-          passTime: new Date(),
-          passAuditor,
-          status: 3,
-          preSmi,
-        }
-      })
-        .then(doc => {
-          if (doc.nModified > 0) {
-            res.tools.setJson(0, '审核确认成功', { status: true });
-          } else {
-            res.tools.setJson(0, '审核确认失败', { status: false });
+    this.articles.findOne({ articlename })
+      .then(doc => {
+        preSmi = doc.keywords.length / 2;
+      }).then(() => {
+        this.articles.updateOne({
+          articlename
+        }, {
+          $set: {
+            passTime: new Date(),
+            passAuditor,
+            status: 3,
+            preSmi,
           }
         })
-     })
+          .then(doc => {
+            if (doc.nModified > 0) {
+              res.tools.setJson(0, '审核确认成功', { status: true });
+            } else {
+              res.tools.setJson(0, '审核确认失败', { status: false });
+            }
+          })
+      })
       .catch(err => next(err))
   }
 
   getArticleByMutiKeys(req, res) {
-    const { queryKeywords } = req.body;
+    const { queryKeywords, articleType } = req.body;
     const respData = [];
-    this.articles.find({}).then(doc => {
-     doc.map(item => {
-      const { keywords,  preSmi, articlename, author } = item;
-      const EncryptTools = new Encrypt(keywords);
-      const Q1 = EncryptTools.getCiphertextDoor(queryKeywords);
-      const result = EncryptTools.uploadCiphertextIndex(keywords, articlename, author);
-      const { I1, θ } = result;
-      if(EncryptTools.getEndSmi(I1, Q1, θ)> preSmi) {
-        respData.push(item)
-      } 
-     })
+    this.articles.find({ articleType }).then(doc => {
+      doc.map(item => {
+        const { keywords, preSmi, articlename, author } = item;
+        const EncryptTools = new Encrypt(keywords);
+        const Q1 = EncryptTools.getCiphertextDoor(queryKeywords);
+        const result = EncryptTools.uploadCiphertextIndex(keywords, articlename, author);
+        const { I1, θ } = result;
+        if (EncryptTools.getEndSmi(I1, Q1, θ) > preSmi) {
+          respData.push(item)
+        }
+      })
       res.tools.setJson(0, '查询结果', respData);
     })
   }
@@ -252,89 +268,89 @@ class Articles {
   solveArticle(req, res, next) {
     const { key, articlename, liker } = req.body;
     this.articles.findOne({ articlename })
-    .then(doc => {
-      if(!doc) return res.tools.setJson(0, '无记录', doc);
-      let { likes, dislikes, favorites } = doc;
-      let options = {}
-      if( key === 1 && liker) {
-        likes += 1;
-        options['$push'] = { likeList: { liker, likeTime: new Date() }};
-      } else if(key === 2) {
-        dislikes += 1;
-      } else if(key === 3) {
-        favorites += 1;
-      } else if (key === 4) {
-        favorites -= 1;
-      }
-      options['$set'] = { likes, dislikes, favorites }
-      this.articles.updateOne({ articlename }, options)
-      .then(data => {
-        if(data.nModified > 0) {
-          res.tools.setJson(0, '处理成功', { status: true });
-        } else {
-          res.tools.setJson(0, '处理失败', { status: false });
+      .then(doc => {
+        if (!doc) return res.tools.setJson(0, '无记录', doc);
+        let { likes, dislikes, favorites } = doc;
+        let options = {}
+        if (key === 1 && liker) {
+          likes += 1;
+          options['$push'] = { likeList: { liker, likeTime: new Date() } };
+        } else if (key === 2) {
+          dislikes += 1;
+        } else if (key === 3) {
+          favorites += 1;
+        } else if (key === 4) {
+          favorites -= 1;
         }
+        options['$set'] = { likes, dislikes, favorites }
+        this.articles.updateOne({ articlename }, options)
+          .then(data => {
+            if (data.nModified > 0) {
+              res.tools.setJson(0, '处理成功', { status: true });
+            } else {
+              res.tools.setJson(0, '处理失败', { status: false });
+            }
+          })
       })
-    })
-    .catch(err => next(err));
+      .catch(err => next(err));
   }
 
   commentArticle(req, res, next) {
     const { articlename, commentContent, commenter } = req.body;
     this.articles.find({ articlename })
-    .then(doc => {
-      if (!doc) return res.tools.setJson(0, '无此记录', doc);
-      const commentTime = new Date();
-      this.articles.updateOne({articlename}, {
-        $inc: {
-          comments: 1
-        },
-        $push: {
-          commentList: {
-            $each: [{ commenter, commentContent, commentTime, }]
+      .then(doc => {
+        if (!doc) return res.tools.setJson(0, '无此记录', doc);
+        const commentTime = new Date();
+        this.articles.updateOne({ articlename }, {
+          $inc: {
+            comments: 1
+          },
+          $push: {
+            commentList: {
+              $each: [{ commenter, commentContent, commentTime, }]
+            }
           }
-        }
-      }).then(data => {
-        if (data.nModified > 0) {
-          res.tools.setJson(0 ,'评论成功', { status: true });
-        } else {
-          res.tools.setJson(0, '评论失败', { status: false });
-        }
+        }).then(data => {
+          if (data.nModified > 0) {
+            res.tools.setJson(0, '评论成功', { status: true });
+          } else {
+            res.tools.setJson(0, '评论失败', { status: false });
+          }
+        })
       })
-    })
-    .catch(err => next(err));
+      .catch(err => next(err));
   }
 
   getArticleComment(req, res, next) {
     const articlename = req.query.articlename;
     this.articles.findOne({ articlename }, { commentList: 1 })
-    .then(doc => {
-      res.tools.setJson(0, '获取文章评论', doc);
-    })
+      .then(doc => {
+        res.tools.setJson(0, '获取文章评论', doc);
+      })
   }
 
   solveComment(req, res, next) {
-    const {articlename, _id, commentTime, key } = req.body;
-      this.articles.updateOne({
-        articlename, 
-        "commentList._id": _id,
-        "commentList.commentTime": new Date(commentTime)
-      },
-        { 
-          $inc:{ 
-            "commentList.$.likes": key === 1 ? 1 : 0,
-            "commentList.$.dislikes": key === 2 ? 1 : 0,
-          } 
+    const { articlename, _id, commentTime, key } = req.body;
+    this.articles.updateOne({
+      articlename,
+      "commentList._id": _id,
+      "commentList.commentTime": new Date(commentTime)
+    },
+      {
+        $inc: {
+          "commentList.$.likes": key === 1 ? 1 : 0,
+          "commentList.$.dislikes": key === 2 ? 1 : 0,
         }
-      )
+      }
+    )
       .then(data => {
         if (data.nModified > 0) {
-          res.tools.setJson(0 ,'评论成功', { status: true });
+          res.tools.setJson(0, '评论成功', { status: true });
         } else {
-          res.tools.setJson(0 ,'评论失败', { status: false });
+          res.tools.setJson(0, '评论失败', { status: false });
         }
       })
-    .catch(err => next(err))
+      .catch(err => next(err))
   }
 
   privateContact(req, res, next) {
@@ -349,14 +365,14 @@ class Articles {
     }, {
       $push: { messageList: pushData }
     })
-    .then(data => {
-      if (data.nModified > 0) {
-        res.tools.setJson(0, '私信成功', { status: true });
-      } else {
-        res.tools.setJson(0, '私信失败', { status: false });
-      }
-    })
-    .catch(err => next(err))
+      .then(data => {
+        if (data.nModified > 0) {
+          res.tools.setJson(0, '私信成功', { status: true });
+        } else {
+          res.tools.setJson(0, '私信失败', { status: false });
+        }
+      })
+      .catch(err => next(err))
   }
 }
 

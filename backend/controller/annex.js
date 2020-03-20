@@ -31,7 +31,7 @@ class Annex {
    form.parse(req, (err, fields, file) => {
     if(err) return;
     const { file: { name, path } } = file;
-    const concatPath = path.substring(0, path.lastIndexOf('\\'))+'\\'+name;
+    const concatPath = path.substring(0, path.lastIndexOf('\\'))+'\\'+name.replace(/\s+/g,"");
     fs.rename(path, concatPath, (err)=>{
       if(err) return;
       console.log('附件下载成功');
@@ -42,7 +42,7 @@ class Annex {
 
   downloadAnnex(req, res, next) {
     const filename = req.body.filename;
-    const path = url.resolve(__dirname, config.uploadDir+filename);
+    const path = url.resolve(__dirname, config.uploadDir+filename.replace(/\s+/g,""));
     var size = fs.statSync(path).size;
     var f = fs.createReadStream(path);
     res.writeHead(200, {

@@ -206,6 +206,7 @@ class Manage extends React.Component {
   // 处理文章
   handleOk = () => {
     const { form } = this.props
+    const solver = localStorage.getItem('currentUser');
     form.validateFields((err, values) => {
       if (!err) {
         const { articlename, status } = values;
@@ -213,12 +214,13 @@ class Manage extends React.Component {
         switch (status) {
           case '未发布': state = 0; break;
           case '发布中': state = 1; break;
-          case '审核中': state = 2; break
-          case '通过': state = 3; break
-          case '撤销': state = 4;
+          case '审核中': state = 2; break;
+          case '通过': state = 3; break;
+          case '撤销': state = 4; break;
         }
         solveArticleItem({
           articlename,
+          solver,
           status: state
         },
           ({ data }) => {
