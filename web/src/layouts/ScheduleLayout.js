@@ -3,7 +3,6 @@ import { formatMessage, getLocale, setLocale } from 'umi/locale';
 import { ConfigProvider } from 'antd';
 import { FrownOutlined } from '@ant-design/icons';
 import Cookies from 'universal-cookie';
-import moment from 'moment';
 import SystemHeader from '../components/SystemHeader';
 import SystemMenu from '../components/SystemMenu';
 import styles from './Schedule.less';
@@ -21,12 +20,10 @@ class ScheduleLayout extends React.Component {
     super(props);
     this.state = {
       isOpenToolbar: true,
-      isRemind: true,
     };
   }
 
   componentDidMount() {
-    document.title = '文章管理系统'
     const currentUser = localStorage.getItem('currentUser');
     if (!currentUser) {
       router.push('/user/login')
