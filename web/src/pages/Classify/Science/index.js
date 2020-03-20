@@ -46,7 +46,8 @@ class Science extends React.Component {
 
   getArticleByMutiKeys = queryKeywords => {
     getArticleByMutiKeys({
-      queryKeywords
+      queryKeywords,
+      articleType: 0
     }, ({ data }) => {
       console.log('getArticleByMutiKeys-data', data);
       this.setState({

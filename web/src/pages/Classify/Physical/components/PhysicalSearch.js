@@ -3,9 +3,6 @@ import { Form, Card, Button, Icon } from 'antd';
 import FormElement from '@/components/FormElement';
 import FormRow from '@/components/FormRow';
 import styles from './style.less';
-import {
-  getArticleByMutiKeys
-} from '@/services/classifyService';
 
 class PhysicalSearch extends React.Component {
 
@@ -52,7 +49,7 @@ class PhysicalSearch extends React.Component {
                 label="关键词1"
                 {...formElementProps}
                 field={`keyword${index*4+1}`}
-                required={true}
+                required
               />
               <FormElement
                 label="关键词2"

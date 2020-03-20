@@ -17,7 +17,8 @@ class LitterateurSearch extends React.Component {
   handleOnQuery = () => {
     const { tags } = this.state;
     getArticleByMutiKeys({
-      queryKeywords: tags
+      queryKeywords: tags,
+      articleType: 2
     }, ({ data }) => {
       this.props.handleOnSave(data)
     },

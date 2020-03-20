@@ -40,7 +40,8 @@ class History extends React.Component {
 
   getArticleByMutiKeys = keywords => {
     getArticleByMutiKeys({
-      queryKeywords: keywords
+      queryKeywords: keywords,
+      articleType: 1
     }, ({ data }) => {
       console.log('getArticleByMutiKeys-data', data);
       this.setState({

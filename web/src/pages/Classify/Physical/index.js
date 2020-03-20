@@ -1,20 +1,14 @@
 import React from 'react';
-import { Form, Card, Row, Col, Icon, List, Typography, Avatar } from 'antd';
-import InfiniteScroll from 'react-infinite-scroller';
-import moment from 'moment';
-import styles from './style.less';
+import { Form, Card, Row, Col } from 'antd';
 import PhysicalSearch from './components/PhysicalSearch';
 import Table from '../component/Table';
 import Recommend from '../component/Recommend';
 import LiveUpdate from '../component/LiveUpdate';
 import Supplement from '../component/Supplement';
-
-
 import {
   getArticleByMutiKeys,
 } from '@/services/classifyService';
 
-const { Text } = Typography;
 
 
 class Physical extends React.Component {
@@ -46,7 +40,8 @@ class Physical extends React.Component {
 
   getArticleByMutiKeys = queryKeywords => {
     getArticleByMutiKeys({
-      queryKeywords
+      queryKeywords,
+      articleType: 3
     }, ({ data }) => {
       this.setState({
         loading: false,
@@ -67,14 +62,8 @@ class Physical extends React.Component {
 
   render() {
     const { form } = this.props;
-    const { dataSource, loading, hotArticles, sportSense } = this.state;
+    const { dataSource, loading } = this.state;
     
-    const IconText = ({ type, text }) => (
-      <span>
-        <Icon type={type} />{text}
-      </span>
-    );
-
     return (
       <div>
         <Row gutter={24}>

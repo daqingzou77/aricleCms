@@ -150,7 +150,7 @@ export default class Supplement extends React.Component {
            )}
         </Card>
         <Modal
-          title="问题解答"
+          title="内容详情"
           visible={visible && keys !== 'litterateur'}
           width={300}
           onOk={() => this.setState({ visible: false, answer: '' })}
