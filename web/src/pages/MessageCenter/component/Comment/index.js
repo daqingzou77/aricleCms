@@ -3,7 +3,7 @@ import { Collapse, Row, Col, Avatar, Badge, List, Form } from 'antd';
 import moment from 'moment';
 import InfiniteScroll from 'react-infinite-scroller';
 import FormElement from '@/components/FormElement';
-import Modal from '@/common/components/Modal';
+import Modal from '@/components/Modal';
 import styles from '../style.less';
 import {
   getCommentList

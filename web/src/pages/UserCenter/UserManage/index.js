@@ -1,7 +1,7 @@
 import React from 'react';
 import { Table, Card, Input, Select, Button, Icon, Divider, Form, Popconfirm, message } from 'antd';
 import moment from 'moment';
-import Modal from '@/common/components/Modal';
+import Modal from '@/components/Modal';
 import MangeDetail from './component/ManageDetail';
 import {
   getUserList,

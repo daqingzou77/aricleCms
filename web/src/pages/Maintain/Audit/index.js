@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, Table, Input, DatePicker, Button, Icon, Select, Badge } from 'antd';
 import moment from 'moment';
-import Modal from '@/common/components/Modal';
+import Modal from '@/components/Modal';
 import StepForm from './component/StepForm';
 import CustomizeEmpty from '@/components/CustomizeEmpty';
 import {

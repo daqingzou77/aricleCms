@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card, Spin, List, Typography, Icon } from 'antd'; 
-import Modal from '@/common/components/Modal';
+import Modal from '@/components/Modal';
 import styles from './style.less';
 import {
   getScienceTips,

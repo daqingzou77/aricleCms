@@ -6,7 +6,7 @@ import moment from 'moment';
 import { MailOutlined, PhoneOutlined } from '@ant-design/icons';
 import InfiniteScroll from 'react-infinite-scroller';
 import CustomizeEmpty from '@/components/CustomizeEmpty';
-import Modal from '@/common/components/Modal';
+import Modal from '@/components/Modal';
 import Chat from '@/pages/MessageCenter/component/Chat';
 import {
   getClassifiedList,

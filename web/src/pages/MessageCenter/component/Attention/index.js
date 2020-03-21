@@ -5,7 +5,7 @@ import moment from 'moment';
 import htmlToDraft from 'html-to-draftjs';
 import { EditorState, ContentState } from 'draft-js';
 import ContentModal from '@/components/ContentModal';
-import Modal from '@/common/components/Modal';
+import Modal from '@/components/Modal';
 import styles from '../style.less';
 import {
   getFriendUpdates

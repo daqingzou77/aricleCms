@@ -4,7 +4,7 @@ import { LikeTwoTone, DislikeTwoTone, StarTwoTone, MessageTwoTone } from '@ant-d
 import moment from 'moment';
 import InfiniteScroller from 'react-infinite-scroller';
 import FormElement from '@/components/FormElement';
-import Modal from '@/common/components/Modal';
+import Modal from '@/components/Modal';
 import styles from './style.less';
 import { 
   solveComment,

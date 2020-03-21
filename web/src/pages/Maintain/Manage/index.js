@@ -3,7 +3,7 @@ import React from 'react';
 import { Table, Card, Badge, DatePicker, Input, Select, Button, Icon, Divider, Popconfirm, message, Form } from 'antd';
 import moment from 'moment';
 import CustomizeEmpty from '@/components/CustomizeEmpty';
-import Modal from '@/common/components/Modal';
+import Modal from '@/components/Modal';
 import ManageDetail from './component/ManageDetail';
 import {
   getArticleList,

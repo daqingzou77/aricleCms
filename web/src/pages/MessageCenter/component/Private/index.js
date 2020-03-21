@@ -2,7 +2,7 @@ import React from 'react';
 import { Collapse, Row, Col, Avatar, Badge, List, Form, message } from 'antd';
 import moment from 'moment';
 import InfiniteScroll from 'react-infinite-scroller';
-import Modal from '@/common/components/Modal';
+import Modal from '@/components/Modal';
 import FormElement from '@/components/FormElement';
 import styles from '../style.less';
 import {

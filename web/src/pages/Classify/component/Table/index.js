@@ -6,7 +6,7 @@ import htmlToDraft from 'html-to-draftjs';
 import { EditorState, ContentState } from 'draft-js';
 import ContentModal from '@/components/ContentModal';
 import FormElement from '@/components/FormElement';
-import Modal from '@/common/components/Modal';
+import Modal from '@/components/Modal';
 import CommentList from '../CommentList';
 import {
   downloadAnnex

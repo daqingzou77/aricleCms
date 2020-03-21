@@ -1,6 +1,6 @@
 import React from 'react';
 import { Collapse } from 'antd';
-import Modal from '@/common/components/Modal';
+import Modal from '@/components/Modal';
 import Comment from './component/Comment';
 import Like from './component/Like';
 import Private from './component/Private';

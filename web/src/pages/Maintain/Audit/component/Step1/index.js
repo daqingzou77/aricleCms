@@ -7,7 +7,7 @@ import ContentModal from '@/components/ContentModal';
 import {
   downloadAnnex
 } from '@/services/annexService'
-import Modal from '@/common/components/Modal';
+import Modal from '@/components/Modal';
 import {
   pushAuditMessage
 } from '@/services/auditService'

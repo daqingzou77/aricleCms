@@ -9,7 +9,7 @@ import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import InfiniteScroll from 'react-infinite-scroller';
 import moment from 'moment';
 import CustomizeEmpty from '@/components/CustomizeEmpty';
-import Modal from '@/common/components/Modal';
+import Modal from '@/components/Modal';
 import AddModal from './component/AddModal';
 import UploadModal from './component/UploadModal';
 import {

@@ -1,0 +1,343 @@
+/* 顶部导航区*/
+@general-default-navigation-background-color: #2884d8; /* 默认背景色*/
+@general-default-navigation-click-background-color: #182445; /* 选中背景色*/
+@general-default-navigation-large-title-text-color: #c7dcff; /* 大标题（颜色）*/
+@general-default-navigation-large-title-text-size: 18px; /* 大标题（字体）*/
+@general-default-navigation-first-menu-text-color: #daedee; /* 一级菜单（颜色）*/
+@general-default-navigation-first-menu-text-size: 14px; /* 一级菜单（字体）*/
+@general-default-navigation-username-text-color: #daedee; /* 用户名（颜色）*/
+@general-default-navigation-username-text-size: 12px; /* 用户名（字体）*/
+
+
+/* 菜单键定义区*/
+@general-default-menu-background-color: #182445; /* 背景色*/
+@general-default-menu-click-background-color: #141f3e; /* 选中背景颜色 */
+@general-default-menu-name-text-color: #bbc4da; /* 菜单键名称（颜色）*/
+@general-default-menu-click-name-text-color: #56afff; /* 选中菜单键名称（颜色）*/
+@general-default-menu-name-text-size: 12px; /* 菜单键名称（大小）*/
+@general-default-menu-subdomains-text-color: #909cb9; /* 子域文本（颜色）*/
+@general-default-menu-subdomains-text-size: 12px; /* 子域文本（大小）*/
+@general-default-menu-container-width: 1280px; /* 菜单框架（宽度）*/
+@general-default-menu-container-height: 109px; /* 菜单框架（高度）*/
+@general-default-menu-icon-size: 28px; /* 菜单图标（宽、高）*/
+@general-default-menu-and-icon-height: 70px; /* 菜单和图标（宽）*/
+@general-default-menu-subdomains-height: 30px; /* 子域（高）*/
+
+/* 主要按钮*/
+@primary-general-default-button-background-color: #2884d8; /* 默认按钮（主要） */
+@primary-general-default-button-hover-background-color: #2d81ce; /* 鼠标悬停（主要） */
+@primary-general-default-button-click-background-color: #1c6fbc; /* 鼠标点击（主要） */
+@primary-general-default-button-text-color: #ffffff; /* 默认按钮文本颜色（主要） */
+
+/*次要按钮*/
+@minor-general-default-button-background-color: #d0dae5; /* 按钮（次要） */
+@minor-general-default-button-text-color: #666666; /* 按钮文本颜色（次要） */
+@minor-general-default-button-hover-background-color: #d0dae5; /* 鼠标悬停（次要） */
+@minor-general-default-button-hover-text-color-and-border: #2d81ce; /* 悬停按钮文本及边框颜色（次要） */
+@minor-general-default-button-click-background-color: #d0dae5; /* 鼠标点击（次要） */
+@minor-general-default-button-click-text-color-and-border: #1c6fbc; /* 点击按钮文本及边框颜色（次要） */
+
+@general-default-button-padding-left-right: 15px; /* 按钮左右内边距 */
+@general-default-button-padding-top-bottom: 5px; /* 按钮上下内边距 */
+@general-default-button-height: 32px; /* 按钮高度 */
+@general-default-button-border: none; /* 按钮默认边框：无 */
+
+/* 输入框*/
+@general-default-input-border: 1px solid #d9d9d9; /*默认输入框边框*/
+@general-default-input-width: 240px; /*默认输入框宽度*/
+@general-default-input-height: 32px; /*默认输入框高度*/
+@general-default-input-click-border: 1px solid #00499d; /*点击输入框边框*/
+@general-default-input-click-border-shadow: 0 0 2px #0076ff; /*点击输入框边框阴影*/
+@general-default-input-error-border: #ab0700; /*输入框输入错误*/
+@general-default-input-padding: 10px; /*输入框输入错误*/
+
+/* 多选框*/
+@general-default-checkbox-color: #cfcfcf; /*多选框默认（未选中）*/
+@general-default-checkbox-checked-border: none; /*多选框默认（选中）*/
+@general-default-checkbox-checked-color: #1f95ff; /*多选框默认（选中）*/
+@general-default-checkbox-size: 13px; /*多选框默认*/
+
+/* 单选框*/
+@general-default-radio-border-color: 1px solid #cfcfcf; /*单选框默认（未选中）*/
+@general-default-radio-checked-border-color: 1px solid #1f95ff; /*单选框默认（选中）*/
+@general-default-radio-checked-color: #1f95ff; /*单选框默认（选中）*/
+@general-default-radio-size: 14px; /*单选框默认*/
+
+/* 字体和字号*/
+@general-default-navigation-text-color: #c7dbff; /*页面顶部导航大标题（颜色）*/
+@general-default-navigation-text-size: 16px; /*页面顶部导航大标题（大小）*/
+@general-default-navigation-first-text-color: #e3eaf4; /*页面顶部导航一级菜单（颜色）*/
+@general-default-navigation-first-text-size: 14px; /*页面顶部导航一级菜单（大小）*/
+@general-default-content-text-color: #666666; /*中部显示区、停靠区内容（颜色）*/
+@general-default-content-text-size: 14px; /*中部显示区、停靠区内容（大小）*/
+@general-default-title-text-color: #333333; /*中部显示区、停靠区标题（颜色）*/
+@general-default-title-text-size: 14px; /*中部显示区、停靠区标题（大小）*/
+@general-default-link-text-color: #1f95ff; /*链接（颜色）*/
+@general-default-link-text-size: 14px; /*链接（大小）*/
+@general-default-menu-text-color: #bbc4da; /*菜单键定义区（颜色）*/
+@general-default-menu-text-size: 12px; /*菜单键定义区（大小）*/
+@general-default-footer-text-color: #909cb9; /*底部状态栏文字（颜色）*/
+@general-default-footer-bg-color: #e2e7ed; /*底部状态栏（颜色）*/
+@general-default-tooter-text-size: 12px; /*底部状态栏（大小）*/
+@general-default-dialog-title-text-color: #333333; /*弹窗标题（颜色）*/
+@general-default-dialog-title-text-size: 12px; /*弹窗标题（大小）*/
+@general-default-dialog-content-text-color: #666666; /*弹窗内容（颜色）*/
+@general-default-dialog-content-text-size: 12px; /*弹窗内容（大小）*/
+
+/*字体方向*/
+@general-default-text-direction-left: left; /*默认字体方向（左）*/
+@general-default-text-direction-center: center; /*默认字体方向（居中）*/
+@general-default-text-direction-right: right; /*默认字体方向（右）*/
+
+// tab文本颜色
+@general-default-bottom-tab-text-color: #666666;
+// tab 选中文本颜色
+@general-default-tab-active-text-color: #1f95ff;
+// tab 选中背景色
+@general-default-bottom-tab-active-bg-color: #edf2f8;
+// tab 默认背景色
+@general-default-bottom-tab-background-color: #d0dae5;
+
+@general-default-table-row-active-color: #edf2f8;
+
+/* 修改原生button的样式*/
+.primary-general-default-button {
+  background-color: @primary-general-default-button-background-color;
+  color: @primary-general-default-button-text-color;
+  padding: @general-default-button-padding-top-bottom @general-default-button-padding-left-right;
+  border: @general-default-button-border;
+  border-radius: 0;
+  height: @general-default-button-height;
+
+  &:hover {
+    background-color: @primary-general-default-button-hover-background-color;
+    cursor: pointer;
+  }
+
+  &:active {
+    background-color: @primary-general-default-button-click-background-color;
+  }
+
+  &:focus {
+    outline: none;
+  }
+}
+
+/* 修改原生input的样式*/
+.general-default-input {
+  border: @general-default-input-border;
+  height: 25px;
+  width: 130px;
+  padding-left: @general-default-input-padding;
+  margin: 2px 2px 0px 5px;
+
+  &:focus {
+    border: @general-default-input-click-border;
+    box-shadow: @general-default-input-click-border-shadow;
+  }
+}
+
+/* 修改原生radio的样式*/
+.choice {
+  position: relative;
+
+  .radio {
+    position: relative;
+    display: inline-block;
+    font-weight: 400;
+    padding-left: 20px;
+    cursor: pointer;
+
+    input {
+      position: absolute;
+      left: -9999px;
+    }
+
+    i {
+      display: block;
+      position: absolute;
+      top: 3px;
+      left: 0;
+      width: @general-default-radio-size;
+      height: @general-default-radio-size;
+      outline: 0;
+      border: @general-default-radio-border-color;
+      background: #ffffff;
+      border-radius: 50%;
+      transition: border-color 0.3s;
+      -webkit-transition: border-color 0.3s;
+    }
+
+    input:checked + i {
+      border: @general-default-radio-checked-border-color;
+    }
+
+    input + i:after {
+      position: absolute;
+      content: '';
+      top: 3px;
+      left: 3px;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background-color: @general-default-radio-checked-color;
+      opacity: 0;
+      transition: opacity 0.1s;
+      -webkit-transition: opacity 0.1s;
+    }
+
+    input:checked + i:after {
+      opacity: 1;
+    }
+  }
+}
+
+/* 修改原生checkbox默认样式 */
+.check_css3 {
+  display: inline-block;
+  margin-right: 10px;
+}
+
+.general-default-title-position {
+  position: relative;
+  top: -10px;
+  left: 10px;
+  background: #ffffff;
+  padding: 0 5px;
+  color: @general-default-dialog-title-text-color;
+}
+
+.default-ant-input-number {
+  > :first-child {
+    display: none;
+  }
+
+  height: @general-default-input-height;
+
+  input {
+    height: @general-default-input-height;
+    line-height: @general-default-input-height;
+    padding: 0 10px;
+  }
+}
+
+//.ant-table-fixed::-webkit-scrollbar {
+//  display: none;
+//}
+
+.general-default-text-direction-right {
+  text-align: @general-default-text-direction-right;
+  margin-right: 10px;
+}
+
+// 修改antd表格样式
+.GD-antd-default-table {
+  :global {
+    .ant-table-tbody > tr:nth-child(even) {
+      background-color: #f9fafc !important;
+    }
+
+    .ant-table-thead > tr > th {
+      background-color: #edf2f8 !important;
+    }
+
+    .ant-table-thead > tr > th,
+    .ant-table-tbody > tr > td {
+      padding: 4px !important;
+      text-align: center !important;
+    }
+  }
+}
+
+// 修改antd表格样式-表头居中，body左对齐
+.GD-antd-default-table-left {
+  :global {
+    .ant-table-tbody > tr:nth-child(even) {
+      background-color: #f9fafc !important;
+    }
+
+    .ant-table-thead > tr > th {
+      background-color: #edf2f8 !important;
+    }
+
+    .ant-table-thead > tr > th {
+      padding: 4px !important;
+      text-align: center !important;
+    }
+
+    .ant-table-tbody > tr > td {
+      padding: 4px !important;
+      text-align: left !important;
+    }
+  }
+}
+
+// 修改默认复选框样式
+.GD-antd-default-checkout {
+  :global {
+    .ant-checkbox-inner {
+      width: 13px;
+      height: 13px;
+    }
+
+    span.ant-checkbox-inner::after {
+      top: 39%;
+    }
+  }
+}
+
+// 修改默认单选框样式
+.GD-antd-default-radio {
+  :global {
+    .ant-radio-inner {
+      width: 13px;
+      height: 13px;
+      background-color: #fff !important;
+    }
+
+    span.ant-radio-inner::after {
+      top: 3px;
+      left: 3px;
+      width: 5px;
+      height: 5px;
+    }
+
+    .ant-radio-disabled .ant-radio-inner {
+      background-color: #f5f5f5 !important;
+    }
+  }
+}
+
+.GD_module_global_table {
+  :global {
+    .ant-table-thead > tr > th {
+      white-space: pre-wrap;
+    }
+  }
+}
+
+.GD-overwrite-ant-input-number {
+  > :first-child {
+    display: none;
+  }
+
+  height: @general-default-input-height;
+
+  input {
+    height: @general-default-input-height;
+    line-height: @general-default-input-height;
+    padding: 0 10px;
+  }
+}
+
+// 修改antd默认disabled样式
+.GD_antd_input {
+  &[disabled] {
+    background-color: #25345d !important;
+    color: #909cb9 !important;
+  }
+
+  &[disabled]:hover {
+    border-color: #2884D8;
+  }
+}

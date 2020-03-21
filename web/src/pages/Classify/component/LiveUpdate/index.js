@@ -5,7 +5,7 @@ import InfiniteScroll from 'react-infinite-scroller';
 import htmlToDraft from 'html-to-draftjs';
 import { EditorState, ContentState } from 'draft-js';
 import moment from 'moment';
-import Modal from '@/common/components/Modal';
+import Modal from '@/components/Modal';
 import ContentModal from '@/components/ContentModal';
 import styles from './style.less';
 import {
