@@ -70,7 +70,11 @@ export default class Request extends React.Component {
           }
           key="3"
         >
-          <InfiniteScroll className={styles.scroll}>
+          <InfiniteScroll 
+            className={styles.scroll}
+            hasMore={false}
+            loadMore={()=>{}}
+          >
             <List
               dataSource={dataSource}
               itemLayout="horizontal"

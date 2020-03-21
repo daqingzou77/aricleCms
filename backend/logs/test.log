@@ -1,0 +1,10 @@
+[2020-03-21T16:08:58.796] [INFO] normal - OPTIONS /api/classify/getScienceTips 204
+[2020-03-21T16:08:58.807] [INFO] normal - GET /api/classify/getHotRecommandFromScience 200
+[2020-03-21T16:08:58.811] [INFO] normal - GET /api/classify/getLiveUpdates?articleType=0 200
+[2020-03-21T16:08:58.815] [INFO] normal - GET /api/classify/getScienceTips 200
+[2020-03-21T16:08:59.178] [INFO] normal - OPTIONS /api/classify/getHotRecommandFromHistory 204
+[2020-03-21T16:08:59.180] [INFO] normal - OPTIONS /api/classify/getHistoricalStorys 204
+[2020-03-21T16:08:59.181] [INFO] normal - OPTIONS /api/classify/getLiveUpdates?articleType=1 204
+[2020-03-21T16:08:59.185] [INFO] normal - GET /api/classify/getHotRecommandFromHistory 200
+[2020-03-21T16:08:59.187] [INFO] normal - GET /api/classify/getHistoricalStorys 200
+[2020-03-21T16:08:59.189] [INFO] normal - GET /api/classify/getLiveUpdates?articleType=1 200

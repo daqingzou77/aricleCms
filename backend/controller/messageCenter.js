@@ -302,7 +302,6 @@ class MessageCenter {
                 $pull: { requestList: { requester } }
               })
                 .then(doc => {
-                  console.log(doc)
                   if (doc.nModified > 0) {
                     res.tools.setJson(0, '同意好友成功', { status: true });
                   } else {

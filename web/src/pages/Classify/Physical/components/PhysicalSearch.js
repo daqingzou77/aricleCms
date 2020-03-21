@@ -42,7 +42,7 @@ class PhysicalSearch extends React.Component {
       };
     const dataLayout = this.defaultArray.map((item, index) => {
         return (
-          <div className={styles.border}>
+          <div className={styles.border} key={index}>
             <div className={styles.title}>{`关键词组${index + 1}`}</div>
             <FormRow>
               <FormElement

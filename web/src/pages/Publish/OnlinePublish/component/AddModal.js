@@ -28,7 +28,11 @@ class AddModal extends React.Component {
     return (
       <div style={{ padding: 10 }}>
         <Form>
-          <InfiniteScroll style={{ height: 200, overFlow: 'auto' }}>
+          <InfiniteScroll 
+            style={{ height: 200, overFlow: 'auto' }}
+            hasMore={false}
+            loadMore={()=>{}}
+          >
             <FormElement
               {...FormElementProps}
               label="文章名称"

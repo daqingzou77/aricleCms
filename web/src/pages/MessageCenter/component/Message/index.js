@@ -1,5 +1,5 @@
 import React from 'react';
-import { Collapse, Row, Col, Avatar, Badge, List, message, Popconfirm, Button } from 'antd';
+import { Collapse, Row, Col, Avatar, Badge, List, message, Popconfirm } from 'antd';
 import InfiniteScroll from 'react-infinite-scroller';
 import styles from '../style.less';
 import {
@@ -50,7 +50,11 @@ export default class Message extends React.Component {
           }
           key="2"
         >
-          <InfiniteScroll className={styles.scroll}>
+          <InfiniteScroll 
+            className={styles.scroll}
+            hasMore={false}
+            loadMore={()=>{}}
+          >
             <List
               dataSource={messageArray}
               renderItem={item => (

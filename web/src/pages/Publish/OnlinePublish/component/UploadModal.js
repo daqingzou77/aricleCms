@@ -72,7 +72,11 @@ class UploadModal extends React.Component {
     )
     return (
       <div style={{ padding: 10 }}>
-        <InfiniteScroll style={{ height: 300, overFlow: 'auto' }}>
+        <InfiniteScroll 
+          style={{ height: 300, overFlow: 'auto' }}
+          hasMore={false}
+          loadMore={()=>{}}
+        >
           <Form>
             <FormElement
               {...FormElementProps}

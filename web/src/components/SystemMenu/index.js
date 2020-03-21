@@ -1,4 +1,3 @@
-import { formatMessage as _formatMessage } from 'umi/locale';
 import React from 'react';
 import { Icon, message } from 'antd';
 import { Link, withRouter } from 'react-router-dom';
@@ -11,11 +10,6 @@ import menu from './menus';
 import {
   recordModalTime
 } from '@/services/messageService';
-
-const formatMessage = id => {
-  return _formatMessage({ id });
-};
-
 
 class SystemMenu extends React.Component {
   constructor(props) {
@@ -137,7 +131,7 @@ class SystemMenu extends React.Component {
                   ].join(' ')}
                 >
                   <img src={children.icon} className={styles.toolIcon} alt={children.title} />
-                  {formatMessage(children.title)}
+                  {children.title}
                 </div>
               ) : (
                 <Link
@@ -149,13 +143,13 @@ class SystemMenu extends React.Component {
                     ].join(' ')}
                 >
                   <img src={children.icon} className={styles.toolIcon} alt={children.title} />
-                  {formatMessage(children.title)}
+                  {children.title}
                 </Link>
                 )
             )}
           </div>
           <div className={styles.toolTitle}>
-            <span>{formatMessage(item.title)}</span>
+            <span>{item.title}</span>
           </div>
         </div>
       );
@@ -177,7 +171,7 @@ class SystemMenu extends React.Component {
           type={isOpenToolbar ? 'shrink' : 'arrows-alt'}
         />
         <div style={{ display: isOpenToolbar ? 'none' : '' }} className={styles.toolbarTitle}>
-          <span>{formatMessage('guet.schedule.toolbar')}</span>
+          <span>工具栏</span>
         </div>
 
         <div style={{ display: isOpenToolbar ? '' : 'none' }} className={styles.toolbarTool}>

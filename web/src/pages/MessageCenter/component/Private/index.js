@@ -85,7 +85,11 @@ class Private extends React.Component {
             }
             key="1"
           >
-            <InfiniteScroll className={styles.scroll}>
+            <InfiniteScroll 
+              className={styles.scroll}
+              hasMore={false}
+              loadMore={()=>{}}
+            >
               <List
                 dataSource={dataSource}
                 renderItem={item => (

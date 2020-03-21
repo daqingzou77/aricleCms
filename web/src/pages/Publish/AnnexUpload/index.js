@@ -242,7 +242,11 @@ class AnnexUpload extends React.Component {
     };
 
     const keywords = (
-      <InfiniteScroll className={keysArrays.length > 3 ? styles.annexScroll : null}>
+      <InfiniteScroll 
+        className={keysArrays.length > 3 ? styles.annexScroll : null}
+        hasMore={false}
+        loadMore={()=>{}}
+      >
         {
           keysArrays.map(item => {
             const label = `关键词${item}`;

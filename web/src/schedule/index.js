@@ -9,7 +9,7 @@ class Pulse extends PureComponent {
   }
 
   render() {
-    return <div>作战值班内容</div>;
+    return <div>文章信息管理系统内容内容</div>;
   }
 }
 

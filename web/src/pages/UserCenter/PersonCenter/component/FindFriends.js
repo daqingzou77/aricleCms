@@ -106,7 +106,11 @@ export default class FindFriends extends React.Component {
             onClick={this.handleFresh}
           />
           <div className={styles.listStyle}>
-            <InfiniteScroll className={styles.friendsScroll}>
+            <InfiniteScroll 
+              className={styles.friendsScroll}
+              hasMore={false}
+              loadMore={()=>{}}
+            >
               {friends.length > 0 ? (
                 friendsList
               ) : (

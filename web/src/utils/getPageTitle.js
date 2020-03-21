@@ -1,4 +1,4 @@
-import { formatMessage } from 'umi/locale';
+// import { formatMessage } from 'umi/locale';
 import pathToRegexp from 'path-to-regexp';
 import isEqual from 'lodash/isEqual';
 import memoizeOne from 'memoize-one';
@@ -15,10 +15,11 @@ const getPageTitle = (pathname, breadcrumbNameMap) => {
   }
   const pageName = menu.disableLocal
     ? currRouterData.name
-    : formatMessage({
-        id: currRouterData.locale || currRouterData.name,
-        defaultMessage: currRouterData.name,
-      });
+    : null
+    // formatMessage({
+    //     id: currRouterData.locale || currRouterData.name,
+    //     defaultMessage: currRouterData.name,
+    //   });
 
   return `${pageName} - ${title}`;
 };

@@ -108,14 +108,14 @@ class Step1 extends React.Component {
                 label="文章名称"
                 field="articlename"
                 initialValue={articlename}
-                disabled={articlename}
+                disabled
               />
               <FormElement
                 {...formElementProps}
                 label="文章作者"
                 field="author"
                 initialValue={author}
-                disabled={author}
+                disabled
               />
               <FormElement
                 {...formElementProps}
@@ -133,7 +133,7 @@ class Step1 extends React.Component {
                 field="articleDescription"
                 rows={2}
                 initialValue={articleDescription}
-                disabled={articleDescription}
+                disabled
               />
               <FormElement
                 {...formElementProps}

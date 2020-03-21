@@ -1,6 +1,6 @@
 import memoizeOne from 'memoize-one';
 import isEqual from 'lodash/isEqual';
-import { formatMessage } from 'umi/locale';
+// import { formatMessage } from 'umi/locale';
 import Authorized from '@/utils/Authorized';
 import { menu } from '../defaultSettings';
 
@@ -24,7 +24,8 @@ function formatter(data, parentAuthority, parentName) {
       // close menu international
       const name = menu.disableLocal
         ? item.name
-        : formatMessage({ id: locale, defaultMessage: item.name });
+        : null
+        //  formatMessage({ id: locale, defaultMessage: item.name });
       const result = {
         ...item,
         name,

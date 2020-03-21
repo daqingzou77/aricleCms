@@ -1,8 +1,8 @@
 import React from 'react';
-import { formatMessage, getLocale, setLocale } from 'umi/locale';
+// import { formatMessage, getLocale, setLocale } from 'umi/locale';
 import { ConfigProvider } from 'antd';
 import { FrownOutlined } from '@ant-design/icons';
-import Cookies from 'universal-cookie';
+// import Cookies from 'universal-cookie';
 import SystemHeader from '../components/SystemHeader';
 import SystemMenu from '../components/SystemMenu';
 import styles from './Schedule.less';
@@ -31,19 +31,19 @@ class ScheduleLayout extends React.Component {
   }
 
 
-  checkLocale = () => {
-    const cookies = new Cookies();
-    let language = cookies.get('uop.locale');
-    const isSuportLanguage = ['zh_CN', 'fr_FR', 'en_US'].includes(language);
-    if (!isSuportLanguage) {
-      return;
-    }
-    language = language === 'fr_FR' ? 'fr-FR' : language === 'zh_CN' ? 'zh-CN' : 'en-US';
-    if (getLocale() !== language) {
-      console.log(getLocale(), '=>', language);
-      setLocale(language);
-    }
-  };
+  // checkLocale = () => {
+  //   const cookies = new Cookies();
+  //   let language = cookies.get('uop.locale');
+  //   const isSuportLanguage = ['zh_CN', 'fr_FR', 'en_US'].includes(language);
+  //   if (!isSuportLanguage) {
+  //     return;
+  //   }
+  //   language = language === 'fr_FR' ? 'fr-FR' : language === 'zh_CN' ? 'zh-CN' : 'en-US';
+  //   if (getLocale() !== language) {
+  //     console.log(getLocale(), '=>', language);
+  //     setLocale(language);
+  //   }
+  // };
 
   changeOpenToolbar = isOpenToolbar => {
     this.setState({

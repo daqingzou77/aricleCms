@@ -84,7 +84,11 @@ export default class Attention extends React.Component {
           }
           key="4"
         >
-          <InfiniteScroll className={styles.scroll}>
+          <InfiniteScroll 
+            className={styles.scroll}
+            hasMore={false}
+            loadMore={()=>{}}
+          >
             <List
               itemLayout="horizontal"
               dataSource={dataSource}

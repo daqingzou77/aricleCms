@@ -59,7 +59,11 @@ export default class LiveUpdate extends React.Component {
         bodyStyle={{ height: 608 }}
         extra={<div style={{ color: '#2884D8', cursor: 'pointer' }}><Icon type='reload' />&nbsp;刷新</div>}
       >
-        <InfiniteScroll className={styles.infiniteScroll}>
+        <InfiniteScroll 
+          className={styles.infiniteScroll}
+          hasMore={false}
+          loadMore={()=>{}}
+        >
           <List
             itemLayout="vertical"
             dataSource={dailyUpdate}

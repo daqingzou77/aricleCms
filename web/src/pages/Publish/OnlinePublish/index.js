@@ -282,7 +282,10 @@ class PublishOnline extends React.Component {
     if (editRecord.length > 0) {
       content = (
         <div style={{ height: 220, width: 220, overflow: 'auto' }}>
-          <InfiniteScroll>
+          <InfiniteScroll
+            hasMore={false}
+            loadMore={()=>{}}
+          >
             {editRecord.map(item => {
               const { editTitle, editTime } = item;
               return (

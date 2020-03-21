@@ -1,5 +1,4 @@
 import React, { Component, Fragment } from 'react';
-import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
 import Link from 'umi/link';
 import DocumentTitle from 'react-document-title';
@@ -48,7 +47,6 @@ class UserLayout extends Component {
             </div>
             {children}
           </div>
-          {/* <GlobalFooter copyright={copyright} /> */}
         </div>
       </DocumentTitle>
     );

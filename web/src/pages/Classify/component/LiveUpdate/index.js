@@ -93,7 +93,11 @@ export default class LiveUpdate extends React.Component {
             <Icon type='reload' /> 刷新
           </span>}
       >
-        <InfiniteScroll className={styles.infiniteScroll}>
+        <InfiniteScroll 
+          className={styles.infiniteScroll}
+          hasMore={false}
+          loadMore={()=>{}}  
+        >
           {liveCardLoading ? (
             <Spin spinning={liveCardLoading} style={{ marginLeft: '50%', paddingTop: '50%' }} />
             ) : (

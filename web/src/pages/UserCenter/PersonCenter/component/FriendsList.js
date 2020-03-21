@@ -365,7 +365,11 @@ export default class FriendsList extends React.Component {
           <Radio.Button value={1}>拉黑名单</Radio.Button>
         </Radio.Group>
         <CustomizeEmpty>
-          <InfiniteScroll className={styles.listScrolls}>
+          <InfiniteScroll 
+            className={styles.listScrolls}
+            hasMore={false}
+            loadMore={()=>{}}
+          >
             <List
               itemLayout="horizontal"
               dataSource={userList}

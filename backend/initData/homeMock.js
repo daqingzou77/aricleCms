@@ -15,7 +15,7 @@
      imgSrc: 'http://localhost:9999/images/cover/weicheng.jpg',
      description: '《围城》是钱钟书所著的长篇小说，是中国现代文学史上一部风格独特的讽刺小说。被誉为“新儒林外史”。第一版于1947年由上海晨光出版公司出版。故事主要写抗战初期知识分子的群相。'
    }, {
-     id: `fake-list-1`,
+     id: `fake-list-4`,
      title: '红高粱',
      imgSrc: 'http://localhost:9999/images/cover/honggaoliang.jpg',
      description: '《红高粱》是一部表现高密人民在抗日战争中的顽强生命力和充满血性与民族精神的经典之作，从民间的角度给读者再现了抗日战争的年代，展现的是一种为生存而奋起反抗的暴力欲。'

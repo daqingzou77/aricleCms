@@ -83,7 +83,7 @@ const mainMenu = [{
           path: '/maintain/audit'
         },
         {
-          key: 401,
+          key: 402,
           title: '文章管理',
           icon: icMailCheckin,
           path: '/maintain/manage',
@@ -349,7 +349,7 @@ const adminMenu = [{
         path: '/maintain/audit'
       },
       {
-        key: 401,
+        key: 402,
         title: '文章管理',
         icon: icMailCheckin,
         path: '/maintain/manage',
