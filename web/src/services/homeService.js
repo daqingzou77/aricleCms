@@ -1,4 +1,4 @@
-import { get } from '../common/http';
+import { get } from '../utils/http';
 
 const scheduleBaseUrl = process.env.apiBaseUrl;
 

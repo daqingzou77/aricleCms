@@ -1,4 +1,4 @@
-import http from '../common/http';
+import http from '../utils/http';
 
 // 修改baseUrl, 最小化模块组件迁移的改动
 // 需要修改请求的baseUrl：

@@ -10,8 +10,8 @@ import settingDrawer from './zh-CN/settingDrawer';
 import settings from './zh-CN/settings';
 import pwa from './zh-CN/pwa';
 import component from './zh-CN/component';
-import schedule from './zh-CN/schedule';
 import selectOption from '@/common/locale/zh_CN/option';
+
 
 export default {
   'navBar.lang': '语言',
@@ -34,6 +34,5 @@ export default {
   ...settings,
   ...pwa,
   ...component,
-  ...schedule,
   ...selectOption,
 };
