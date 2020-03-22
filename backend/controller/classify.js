@@ -100,10 +100,18 @@ class Classify {
         this.user.findOne({
           username: item.author
         }).then(data=>{
-          item['avatar'] = data.avatar;
+          if (!data) {
+            item['avatar'] = '';
+          } else {
+            item['avatar'] = data.avatar;
+          }
           callback(null, item);
         })
       }, (err, result) => {
+        result.map((item, index) => {
+          if (!item)
+            result.splice(index, 1)
+        })
         res.tools.setJson(0, '实时更新科学列表成功', result);
       })
     })

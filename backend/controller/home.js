@@ -47,7 +47,11 @@ class Home {
           this.user.findOne({
             username: item.author
           }).then(data=>{
-            item['avatar'] = data.avatar;
+            if (!data) {
+              item['avatar'] = '';
+            } else {
+              item['avatar'] = data.avatar;
+            }
             callback(null, item);
           })
         }, (err, result) => {

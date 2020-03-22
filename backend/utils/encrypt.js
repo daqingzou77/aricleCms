@@ -3,7 +3,7 @@ import BigInt from 'big-integer';
 import config from '../config/app.config';
 const jsSHA = require('jssha');
 
-const { K, K1, P, m } = config;
+const { K, K1, P, M } = config;
 const { bigPrime128, bigPrime224 } = prime;
 
 const shaObj = new jsSHA('SHA3-224', 'TEXT');

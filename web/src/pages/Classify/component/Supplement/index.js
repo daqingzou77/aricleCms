@@ -1,13 +1,13 @@
 import React from 'react';
-import { Card, Spin, List, Typography, Icon } from 'antd'; 
+import { Card, Spin, List, Typography, Icon } from 'antd';
 import Modal from '@/components/Modal';
-import styles from './style.less';
 import {
   getScienceTips,
   getHistoricalStorys,
   getExcerpts,
   getSportSense
-} from '@/services/classifyService'
+} from '@/services/classifyService';
+import styles from './style.less';
 
 const { Text } = Typography;
 
@@ -21,7 +21,7 @@ export default class Supplement extends React.Component {
     title: '',
   }
 
-  componentDidMount(){
+  componentDidMount() {
     const { keys } = this.props;
     if (keys === 'science') {
       this.getScienceTips();
@@ -38,7 +38,7 @@ export default class Supplement extends React.Component {
       this.setState({
         title: '优美短句'
       })
-    } else if (keys === 'physics'){
+    } else if (keys === 'physics') {
       this.getSportSense();
       this.setState({
         title: '体育小常识'
@@ -48,7 +48,7 @@ export default class Supplement extends React.Component {
 
   handleTipFresh = () => {
     this.setState({
-        scienTipsLoading: true
+      scienTipsLoading: true
     })
     setTimeout(() => {
       const { keys } = this.props;
@@ -58,51 +58,51 @@ export default class Supplement extends React.Component {
         this.getHistoricalStorys();
       } else if (keys === 'litterateur') {
         this.getExcerpts();
-      } else if (keys === 'physics'){
+      } else if (keys === 'physics') {
         this.getSportSense();
       }
-       this.setState({
-          scienTipsLoading: false
-       })
+      this.setState({
+        scienTipsLoading: false
+      })
     }, 1000);
   }
 
   getScienceTips = () => {
     getScienceTips({}, ({ data }) => {
-        this.setState({
-          scienceTips: data
-        })
-      },
+      this.setState({
+        scienceTips: data
+      })
+    },
       e => console.log('getScienceTips-error', e.toString())
     )
   }
 
   getHistoricalStorys = () => {
     getHistoricalStorys({}, ({ data }) => {
-        this.setState({
-          scienceTips: data
-        })
-      },
+      this.setState({
+        scienceTips: data
+      })
+    },
       e => console.log('getHistoricalStorys-error', e.toString())
     )
   }
 
   getExcerpts = () => {
     getExcerpts({}, ({ data }) => {
-        this.setState({
-          scienceTips: data
-        })
-      },
+      this.setState({
+        scienceTips: data
+      })
+    },
       e => console.log('getExcerpts-error', e.toString())
     )
   }
 
   getSportSense = () => {
     getSportSense({}, ({ data }) => {
-        this.setState({
-          scienceTips: data
-        })
-      },
+      this.setState({
+        scienceTips: data
+      })
+    },
       e => console.log('getSportSense-error', e.toString())
     )
   }
@@ -113,18 +113,18 @@ export default class Supplement extends React.Component {
       answer: content
     })
   }
-  
+
   render() {
-    const { scienTipsLoading, scienceTips, visible, answer, title  } = this.state;
+    const { scienTipsLoading, scienceTips, visible, answer, title } = this.state;
     const { keys } = this.props;
-    return(
-      <>
+    return (
+      <div className={styles.supplement}>
         <Card
           bodyStyle={{ height: 608 }}
           title={<span style={{ fontWeight: 'bold' }}>{title}</span>}
           extra={
-            <span 
-              className={styles.refresh} 
+            <span
+              className={styles.refresh}
               onClick={this.handleTipFresh}
             >
               <Icon type='reload' /> 换一换
@@ -134,20 +134,21 @@ export default class Supplement extends React.Component {
             <Spin spinning={scienTipsLoading} style={{ marginLeft: '50%', paddingTop: '50%' }} />
           ) : (
             <List
+              className={styles.supplementList}
               dataSource={scienceTips}
               renderItem={item => (
                 <List.Item>
                   <Text mark>[ITEM]</Text>
-                  <span 
-                    style={{ cursor: keys !== 'litterateur' ? 'pointer': null, marginLeft: 5 }} 
+                  <span
+                    style={{ cursor: keys !== 'litterateur' ? 'pointer' : null, marginLeft: 5 }}
                     onClick={() => this.handleShowTips(item.detail)}
                   >
                     {item.description}
                   </span>
                 </List.Item>
-              )}
+                )}
             />
-           )}
+            )}
         </Card>
         <Modal
           title="内容详情"
@@ -158,7 +159,8 @@ export default class Supplement extends React.Component {
         >
           <div className={styles.answer}>{answer}</div>
         </Modal>
-      </>
+      </div>
+
     )
   }
 }

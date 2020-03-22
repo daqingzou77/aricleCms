@@ -1,9 +1,21 @@
-.answer {
-    padding: 5px;
-    text-indent: 2em;
-}
-
-.refresh {
-    color: #2884D8; 
-    cursor: pointer;
+.supplement {
+    .answer {
+        padding: 5px;
+        text-indent: 2em;
+    }
+    
+    .refresh {
+        color: #2884D8; 
+        cursor: pointer;
+    }
+    .supplementList {
+        :global {
+            .ant-list-item {
+                display: flex;
+                align-items: center;
+                justify-content: end;
+            }
+        }
+    }
+  
 }

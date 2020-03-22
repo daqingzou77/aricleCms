@@ -44,13 +44,13 @@ app.use(session({
 app.use(/\/api/, tools);
 
 // 权限设置
-app.use(/\/api/, (req, res, next) => {
-  if (req.session.username || req.path.indexOf('/user/toLogin') !== -1 || req.path.indexOf('/user/getCaptch') !== -1 ) {
-    next();
-  } else {
-    res.tools.setJson(503, '无访问权限', []);
-  }
-});
+// app.use(/\/api/, (req, res, next) => {
+//   if (req.session.username || req.path.indexOf('/user/toLogin') !== -1 || req.path.indexOf('/user/getCaptch') !== -1 ) {
+//     next();
+//   } else {
+//     res.tools.setJson(503, '无访问权限', []);
+//   }
+// });
 
 // 路由匹配
 routes(app, io);

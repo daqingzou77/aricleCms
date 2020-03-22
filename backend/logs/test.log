@@ -1,13 +1,3 @@
-[2020-03-21T16:55:40.171] [WARN] normal - GET /images/cover/honggaoliang.jpg 304
-[2020-03-21T16:55:40.178] [WARN] normal - GET /images/cover/zhuziqing.jpg 304
-[2020-03-21T16:55:42.151] [WARN] normal - GET /api/home/getStatics 304
-[2020-03-21T16:55:42.155] [WARN] normal - GET /api/home/getDailyPush 304
-[2020-03-21T16:55:42.156] [WARN] normal - GET /api/home/getHotAuthor 304
-[2020-03-21T16:55:42.156] [WARN] normal - GET /api/home/getHotArticles 304
-[2020-03-21T16:55:42.158] [WARN] normal - GET /api/home/getHotComments 304
-[2020-03-21T16:55:42.163] [WARN] normal - GET /api/home/getAuthorUpdate 304
-[2020-03-21T16:55:42.180] [WARN] normal - GET /images/cover/biancheng.jpg 304
-[2020-03-21T16:55:42.184] [WARN] normal - GET /images/cover/pingfanshijie.jpg 304
-[2020-03-21T16:55:42.187] [WARN] normal - GET /images/cover/weicheng.jpg 304
-[2020-03-21T16:55:42.190] [WARN] normal - GET /images/cover/honggaoliang.jpg 304
-[2020-03-21T16:55:42.209] [WARN] normal - GET /images/cover/zhuziqing.jpg 304
+[2020-03-22T13:04:59.713] [INFO] normal - GET /api/messageCenter/getFriendUpdates?username=%E5%8F%A4%E5%A4%A9%E4%B9%90 200
+[2020-03-22T13:04:59.717] [WARN] normal - GET /api/messageCenter/getNewMessage?username=%E5%8F%A4%E5%A4%A9%E4%B9%90 304
+[2020-03-22T13:04:59.719] [WARN] normal - GET /api/messageCenter/getUpdatesCount?username=%E5%8F%A4%E5%A4%A9%E4%B9%90 304

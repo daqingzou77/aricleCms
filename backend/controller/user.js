@@ -186,8 +186,14 @@ class users {
           async.map(data.blacklist, (item, callback) => {
             this.user.findOne({ username: item.black }, (err, doc) => {
               if (err) return res.tools.setJson(0, '信息获取失败', err)
-              item['name'] = item.black;
-              item['avatar'] = doc.avatar;
+              if (!doc) {
+                item['name'] = '';
+                item['avatar'] = '';
+              } else {
+                item['name'] = item.black;
+                item['avatar'] = doc.avatar;
+              }
+         
               callback(null, item);
             })
           }, (err, result) => {
