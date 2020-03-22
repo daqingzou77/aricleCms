@@ -148,11 +148,7 @@ class MessageCenter {
             username: item.liker
           }, { avatar: 1 })
             .then(datas => {
-              if (!datas) {
-                item['avatar'] = '';
-              } else {
-                item['avatar'] = datas.avatar;
-              }
+              item['avatar'] = datas.avatar;
               callback(null, item)
             })
         }, (err, result) => {
@@ -231,11 +227,7 @@ class MessageCenter {
             username: item.friend
           }, { avatar: 1 })
             .then(datas => {
-              if (!datas) {
-                item['avatar'] = '';
-              } else {
-                item['avatar'] = datas.avatar
-              }
+              item['avatar'] = datas.avatar
               callback(null, item);
             })
         }, (err, result) => {
