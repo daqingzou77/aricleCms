@@ -42,10 +42,13 @@ class Annex {
   downloadAnnex(req, res, next) {
     const filename = req.body.filename;
     const path = url.resolve(__dirname, config.uploadDir + filename.replace(/\s+/g, ""));
-    fs.access(`${config.uploadDir}/${path}`, err => {
-      if (err.code === 'ENOENT') {
-       return res.tools.setJson(1, '当前文件已不存在系统中', { status: false })
-      } else {
+    fs.access(`${path}`, err => {
+      console.log(err)
+      if (err) {
+        if (err.code === 'ENOENT') {
+          return res.tools.setJson(1, '当前文件已不存在系统中', { status: false })
+        }
+      } else  {
         var size = fs.statSync(path).size;
         console.log('size', size);
         var f = fs.createReadStream(path);

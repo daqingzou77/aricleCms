@@ -29,7 +29,7 @@ export default class HotComments extends React.Component {
     const { hotComments } = this.state;
     return (
       <Card
-        title={<span style={{ fontWeight: 'bold' }}>每日热评</span>}
+        title={<span style={{ fontWeight: 'bold' }}>热门评论</span>}
         bodyStyle={{ height: 608 }}
         extra={<div style={{ color: '#2884D8', cursor: 'pointer' }}><Icon type='reload' />&nbsp;换一换</div>}
       >

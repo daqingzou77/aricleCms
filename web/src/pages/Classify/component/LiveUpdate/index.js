@@ -130,6 +130,7 @@ export default class LiveUpdate extends React.Component {
           } 
         </InfiniteScroll>
         <Modal
+          width={400}
           visible={modalVisible}
           title="内容详情"
           onCancel={() => this.setState({ modalVisible: false, editorState: '' })}

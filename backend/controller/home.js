@@ -41,7 +41,7 @@ class Home {
         articleContent: 1,
         articleForm: 1,
         annexname: 1
-      }).sort({_id: -1}).limit(3)
+      }).sort({_id: -1}).limit(5)
       .then(doc => {
         async.map(doc, (item, callback) => {
           this.user.findOne({

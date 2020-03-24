@@ -220,7 +220,7 @@ class CommentList extends React.Component {
                 extra={currentUser === item.commenter ? null : <a onClick={() => this.handleOnReply(item.commenter)}>私信</a>}
               >
                 <List.Item.Meta
-                  avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
+                  avatar={<Avatar src={item.avatar} />}
                   title={<span>{item.commenter}</span>}
                   description={item.commentContent}
                 />

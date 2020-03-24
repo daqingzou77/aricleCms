@@ -93,7 +93,8 @@ class Classify {
       author: 1,
       articleContent: 1,
       articleForm: 1,
-      annexname: 1
+      annexname: 1,
+      passTime: 1
     }).sort({_id: -1}).limit(3)
     .then(doc => {
       async.map(doc, (item, callback) => {

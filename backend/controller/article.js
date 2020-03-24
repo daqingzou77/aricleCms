@@ -1,6 +1,7 @@
 import articles from '../model/articles';
 import users from '../model/user';
 import Encrypt from '../utils/encrypt';
+import async from 'async';
 
 class Articles {
   constructor(app) {
@@ -324,8 +325,28 @@ class Articles {
     const articlename = req.query.articlename;
     this.articles.findOne({ articlename }, { commentList: 1 })
       .then(doc => {
-        res.tools.setJson(0, '获取文章评论', doc);
-      })
+        let array = [];
+        doc.commentList.map(item => {
+          const {likes, dislikes, commenter, commentTime, commentContent } = item;
+          array.push({
+            likes,
+            dislikes,
+            commenter,
+            commentTime,
+            commentContent
+          })
+        })
+        async.map(doc.commentList, (item, callback) => {
+          this.users.findOne({
+            username: item.commenter
+          }).then(data => {
+            item['avatar'] = data.avatar
+            callback(null, item);
+          })
+        }, (err, result) => {
+          res.tools.setJson(0, '实时文章评论列表成功', { commentList: result });
+        })
+      }).catch(err => next(err));
   }
 
   solveComment(req, res, next) {

@@ -10,6 +10,7 @@ class Mongo {
 
   //初始化数据库
   init() {
+    mongoose.set('useCreateIndex', true)
     const opts = {
       useNewUrlParser: true,
       useUnifiedTopology: true
