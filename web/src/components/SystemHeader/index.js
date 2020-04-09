@@ -1,17 +1,14 @@
 import React from 'react';
 import { Badge } from 'antd';
-import styles from './index.less';
+import styles from './style.less';
 
 export default class SystemHeader extends React.PureComponent {
   constructor(props) {
     super(props);
-    this.state = {
-      userInfo: '',
-    };
+    this.state = {};
   }
 
   componentDidMount() {
-    // this.getUopLoginUserInfo()
   }
 
 

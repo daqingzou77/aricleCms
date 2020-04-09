@@ -29,8 +29,7 @@ class ScheduleLayout extends React.Component {
       router.push('/user/login')
     }
   }
-
-
+  
   // checkLocale = () => {
   //   const cookies = new Cookies();
   //   let language = cookies.get('uop.locale');
