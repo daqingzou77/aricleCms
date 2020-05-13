@@ -173,7 +173,7 @@ export default Modal;
 
 ![modal.gif](/imgSrc/modal.gif)
 
-**2.查询算法-依据查询关键词匹配度返回接过**
+**2.查询算法-依据查询关键词匹配度返回结果**
 ```
 class Encrypt {
   constructor(keywords) {
@@ -210,4 +210,56 @@ class Encrypt {
     return G.divide(E);
   }
 }
+```
+
+**3.封装http请求**
+```
+import axios from 'axios';
+import qs from 'qs';
+import merge from 'lodash/merge';
+
+const http = axios.create({
+  timeout: 1000 * 120,               // 超时时间设置为120s
+  withCredentials: true,
+  headers: {
+    'Access-Control-Allow-Origin': '*',
+    'Content-Type': 'application/json; charset=utf-8',
+  },
+});
+
+...
+
+// 发送get请求
+export const get = (url, param, successCb, failCb, axiosConfig) => {
+ let aConfig = {};
+  if (typeof axiosConfig !== 'undefined') {
+    aConfig = axiosConfig;
+  }
+  http({
+    url: http.adornUrl(url),
+    method: 'GET',
+    params: http.adornParams(param),
+    ...aConfig
+  }).then(( { data } ) => {
+    defaultHandleSuccessCallback(data, successCb, failCb);
+  })
+    .catch(e => {
+      defaultHandleFailCallback(e, failCb);
+    });
+};
+
+// 发送post请求
+export const post = (url, param, successCb, failCb, axiosConfig) => {
+ ...
+};
+
+// 发送put请求
+export const put = (url, param, successCb, failCb, axiosConfig) => {
+ ...
+};
+
+// 发送delete请求
+export const deletes = (url, param, successCb, failCb, axiosConfig) => {
+ ...
+};
 ```
