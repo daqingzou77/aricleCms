@@ -171,7 +171,7 @@ export default Modal;
 ```
 效果如下
 
-![modal.gif](/imgSrc/modal.gif)
+![modal.gif](/imgSrc/customizeModal.gif)
 
 **2.查询算法-依据查询关键词匹配度返回结果**
 ```

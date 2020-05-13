@@ -1,10 +1,5 @@
-[2020-05-13T23:03:47.050] [INFO] normal - OPTIONS /api/home/getHotAuthor 204
-[2020-05-13T23:03:47.055] [INFO] normal - OPTIONS /api/home/getHotArticles 204
-[2020-05-13T23:03:47.058] [WARN] normal - GET /api/home/getDailyPush 304
-[2020-05-13T23:03:47.059] [WARN] normal - GET /api/home/getStatics 304
-[2020-05-13T23:03:47.060] [WARN] normal - GET /api/home/getHotAuthor 304
-[2020-05-13T23:03:47.061] [INFO] normal - OPTIONS /api/home/getAuthorUpdate 204
-[2020-05-13T23:03:47.062] [WARN] normal - GET /api/home/getHotArticles 304
-[2020-05-13T23:03:47.077] [INFO] normal - OPTIONS /api/home/getHotComments 204
-[2020-05-13T23:03:47.080] [WARN] normal - GET /api/home/getHotComments 304
-[2020-05-13T23:03:47.084] [WARN] normal - GET /api/home/getAuthorUpdate 304
+[2020-05-13T23:24:54.447] [INFO] normal - OPTIONS /api/classify/getLiveUpdates?articleType=3 204
+[2020-05-13T23:24:54.448] [INFO] normal - OPTIONS /api/classify/getSportSense 204
+[2020-05-13T23:24:54.470] [INFO] normal - GET /api/classify/getHotRecommandFromPhysic 200
+[2020-05-13T23:24:54.476] [INFO] normal - GET /api/classify/getSportSense 200
+[2020-05-13T23:24:54.484] [WARN] normal - GET /api/classify/getLiveUpdates?articleType=3 304
