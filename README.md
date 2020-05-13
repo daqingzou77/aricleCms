@@ -171,9 +171,7 @@ export default Modal;
 ```
 效果如下
 
-![modal.gif](https://github.com/daqingzou77/aricleCms/blob/master/imgSrc/modal.gif)
-
-
+<div align=center>![modal.gif](https://github.com/daqingzou77/aricleCms/blob/master/imgSrc/modal.gif)</div>
 
 **2.查询算法-依据查询关键词匹配度返回接过**
 ```
