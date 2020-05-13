@@ -171,7 +171,7 @@ class Modal extends React.PureCompnent {
 export default Modal;
 ```
 效果如下
-
+![modal.gif](https://github.com/daqingzou77/aricleCms/blob/master/imgSrc/modal.gif)
 
 
 
