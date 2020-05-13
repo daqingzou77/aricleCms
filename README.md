@@ -128,7 +128,6 @@ yarn build
 │   ├─ test/                                   # 测试工具
 ```
 
-## 核心技术
 **1.自定义封装可鼠标拖拽的的弹窗组件**
 ```
 class Modal extends React.PureCompnent {
@@ -171,6 +170,7 @@ class Modal extends React.PureCompnent {
 export default Modal;
 ```
 效果如下
+
 ![modal.gif](https://github.com/daqingzou77/aricleCms/blob/master/imgSrc/modal.gif)
 
 
