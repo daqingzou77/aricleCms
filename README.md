@@ -27,15 +27,15 @@ npm start 或 yarn start
 
 ## 效果演示
 > 主页
-![首页-部分截图](/home.png)
+![首页-部分截图](./imgSrc/home.png)
 > 文章分类
-![文章分类-体育栏截图](/classify.png)
+![文章分类-体育栏截图](./imgSrc/classify.png)
 > 文章发布
-![文章发布-发布文章](/publish.png)
+![文章发布-发布文章](./imgSrc/publish.png)
 > 用户中心
-![用户中心-在线聊天](/chat.png)
+![用户中心-在线聊天](./imgSrc/chat.png)
 > 消息中心
-![消息中心-消息中心](/message.png)
+![消息中心-消息中心](./imgSrc/message.png)
 
 ## 项目架构
 ```
