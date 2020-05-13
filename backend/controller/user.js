@@ -61,7 +61,19 @@ class users {
     this.app.post('/api/user/toLogin', this.toLogin.bind(this));
     this.app.get('/api/user/logOut', this.logOut.bind(this));
     this.app.get('/api/user/getCaptch', this.getCaptch.bind(this));
+
+    // 删除聊天信息
+    this.app.delete('/api/user/deleteMessage', this.deleteMessage.bind(this));
   };
+
+  deleteMessage(req, res, next) {
+    this.chat.remove({})
+    .then(doc => {
+      res.tools.setJson(0, '删除成功', {
+        status: true
+      })
+    })
+  } 
 
   uploadUserAvatar(req, res, next) {
     const files = req.files;

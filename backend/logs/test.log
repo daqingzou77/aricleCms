@@ -1,3 +1,5 @@
-[2020-05-13T11:30:17.067] [INFO] normal - OPTIONS /api/user/getCurrentUserDetail?username=%E5%BC%A0%E5%AE%B6%E8%BE%89 204
-[2020-05-13T11:30:17.095] [WARN] normal - GET /api/user/getCurrentUserDetail?username=%E5%BC%A0%E5%AE%B6%E8%BE%89 304
-[2020-05-13T11:30:17.100] [WARN] normal - GET /api/user/getClassifiedList?username=%E5%BC%A0%E5%AE%B6%E8%BE%89&key=0 304
+[2020-05-13T18:28:16.916] [INFO] normal - OPTIONS /api/classify/getLiveUpdates?articleType=2 204
+[2020-05-13T18:28:16.919] [INFO] normal - OPTIONS /api/classify/getExcerpts 204
+[2020-05-13T18:28:16.923] [INFO] normal - GET /api/classify/getHotRecommandFromLitterateur 200
+[2020-05-13T18:28:16.927] [WARN] normal - GET /api/classify/getLiveUpdates?articleType=2 304
+[2020-05-13T18:28:16.928] [INFO] normal - GET /api/classify/getExcerpts 200

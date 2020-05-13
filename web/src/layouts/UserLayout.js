@@ -3,7 +3,6 @@ import { connect } from 'dva';
 import Link from 'umi/link';
 import DocumentTitle from 'react-document-title';
 import { Icon } from 'antd';
-import GlobalFooter from '@/components/GlobalFooter';
 import styles from './UserLayout.less';
 import logo from '../assets/logo.ico';
 import getPageTitle from '@/utils/getPageTitle';

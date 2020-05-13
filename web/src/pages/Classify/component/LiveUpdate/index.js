@@ -7,13 +7,13 @@ import { EditorState, ContentState } from 'draft-js';
 import moment from 'moment';
 import Modal from '@/components/Modal';
 import ContentModal from '@/components/ContentModal';
-import styles from './style.less';
 import {
   downloadAnnex
 } from '@/services/annexService';
 import {
   getLiveUpdates
 } from '@/services/classifyService';
+import styles from './style.less';
 
 
 const { Text } = Typography;
