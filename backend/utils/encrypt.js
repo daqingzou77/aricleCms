@@ -38,9 +38,6 @@ class Encrypt {
     const Q1 = this.cipherTextDoor(queryArray, this.M, Ci);
     return Q1;
   }
-  // 定义初始相似度
-   defineInitSmi() {
-   }
 
   // 计算加密相似度
    getEndSmi(I1, Q1, θ) {
@@ -170,7 +167,7 @@ class Encrypt {
     return F.subtract(F.mod(E));
   }
 
-  // 最终相似度
+  // 计算最终相似度
   getFinalSmi(G, E) {
     return G.divide(E);
   }
