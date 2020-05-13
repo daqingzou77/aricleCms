@@ -1,13 +1,6 @@
 import React from 'react';
 import { Collapse } from 'antd';
 import Modal from '@/components/Modal';
-import Comment from './component/Comment';
-import Like from './component/Like';
-import Private from './component/Private';
-import Message from './component/Message';
-import Request from './component/Request';
-import Attention from './component/Attention';
-import styles from './style.less';
 import {
   getCommentCounts,
   getStarCounts,
@@ -15,6 +8,14 @@ import {
   getUpdatesCounts,
   getNewMessageCounts
 } from '@/services/messageService'
+import Comment from './component/Comment';
+import Like from './component/Like';
+import Private from './component/Private';
+import Message from './component/Message';
+import Request from './component/Request';
+import Attention from './component/Attention';
+import styles from './style.less';
+
 
 class MessageCenter extends React.Component {
 

@@ -1,6 +1,7 @@
 import React from 'react';
 import ContentEditable from 'react-contenteditable';
 import styles from './style.less';
+import { message } from 'antd';
 
 class Send extends React.Component {
 

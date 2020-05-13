@@ -184,12 +184,6 @@ const userMenu = [{
         title: '消息中心',
         icon: icPhoneCheckin,
         path: '/userCenter/messageCenter',
-      },
-      {
-        key: 503,
-        title: '用户管理',
-        icon: icNewLog,
-        path: '/userCenter/userManage'
       }
     ],
   },

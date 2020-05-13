@@ -32,21 +32,21 @@ export default config => {
     },
   ]);
 
-    config.plugin('filemanager-webpack').use(FileManagerPlugin, [
-      {
-        onEnd: {
-          mkdir: [
-            './historicVersion/'
-          ],
-          archive: [
-            {
-              source: './dist',
-              destination: `./historicVersion/LK-0200024@0.2.0.${moment(new Date()).format('YYMMDD')}.${moment(new Date()).format('HHmm')}.zip`,
-            },
-          ],
-        },
-      },
-    ]);
+    // config.plugin('filemanager-webpack').use(FileManagerPlugin, [
+    //   {
+    //     onEnd: {
+    //       mkdir: [
+    //         './historicVersion/'
+    //       ],
+    //       archive: [
+    //         {
+    //           source: './dist',
+    //           destination: `./historicVersion/LK-0200024@0.2.0.${moment(new Date()).format('YYMMDD')}.${moment(new Date()).format('HHmm')}.zip`,
+    //         },
+    //       ],
+    //     },
+    //   },
+    // ]);
 
   // }
 };

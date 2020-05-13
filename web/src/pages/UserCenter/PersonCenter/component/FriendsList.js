@@ -251,6 +251,7 @@ export default class FriendsList extends React.Component {
   }
 
   setContent = content => {
+   
     this.setState({
       content,
     })
@@ -258,6 +259,12 @@ export default class FriendsList extends React.Component {
 
   handlePushMessage = () => {
     const { content, dialogTips, currentUsername, chatWith } = this.state;
+    const regx = /&nbsp;/;
+    const regx1 =  /<div>/;
+    if(content.match(regx) || content.match(regx1)) {
+      message.warning('输入中包含空格与换行等非法字符!!!');
+      return
+    }
     if (!content) {
       message.warning('请输入内容');
       return;

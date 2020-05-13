@@ -270,7 +270,7 @@ class Audit extends React.Component {
           extra={<div style={{ color: '#2884D8', cursor: 'pointer' }}><Icon type="reload" /> 刷新</div>}
         >
           <div>
-            <StepForm auditMessage={auditMessage} closeCard={this.closeCard} />
+            <StepForm auditMessage={auditMessage} closeCard={this.closeCard} handleFresh={this.handleFresh} />
           </div>
         </Card>
         <Modal

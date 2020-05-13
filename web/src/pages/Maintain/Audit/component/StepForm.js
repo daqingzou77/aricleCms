@@ -37,7 +37,8 @@ class StepForm extends React.Component {
   };
 
   closeCard = () => {
-    this.props.closeCard()
+    this.props.closeCard();
+    this.props.handleFresh();
   }
 
   render() {

@@ -3,13 +3,14 @@ import { Icon, message } from 'antd';
 import { Link, withRouter } from 'react-router-dom';
 import SocketIo from 'socket.io-client';
 import Modal from '@/components/Modal';
-import styles from './index.less';
 import MessageCenter from '@/pages/MessageCenter/index';
-import router from 'umi/router';
-import menu from './menus';
 import {
   recordModalTime
 } from '@/services/messageService';
+import router from 'umi/router';
+import menu from './menus';
+import styles from './index.less';
+
 
 class SystemMenu extends React.Component {
   constructor(props) {
