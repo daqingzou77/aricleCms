@@ -128,7 +128,7 @@ yarn build
 │   ├─ test/                                   # 测试工具
 ```
 
-**1.自定义封装可鼠标拖拽的的弹窗组件**
+**1.封装可鼠标拖拽的的弹窗组件**
 ```
 class Modal extends React.PureCompnent {
    constructor(props) {
