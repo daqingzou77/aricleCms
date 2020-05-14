@@ -2,9 +2,7 @@
 
 import MergeLessPlugin from 'antd-pro-merge-less';
 import AntDesignThemePlugin from 'antd-theme-webpack-plugin';
-import FileManagerPlugin from 'filemanager-webpack-plugin';
 import path from 'path';
-import moment from 'moment';
 
 export default config => {
   // pro 和 开发环境再添加这个插件
@@ -32,21 +30,4 @@ export default config => {
     },
   ]);
 
-    // config.plugin('filemanager-webpack').use(FileManagerPlugin, [
-    //   {
-    //     onEnd: {
-    //       mkdir: [
-    //         './historicVersion/'
-    //       ],
-    //       archive: [
-    //         {
-    //           source: './dist',
-    //           destination: `./historicVersion/LK-0200024@0.2.0.${moment(new Date()).format('YYMMDD')}.${moment(new Date()).format('HHmm')}.zip`,
-    //         },
-    //       ],
-    //     },
-    //   },
-    // ]);
-
-  // }
 };

@@ -10,15 +10,10 @@ export default {
   define: {
     'process.env.ENV':'prod',
     APP_TYPE: APP_TYPE || '',
-    'process.env.SYS_KEY':'LK-0200024',
-    'process.env.APP_KEY':'LK024',
     // 下方为axios请求基地址
     'process.env.apiBaseUrl':'/api/LK-0200024/LK024',
     // prod环境添加BUILD_VERSION，取值如上
     'process.env.BUILD_VERSION':BUILD_VERSION,
-    // 'process.env.MAP_HOST':"192.168.1.183",
-    'process.env.MAP_HOST':"uop.ceiec.com",
-    'process.env.MAP_PORT':"6410"
   },
   manifest: {
     basePath: `/LK-0200024/`,

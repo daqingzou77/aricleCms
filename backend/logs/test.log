@@ -1,5 +1,10 @@
-[2020-05-13T23:24:54.447] [INFO] normal - OPTIONS /api/classify/getLiveUpdates?articleType=3 204
-[2020-05-13T23:24:54.448] [INFO] normal - OPTIONS /api/classify/getSportSense 204
-[2020-05-13T23:24:54.470] [INFO] normal - GET /api/classify/getHotRecommandFromPhysic 200
-[2020-05-13T23:24:54.476] [INFO] normal - GET /api/classify/getSportSense 200
-[2020-05-13T23:24:54.484] [WARN] normal - GET /api/classify/getLiveUpdates?articleType=3 304
+[2020-05-14T10:27:33.422] [WARN] normal - GET /api/home/getStatics 304
+[2020-05-14T10:27:33.427] [WARN] normal - GET /api/home/getDailyPush 304
+[2020-05-14T10:27:33.428] [WARN] normal - GET /api/home/getHotArticles 304
+[2020-05-14T10:27:33.429] [WARN] normal - GET /api/home/getHotComments 304
+[2020-05-14T10:27:33.437] [WARN] normal - GET /api/home/getAuthorUpdate 304
+[2020-05-14T10:27:33.531] [WARN] normal - GET /images/cover/biancheng.jpg 304
+[2020-05-14T10:27:33.532] [WARN] normal - GET /images/cover/pingfanshijie.jpg 304
+[2020-05-14T10:27:33.532] [WARN] normal - GET /images/cover/weicheng.jpg 304
+[2020-05-14T10:27:33.533] [WARN] normal - GET /images/cover/honggaoliang.jpg 304
+[2020-05-14T10:27:33.560] [WARN] normal - GET /images/cover/zhuziqing.jpg 304

@@ -1,12 +1,11 @@
-// https://umijs.org/config/
 import os from 'os';
 import pageRoutes from './router.config';
 import webpackPlugin from './plugin.config';
 import defaultSettings from '../src/defaultSettings';
 import slash from 'slash2';
 
-const { pwa, primaryColor } = defaultSettings;
-const { NODE_ENV, APP_TYPE, TEST } = process.env;
+const { pwa } = defaultSettings;
+const { APP_TYPE, TEST } = process.env;
 
 const plugins = [
   [
@@ -66,8 +65,6 @@ export default {
     APP_TYPE: APP_TYPE || '',
     'process.env.ENV':'dev',
     'process.env.apiBaseUrl': 'http://localhost:9999',
-    'process.env.MAP_HOST':"www.jinlutech.cn",
-    'process.env.MAP_PORT':"80"
   },
   treeShaking: true,
   targets: {
