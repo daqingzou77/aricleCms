@@ -24,7 +24,9 @@ class SystemMenu extends React.Component {
   
   componentWillMount() {
     const userType = localStorage.getItem('userType');
-    if (userType === '0') {
+    if (userType === '-1') {
+      this.menuList = menu.visitMenu;
+    } else if (userType === '0') {
       this.menuList = menu.userMenu;
     } else if (userType === '1') {
       this.menuList = menu.writeMenu;

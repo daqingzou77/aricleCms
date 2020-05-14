@@ -1,0 +1,6 @@
+[2020-05-14T19:48:46.358] [INFO] normal - OPTIONS /api/publishOnline/getPublishedArtilces 204
+[2020-05-14T19:48:46.359] [INFO] normal - OPTIONS /api/publishOnline/getEditRecord 204
+[2020-05-14T19:48:46.379] [WARN] normal - GET /api/publishOnline/getPublishedArtilces 304
+[2020-05-14T19:48:46.397] [WARN] normal - GET /api/publishOnline/getEditRecord 304
+[2020-05-14T19:48:46.869] [INFO] normal - OPTIONS /api/annex/getAnnexRecord 204
+[2020-05-14T19:48:46.876] [WARN] normal - GET /api/annex/getAnnexRecord 304

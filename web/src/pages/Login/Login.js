@@ -127,7 +127,7 @@ class LoginPage extends Component {
 
   handleVisiterLogin = () => {
     localStorage.setItem('currentUser', '游客');
-    localStorage.setItem('userType', 0);
+    localStorage.setItem('userType', -1);
     router.push('/')
   }
 

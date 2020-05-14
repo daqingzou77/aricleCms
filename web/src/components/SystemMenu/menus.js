@@ -12,7 +12,7 @@ import icPunchCard from '@/assets/menuIcon/ic_punch_card.svg';
 import icScheduling from '@/assets/menuIcon/ic_scheduling.svg';
 import icSituation from '@/assets/menuIcon/ic_situation.svg';
 
-const mainMenu = [{
+const visitMenu = [{
       key: 1,
       title: '首页',
       child: [
@@ -56,66 +56,6 @@ const mainMenu = [{
     },
     {
       key: 3,
-      title: '文章发布',
-      child: [
-        {
-          key: 301,
-          title: '在线发布',
-          icon: icPunchCard,
-          path: '/publish/publishOnline',
-        },
-        {
-          key: 302,
-          title: '文章上传',
-          icon: icSituation,
-          path: '/publish/AnnexUpload',
-        }
-      ]
-    },
-    {
-      key: 4,
-      title: '文章管理',
-      child: [
-        {
-          key: 401,
-          title: '文章审核',
-          icon: icScheduling,
-          path: '/maintain/audit'
-        },
-        {
-          key: 402,
-          title: '文章管理',
-          icon: icMailCheckin,
-          path: '/maintain/manage',
-        },
-      ],
-    },
-    {
-      key: 5,
-      title: '用户中心',
-      child: [
-        {
-          key: 501,
-          title: '个人中心',
-          icon: icArrangment,
-          path: '/userCenter/personCenter',
-        },
-        {
-          key: 502,
-          title: '消息中心',
-          icon: icPhoneCheckin,
-          path: '/userCenter/messageCenter',
-        },
-        {
-          key: 503,
-          title: '用户管理',
-          icon: icNewLog,
-          path: '/userCenter/userManage'
-        }
-      ],
-    },
-    {
-      key: 6,
       title: '退出',
       child: [
         {
@@ -389,7 +329,7 @@ const adminMenu = [{
 ];
 
 export default {
-    mainMenu,
+    visitMenu,
     userMenu,
     writeMenu,
     adminMenu
