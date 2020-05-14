@@ -125,6 +125,12 @@ class LoginPage extends Component {
     })
   }
 
+  handleVisiterLogin = () => {
+    localStorage.setItem('currentUser', '游客');
+    localStorage.setItem('userType', 0);
+    router.push('/')
+  }
+
   handleRegister = () => {
     const { form } = this.props;
     form.validateFields((err, values) => {
@@ -223,6 +229,13 @@ class LoginPage extends Component {
                 onClick={this.handleLogin}
               >
                 用户登录
+              </Button>
+              <Button
+                type="danger"
+                style={{ width: 384, marginTop: 25 }}
+                onClick={this.handleVisiterLogin}
+              >
+                游客登录
               </Button>
             </Form>
           </Tab>
