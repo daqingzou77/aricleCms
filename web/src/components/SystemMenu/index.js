@@ -33,7 +33,7 @@ class SystemMenu extends React.Component {
     } else if (userType === '2') {
       this.menuList = menu.adminMenu;
     } else {
-      this.menuList = menu.mainMenu;
+      this.menuList = menu.visitMenu;
     }
   }
 
