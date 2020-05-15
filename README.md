@@ -1,12 +1,12 @@
 # 介绍
 本系统为支持多关键词搜索的文章信息管理系统。主要功能模块分为：首页、文章分类、文章发布、文章管理、用户中心和消息中心。
 
-**注意：本系统是针对于WEB的JS全栈开发，纯练手项目，如果您有兴趣，可以点下“star”支持一下哦😄😄**
+**注意：本系统是基于WEB的JS全栈开发，纯练手项目，如果您有兴趣，可以点下“star”支持一下哦😄😄**
 
 
 ## 技术栈
 
-nodejs+express+mongodb+socketio+es6+react+antd+webpack
+nodejs+express+mongodb+socketio+es6+react+antd pro
 
 ## 安装与运行
 
@@ -79,16 +79,16 @@ yarn build
 |   |   |     |── tools.js                     # 工具类
 │   ├─ app.js                                  # 后台服务启动文件
 ├─ web/                                        # 前端文件目录
-│   ├─ config/                                 # 存储webpack配置文件
-│   ├─ src/                                    # 存放启动项目的脚本文件
+│   ├─ config/                                 # 前端配置文件
+│   ├─ src/                                    # 项目核心目录
 │   │   ├─ assets/                             # 资源存储目录
 │   │   ├─ components/                         # 常用组件
 |   |   |     |── ContentModal/                # 弹窗内容编辑框
 |   |   |     |── CustomizeEmpty/              # 自定义空组件
 |   |   |     |── DataBlock/                   # 显示数据块
 |   |   |     |── Exception/                   # 异常组件
-|   |   |     |── FormElement/                 # FormElement
-|   |   |     |── FormRow/                     # FormRow 
+|   |   |     |── FormElement/                 # FormElement封装
+|   |   |     |── FormRow/                     # FormRow封装
 |   |   |     |── Login/                       # 登录组件
 |   |   |     |── Modal/                       # 自定义弹窗组件
 |   |   |     |── PageLoading/                 # 刷新
@@ -103,7 +103,7 @@ yarn build
 |   |   |     |── UserLayout.js                # 登录与注册的页面布局
 |   |   |     |── ScheduleLayout.js            # 主页面布局
 │   │   ├─ locales/                            # 国际化目录
-│   │   ├─ models/                             # dva model目录
+│   │   ├─ models/                             # model目录
 │   │   ├─ pages/                              # 核心页面目录
 |   |   |     |── Classify/                    # 文章分类
 |   |   |     |── Home/                        # 主页面
@@ -125,7 +125,7 @@ yarn build
 │   │   ├─ utils/                              # 工具库目录
 │   │   ├─ global.js                           # 全局文件
 │   │   ├─ global.less                         # 全局样式
-│   ├─ test/                                   # 测试工具
+│   ├─ test/                                   # 测试
 ```
 
 **1.封装可鼠标拖拽的的弹窗组件**
