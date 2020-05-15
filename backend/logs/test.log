@@ -1,6 +1,7 @@
-[2020-05-14T19:48:46.358] [INFO] normal - OPTIONS /api/publishOnline/getPublishedArtilces 204
-[2020-05-14T19:48:46.359] [INFO] normal - OPTIONS /api/publishOnline/getEditRecord 204
-[2020-05-14T19:48:46.379] [WARN] normal - GET /api/publishOnline/getPublishedArtilces 304
-[2020-05-14T19:48:46.397] [WARN] normal - GET /api/publishOnline/getEditRecord 304
-[2020-05-14T19:48:46.869] [INFO] normal - OPTIONS /api/annex/getAnnexRecord 204
-[2020-05-14T19:48:46.876] [WARN] normal - GET /api/annex/getAnnexRecord 304
+[2020-05-15T13:29:14.920] [INFO] normal - GET /api/classify/getLiveUpdates?articleType=2 200
+[2020-05-15T13:33:24.143] [INFO] normal - OPTIONS /api/classify/getHotRecommandFromScience 204
+[2020-05-15T13:33:24.149] [INFO] normal - OPTIONS /api/classify/getLiveUpdates?articleType=0 204
+[2020-05-15T13:33:24.150] [INFO] normal - OPTIONS /api/classify/getScienceTips 204
+[2020-05-15T13:33:24.161] [INFO] normal - GET /api/classify/getHotRecommandFromScience 200
+[2020-05-15T13:33:24.178] [INFO] normal - GET /api/classify/getScienceTips 200
+[2020-05-15T13:33:24.201] [WARN] normal - GET /api/classify/getLiveUpdates?articleType=0 304
