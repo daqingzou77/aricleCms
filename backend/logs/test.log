@@ -1,7 +1,2 @@
-[2020-05-15T13:29:14.920] [INFO] normal - GET /api/classify/getLiveUpdates?articleType=2 200
-[2020-05-15T13:33:24.143] [INFO] normal - OPTIONS /api/classify/getHotRecommandFromScience 204
-[2020-05-15T13:33:24.149] [INFO] normal - OPTIONS /api/classify/getLiveUpdates?articleType=0 204
-[2020-05-15T13:33:24.150] [INFO] normal - OPTIONS /api/classify/getScienceTips 204
-[2020-05-15T13:33:24.161] [INFO] normal - GET /api/classify/getHotRecommandFromScience 200
-[2020-05-15T13:33:24.178] [INFO] normal - GET /api/classify/getScienceTips 200
-[2020-05-15T13:33:24.201] [WARN] normal - GET /api/classify/getLiveUpdates?articleType=0 304
+[2020-05-15T16:33:57.952] [INFO] normal - GET /images/cover/pingfanshijie.jpg 200
+[2020-05-15T16:33:57.964] [INFO] normal - GET /images/cover/zhuziqing.jpg 200
